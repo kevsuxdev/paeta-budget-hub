@@ -26,7 +26,9 @@ class AuthController extends Controller
 
         return match (Auth::user()->role) {
             'admin' => redirect()->intended('admin/dashboard'),
-            'user' => redirect()->intended('user/dashboard'),
+            'finance' => redirect()->intended('finance/dashboard'),
+            'dept_head' => redirect()->intended('dept_head/dashboard'),
+            'staff' => redirect()->intended('staff/dashboard'),
             default => redirect()->intended('/'),
         };
     }

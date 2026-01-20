@@ -3,6 +3,8 @@
 @section('content')
 <main class="flex items-start gap-3 w-full min-h-screen">
     <x-navigation />
-    @yield('main-content')
+    <section class="overflow-y-auto overflow-hidden w-full max-h-screen p-6">
+        @yield('main-content')
+    </section>
 </main>
 @endsection
