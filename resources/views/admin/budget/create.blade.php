@@ -19,7 +19,7 @@
                     <select name="department_id" id="department_id" class="w-full border border-black/20 rounded-md p-2 text-sm" required>
                         <option value="">Select Department</option>
                         @foreach($departments as $department)
-                            <option value="{{ $department->id }}">{{ $department->name }}</option>
+                        <option value="{{ $department->id }}">{{ $department->name }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -45,7 +45,7 @@
                         <input type="number" name="line_items[0][quantity]" min="1" class="w-full border border-black/20 rounded-md p-2 text-sm quantity" required>
                     </article>
                     <article>
-                        <label class="text-sm font-medium">Unit Cost</label>
+                        p-6 <label class="text-sm font-medium">Unit Cost</label>
                         <input type="number" step="0.01" name="line_items[0][unit_cost]" min="0" class="w-full border border-black/20 rounded-md p-2 text-sm unit-cost" required>
                     </article>
                     <article>
@@ -68,15 +68,35 @@
         <!-- Third Section: Supporting Documents -->
         <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
             <h2 class="text-xl font-semibold text-gray-900 mb-6">Supporting Documents</h2>
-            <div>
-                <label for="supporting_document" class="block text-sm font-medium text-gray-700 mb-2">Upload Document</label>
-                <input type="file" name="supporting_document" id="supporting_document" class="w-full border border-black/20 rounded-md p-2 text-sm" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
-                <p class="text-xs text-gray-500 mt-1">Accepted formats: PDF, DOC, DOCX, JPG, JPEG, PNG</p>
-            </div>
+
+            <label
+                for="supporting_document"
+                id="dropzone"
+                class="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer
+               bg-gray-50 hover:bg-gray-100 transition text-center">
+                <svg class="w-8 h-8 text-gray-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M7 16V12M7 12V8M7 12h4m6 4v-1a3 3 0 00-3-3H6a3 3 0 00-3 3v1" />
+                </svg>
+
+                <p class="text-sm text-gray-600" id="upload-text">
+                    <span class="font-medium text-primary">Click to upload</span> or drag and drop
+                </p>
+                <p class="text-xs text-gray-500 mt-1">
+                    PDF, DOC, DOCX, JPG, JPEG, PNG
+                </p>
+
+                <input
+                    id="supporting_document"
+                    name="supporting_document"
+                    type="file"
+                    class="hidden"
+                    accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" />
+            </label>
         </div>
 
         <div class="flex justify-end">
-            <button type="submit" class="bg-primary text-white px-6 py-3 rounded-md hover:bg-opacity-90">Submit Budget</button>
+            <x-button>Submit Budget</x-button>
         </div>
     </form>
 </div>
@@ -163,5 +183,33 @@
 
     // Initial calculation
     calculateGrandTotal();
+
+    // File upload functionality
+    const input = document.getElementById('supporting_document');
+    const uploadText = document.getElementById('upload-text');
+    const dropzone = document.getElementById('dropzone');
+
+    input.addEventListener('change', () => {
+        if (input.files.length) {
+            uploadText.innerHTML = `<span class="font-medium text-green-600">${input.files[0].name}</span> selected`;
+        } else {
+            uploadText.innerHTML = `<span class="font-medium text-primary">Click to upload</span> or drag and drop`;
+        }
+    });
+
+    // Drag styling
+    ['dragenter', 'dragover'].forEach(event => {
+        dropzone.addEventListener(event, e => {
+            e.preventDefault();
+            dropzone.classList.add('border-primary', 'bg-primary/5');
+        });
+    });
+
+    ['dragleave', 'drop'].forEach(event => {
+        dropzone.addEventListener(event, e => {
+            e.preventDefault();
+            dropzone.classList.remove('border-primary', 'bg-primary/5');
+        });
+    });
 </script>
 @endsection
