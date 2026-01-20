@@ -174,22 +174,15 @@ class AdminController extends Controller
             'department_id' => 'nullable|exists:departments,id',
             'status' => 'required|in:active,inactive',
         ]);
-
-        $department = null;
-        if ($request->department_id) {
-            $dept = Department::find($request->department_id);
-            $department = $dept ? $dept->name : null;
-        }
-
+ 
         User::create([
             'username' => $request->username,
             'full_name' => $request->full_name,
-            'name' => $request->full_name, // For compatibility
             'email' => $request->email,
             'phone' => $request->phone,
             'password' => Hash::make('password'),
             'role' => $request->role,
-            'department' => $department,
+            'department_id' => $request->department_id,
             'status' => $request->status,
         ]);
 

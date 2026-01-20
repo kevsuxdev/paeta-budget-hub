@@ -19,12 +19,12 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'username',
-        'name',
+        'full_name',
         'email',
         'phone',
         'password',
         "role",
-        "department",
+        "department_id",
         "status"
     ];
 
@@ -48,5 +48,9 @@ class User extends Authenticatable
         return [
             'password' => 'hashed',
         ];
+    }
+    public function department()
+    {
+        return $this->belongsTo(Department::class);
     }
 }

@@ -80,7 +80,7 @@
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $user->full_name }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $user->email }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ ucfirst($user->role) }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $user->department ?? 'N/A' }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $user->department->name ?? 'N/A' }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <span @class([ 'inline-flex px-2 py-1 text-xs font-semibold rounded-full' , 'bg-green-100 text-green-800'=> $user->status === 'active',
                                         'bg-red-100 text-red-800' => $user->status !== 'active',

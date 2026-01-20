@@ -12,6 +12,7 @@ Route::get('/', function () {
 });
 
 Route::post('/auth/login', [AuthController::class, 'authenticate'])->name('auth.login');
+Route::post('/auth/logout', [AuthController::class, 'logout'])->name('auth.logout')->middleware('auth');
 
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
@@ -26,7 +27,12 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::post('/admin/users', [AdminController::class, 'storeUser'])->name('admin.users.store');
 });
 
-Route::middleware(['auth', 'role:staff'])->get('/staff/dashboard', [StaffController::class, 'dashboard'])->name('staff.dashboard');
+Route::middleware(['auth', 'role:staff'])->group(function () {
+    Route::get('/staff/dashboard', [StaffController::class, 'dashboard'])->name('staff.dashboard');
+    Route::get('/staff/budget/create', [StaffController::class, 'createBudget'])->name('staff.budget.create');
+    Route::post('/staff/budget/store', [StaffController::class, 'storeBudget'])->name('staff.budget.store');
+    Route::get('/staff/document-tracking', [StaffController::class, 'documentTracking'])->name('staff.document.tracking');
+});
 Route::middleware(['auth', 'role:dept_head'])->get('/dept_head/dashboard', [DeptHeadController::class, 'dashboard'])->name('dept_head.dashboard');
 Route::middleware(['auth', 'role:finance'])->group(function () {
     Route::get('/finance/dashboard', [FinanceController::class, 'dashboard'])->name('finance.dashboard');

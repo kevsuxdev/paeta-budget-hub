@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('phone');
             $table->string('password');
             $table->enum('role', ['admin', 'finance', 'dept_head', 'staff'])->default('staff');
-            $table->string('department')->nullable();
+            $table->foreignId('department_id')->nullable()->constrained('departments')->nullOnDelete();
             $table->enum('status', ['active', 'inactive'])->default('active');
             $table->timestamps();
         });
