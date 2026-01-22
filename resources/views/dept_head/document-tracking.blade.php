@@ -3,7 +3,7 @@
 @section('main-content')
 <div class="p-6">
     <h1 class="text-2xl font-bold text-primary mb-4">Document Tracking</h1>
-    <p class="text-gray-600 mb-6">Track and manage all budget requests with search and filter capabilities.</p>
+    <p class="text-gray-600 mb-6">Track and manage budget requests from your department.</p>
 
     <!-- Alert Messages -->
     @if(session('success'))
@@ -18,7 +18,7 @@
 
     <!-- Search and Filter -->
     <x-budget.search-filter
-        :route="route('admin.document.tracking')"
+        :route="route('dept_head.document.tracking')"
         :searchValue="request('search', '')"
         :statusValue="request('status', '')"
     />
@@ -43,31 +43,33 @@
                     @forelse($budgets as $budget)
                         <x-budget.table-row
                             :budget="$budget"
-                            :canUpdateStatus="auth()->user()->role === 'admin' || auth()->user()->role === 'dept_head'"
+                            :canUpdateStatus="true"
                         />
                     @empty
                         <tr>
                             <td colspan="8" class="px-6 py-4 text-center text-sm text-gray-500">
-                                No budget requests found
+                                No budget requests found.
                             </td>
                         </tr>
                     @endforelse
                 </tbody>
             </table>
         </div>
-
-        <!-- Pagination -->
-        @if($budgets->hasPages())
-            <div class="bg-white px-4 py-3 border-t border-gray-200 sm:px-6">
-                {{ $budgets->appends(request()->query())->links() }}
-            </div>
-        @endif
     </div>
 
-    <!-- Modals -->
-    <x-budget.details-modal />
-    <x-budget.status-modal :userRole="auth()->user()->role" />
+    <!-- Pagination -->
+    @if($budgets->hasPages())
+        <div class="mt-6">
+            {{ $budgets->links() }}
+        </div>
+    @endif
 </div>
+
+<!-- Budget Details Modal -->
+<x-budget.details-modal />
+
+<!-- Status Update Modal -->
+<x-budget.status-modal userRole="dept_head" />
 
 <!-- JavaScript -->
 <script src="{{ asset('js/budget-tracking.js') }}"></script>

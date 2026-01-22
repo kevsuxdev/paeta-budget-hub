@@ -4,10 +4,15 @@
     <h1 class="text-2xl font-bold text-primary mb-4">Finance Review</h1>
     <p class="text-gray-600 mb-6">Review and manage budget requests for financial approval.</p>
 
+    <!-- Alert Messages -->
     @if(session('success'))
-    <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6">
-        {{ session('success') }}
-    </div>
+        <x-alert-message type="success" :message="session('success')" />
+    @endif
+    @if(session('info'))
+        <x-alert-message type="info" :message="session('info')" />
+    @endif
+    @if(session('error'))
+        <x-alert-message type="error" :message="session('error')" />
     @endif
 
     <!-- Overview Statistics -->
@@ -70,37 +75,10 @@
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
                     @forelse($budgets as $budget)
-                    <tr>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $budget->id }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $budget->title }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $budget->user->name ?? 'N/A' }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $budget->department->name ?? 'N/A' }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ number_format($budget->total_budget, 2) }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span @class([ 'inline-flex px-2 py-1 text-xs font-semibold rounded-full' , 'bg-yellow-100 text-yellow-800'=> $budget->status === 'pending',
-                                'bg-green-100 text-green-800' => $budget->status === 'approved',
-                                'bg-red-100 text-red-800' => $budget->status === 'rejected',
-                                ])>
-                                {{ ucfirst($budget->status) }}
-                            </span>
-
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $budget->submission_date->format('M d, Y') }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                            @if($budget->status === 'pending')
-                            <form method="POST" action="{{ route('admin.budget.approve', $budget) }}" class="inline">
-                                @csrf
-                                <button type="submit" class="text-green-600 hover:text-green-800 mr-2">Approve</button>
-                            </form>
-                            <form method="POST" action="{{ route('admin.budget.reject', $budget) }}" class="inline">
-                                @csrf
-                                <button type="submit" class="text-red-600 hover:text-red-800">Reject</button>
-                            </form>
-                            @else
-                            <button class="text-gray-600 hover:text-gray-800">View Details</button>
-                            @endif
-                        </td>
-                    </tr>
+                        <x-budget.table-row
+                            :budget="$budget"
+                            :canUpdateStatus="true"
+                        />
                     @empty
                     <tr>
                         <td colspan="8" class="px-6 py-4 text-center text-sm text-gray-500">No budget requests found</td>
@@ -111,4 +89,13 @@
         </div>
     </div>
 </div>
+
+<!-- Budget Details Modal -->
+<x-budget.details-modal />
+
+<!-- Status Update Modal -->
+<x-budget.status-modal userRole="finance" />
+
+<!-- JavaScript -->
+<script src="{{ asset('js/budget-tracking.js') }}"></script>
 @endsection

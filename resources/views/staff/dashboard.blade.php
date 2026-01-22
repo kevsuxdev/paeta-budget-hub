@@ -3,7 +3,7 @@
 <div class="p-6">
     <h1 class="text-2xl font-bold text-primary mb-4">Staff Dashboard</h1>
     <p class="text-gray-600 mb-2">Welcome, {{ $user->full_name }}.</p>
-    <p class="text-gray-600 mb-6">Department: <span class="text-primary font-medium">{{ $user->department->name }}</span> | Access your budget submissions and tracking.</p>
+    <p class="text-gray-600 mb-6">Department: <span class="text-primary font-medium">{{ $user->department->name ?? 'N/A' }}</span> | Access your budget submissions and tracking.</p>
 
     <!-- Department Statistics -->
     <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">

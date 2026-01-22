@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Budget;
 use App\Models\BudgetLineItem;
+use App\Models\BudgetLog;
 use App\Models\Department;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
@@ -27,7 +28,7 @@ class AdminController extends Controller
 
         return view('admin.dashboard', compact('totalBudgets', 'pendingRequests', 'approvedProjects', 'rejectedProjects', 'recentBudgets'));
     }
- 
+
     public function createBudget()
     {
         $departments = Department::all();
@@ -82,6 +83,16 @@ class AdminController extends Controller
                 ]);
             }
 
+            // Create initial log entry
+            BudgetLog::create([
+                'budget_id' => $budget->id,
+                'user_id' => Auth::id(),
+                'action' => 'created',
+                'old_status' => null,
+                'new_status' => 'pending',
+                'notes' => 'Budget request created by ' . Auth::user()->full_name,
+            ]);
+
             return redirect()->route('admin.dashboard')->with('success', 'Budget submitted successfully.');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'An error occurred: ' . $e->getMessage())->withInput();
@@ -129,13 +140,113 @@ class AdminController extends Controller
 
     public function approveBudget(Budget $budget)
     {
+        $oldStatus = $budget->status;
         $budget->update(['status' => 'approved']);
+
+        BudgetLog::create([
+            'budget_id' => $budget->id,
+            'user_id' => Auth::id(),
+            'action' => 'status_changed',
+            'old_status' => $oldStatus,
+            'new_status' => 'approved',
+            'notes' => 'Budget approved by ' . Auth::user()->full_name,
+        ]);
+
         return redirect()->back()->with('success', 'Budget approved successfully.');
     }
 
     public function rejectBudget(Budget $budget)
     {
+        $oldStatus = $budget->status;
         $budget->update(['status' => 'rejected']);
+
+        BudgetLog::create([
+            'budget_id' => $budget->id,
+            'user_id' => Auth::id(),
+            'action' => 'status_changed',
+            'old_status' => $oldStatus,
+            'new_status' => 'rejected',
+            'notes' => 'Budget rejected by ' . Auth::user()->full_name,
+        ]);
+
+        return redirect()->back()->with('success', 'Budget rejected successfully.');
+    }
+
+    public function updateBudgetStatus(Request $request, Budget $budget)
+    {
+        $request->validate([
+            'status' => 'required|in:pending,reviewed,finance_reviewed,revise,approved,rejected',
+            'remarks' => 'nullable|string|max:500',
+        ]);
+
+        $oldStatus = $budget->status;
+        $newStatus = $request->status;
+
+        if ($oldStatus !== $newStatus) {
+            $budget->update(['status' => $newStatus]);
+
+            $remarks = $request->remarks ?? 'Status changed from ' . ucfirst($oldStatus) . ' to ' . ucfirst($newStatus) . ' by ' . Auth::user()->full_name;
+
+            BudgetLog::create([
+                'budget_id' => $budget->id,
+                'user_id' => Auth::id(),
+                'action' => 'status_changed',
+                'old_status' => $oldStatus,
+                'new_status' => $newStatus,
+                'notes' => $remarks,
+            ]);
+
+            return redirect()->back()->with('success', 'Budget status updated successfully.');
+        }
+
+        return redirect()->back()->with('info', 'No changes made to budget status.');
+    }
+
+    public function approval()
+    {
+        $pendingApproval = Budget::where('status', 'finance_reviewed')->count();
+        $totalAmount = Budget::where('status', 'finance_reviewed')->sum('total_budget');
+        $averageAmount = Budget::where('status', 'finance_reviewed')->avg('total_budget') ?? 0;
+
+        $budgets = Budget::with('user', 'department')
+            ->where('status', 'finance_reviewed')
+            ->orderBy('submission_date', 'desc')
+            ->paginate(10);
+
+        return view('admin.approval', compact('pendingApproval', 'totalAmount', 'averageAmount', 'budgets'));
+    }
+
+    public function finalApproveBudget(Budget $budget)
+    {
+        $oldStatus = $budget->status;
+        $budget->update(['status' => 'approved']);
+
+        BudgetLog::create([
+            'budget_id' => $budget->id,
+            'user_id' => Auth::id(),
+            'action' => 'final_approval',
+            'old_status' => $oldStatus,
+            'new_status' => 'approved',
+            'notes' => 'Budget finally approved by ' . Auth::user()->full_name,
+        ]);
+
+        return redirect()->back()->with('success', 'Budget approved successfully.');
+    }
+
+    public function finalRejectBudget(Budget $budget)
+    {
+        $oldStatus = $budget->status;
+        $budget->update(['status' => 'rejected']);
+
+        BudgetLog::create([
+            'budget_id' => $budget->id,
+            'user_id' => Auth::id(),
+            'action' => 'final_rejection',
+            'old_status' => $oldStatus,
+            'new_status' => 'rejected',
+            'notes' => 'Budget finally rejected by ' . Auth::user()->full_name,
+        ]);
+
         return redirect()->back()->with('success', 'Budget rejected successfully.');
     }
 
@@ -148,6 +259,37 @@ class AdminController extends Controller
         $users = User::all();
 
         return view('admin.user-management', compact('totalUsers', 'totalActiveUsers', 'totalDepartments', 'departments', 'users'));
+    }
+
+    public function getBudgetLogs(Budget $budget)
+    {
+        $budget->load(['logs.user.department']);
+
+        $logs = $budget->logs->map(function($log) {
+            return [
+                'id' => $log->id,
+                'action' => $log->action,
+                'old_status' => $log->old_status,
+                'new_status' => $log->new_status,
+                'notes' => $log->notes,
+                'user_name' => $log->user ? $log->user->full_name : 'System',
+                'department_name' => $log->user && $log->user->department ? $log->user->department->name : 'N/A',
+                'timestamp' => $log->created_at->format('M d, Y h:i A'),
+            ];
+        });
+
+        return response()->json([
+            'logs' => $logs,
+            'budget' => [
+                'id' => $budget->id,
+                'title' => $budget->title,
+                'fiscal_year' => $budget->fiscal_year,
+                'category' => $budget->category,
+                'total_budget' => number_format($budget->total_budget, 2),
+                'justification' => $budget->justification,
+                'status' => $budget->status,
+            ]
+        ]);
     }
 
     public function storeDepartment(Request $request)
@@ -174,7 +316,7 @@ class AdminController extends Controller
             'department_id' => 'nullable|exists:departments,id',
             'status' => 'required|in:active,inactive',
         ]);
- 
+
         User::create([
             'username' => $request->username,
             'full_name' => $request->full_name,

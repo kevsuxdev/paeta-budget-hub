@@ -33,4 +33,9 @@ class Budget extends Model
     {
         return $this->belongsTo(Department::class);
     }
+
+    public function logs()
+    {
+        return $this->hasMany(BudgetLog::class)->orderBy('created_at', 'desc');
+    }
 }

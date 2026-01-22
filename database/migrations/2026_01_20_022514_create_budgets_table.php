@@ -22,7 +22,7 @@ return new class extends Migration
             $table->date('submission_date');
             $table->decimal('total_budget', 15, 2);
             $table->string('supporting_document')->nullable();
-            $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
+            $table->enum('status', ['pending', 'reviewed', 'approved', 'rejected'])->default('pending');
             $table->timestamps();
         });
     }

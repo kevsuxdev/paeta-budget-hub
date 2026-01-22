@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Budget;
 use App\Models\BudgetLineItem;
+use App\Models\BudgetLog;
 use App\Models\Department;
 use App\Models\User;
 use Illuminate\Support\Facades\Storage;
@@ -17,8 +18,7 @@ class StaffController extends Controller
         $user = Auth::user();
 
         // Department statistics
-        $userIds = User::where('department_id', $user->department->id)->pluck('id');
-        $deptBudgets = Budget::whereIn('user_id', $userIds);
+        $deptBudgets = Budget::where('user_id', $user->id);
 
         $totalDeptBudgets = $deptBudgets->count();
         $pendingDeptBudgets = (clone $deptBudgets)->where('status', 'pending')->count();
@@ -44,6 +44,7 @@ class StaffController extends Controller
     {
         try {
             $request->validate([
+                'department_id' => 'required|exists:departments,id',
                 'title' => 'required|string|max:255',
                 'justification' => 'nullable|string',
                 'fiscal_year' => 'required|string',
@@ -64,8 +65,8 @@ class StaffController extends Controller
             Storage::makeDirectory('documents');
 
             $budget = Budget::create([
-                'user_id' => Auth::user()->id,
-                'department_id' => Auth::user()->department ? Department::where('name', Auth::user()->department)->first()->id : null,
+                'user_id' => Auth::id(),
+                'department_id' => $request->department_id,
                 'title' => $request->title,
                 'justification' => $request->justification,
                 'fiscal_year' => $request->fiscal_year,
@@ -117,5 +118,34 @@ class StaffController extends Controller
         $budgets = $query->orderBy('submission_date', 'desc')->paginate(10);
 
         return view('staff.document-tracking', compact('budgets'));
+    }
+
+    public function getBudgetLogs(Budget $budget)
+    {
+        // Verify the budget belongs to the current user
+        if ($budget->user_id !== Auth::id()) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        $logs = BudgetLog::where('budget_id', $budget->id)
+            ->with(['user.department'])
+            ->orderBy('created_at', 'desc')
+            ->get()
+            ->map(function ($log) {
+                return [
+                    'action' => $log->action,
+                    'old_status' => $log->old_status,
+                    'new_status' => $log->new_status,
+                    'notes' => $log->notes,
+                    'user_name' => $log->user->full_name ?? 'Unknown User',
+                    'department_name' => $log->user->department->name ?? 'Unknown Department',
+                    'timestamp' => $log->created_at->format('M d, Y h:i A'),
+                ];
+            });
+
+        return response()->json([
+            'budget' => $budget,
+            'logs' => $logs,
+        ]);
     }
 }

@@ -177,15 +177,6 @@
                         <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">Phone</label>
                         <input type="tel" name="phone" id="phone" class="w-full border border-black/20 rounded-md p-2 text-sm focus:ring-2 focus:ring-primary focus:border-transparent">
                     </div>
-                    <div id="department-field">
-                        <label for="department_id" class="block text-sm font-medium text-gray-700 mb-1">Department</label>
-                        <select name="department_id" id="department_id" class="w-full border border-black/20 rounded-md p-2 text-sm focus:ring-2 focus:ring-primary focus:border-transparent">
-                            <option value="">Select Department</option>
-                            @foreach($departments as $department)
-                            <option value="{{ $department->id }}">{{ $department->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
                     <input type="hidden" name="password" value="password">
                     <input type="hidden" name="password_confirmation" value="password">
                     <div>
@@ -198,8 +189,8 @@
                             <option value="dept_head">Department Head</option>
                         </select>
                     </div>
-                    <div id="department-field" style="display: none;">
-                        <label for="department_id" class="block text-sm font-medium text-gray-700 mb-1">Department</label>
+                    <div id="department-field">
+                        <label for="department_id" class="block text-sm font-medium text-gray-700 mb-1">Department <span class="text-red-500">*</span></label>
                         <select name="department_id" id="department_id" class="w-full border border-black/20 rounded-md p-2 text-sm focus:ring-2 focus:ring-primary focus:border-transparent">
                             <option value="">Select Department</option>
                             @foreach($departments as $department)
@@ -214,7 +205,7 @@
                             <option value="inactive">Inactive</option>
                         </select>
                     </div>
-                </div>
+                </input>
                 <div class="flex justify-end space-x-3 pt-4">
                     <button type="button" onclick="closeUserModal()" class="px-4 py-2 bg-gray-300 text-gray-900 rounded-md hover:bg-gray-400 transition-colors text-sm">Cancel</button>
                     <x-button>Create User</x-button>
@@ -247,6 +238,22 @@
         document.getElementById('userModal').classList.add('hidden');
     }
 
+    // Handle department field visibility based on role
+    document.getElementById('role').addEventListener('change', function() {
+        const departmentField = document.getElementById('department-field');
+        const departmentSelect = document.getElementById('department_id');
+        const role = this.value;
+
+        // Show department field for staff and dept_head, hide for admin and finance
+        if (role === 'staff' || role === 'dept_head') {
+            departmentField.style.display = 'block';
+            departmentSelect.required = true;
+        } else {
+            departmentField.style.display = 'none';
+            departmentSelect.required = false;
+            departmentSelect.value = ''; // Clear selection
+        }
+    });
 
     // Close modals when clicking outside
     window.onclick = function(event) {

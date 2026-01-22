@@ -1,5 +1,5 @@
-@props(["name" => "","type" => "text", "label" => "", "value" => ""])
+@props(["name" => "","type" => "text", "label" => "", "value" => "", "class" => "", "placeholder" => ""])
 <article>
     <label class="text-sm font-medium">{{ $label }}</label>
-    <input type="{{ $type }}" name="{{ $name }}" value="{{ $value }}" class="w-full border border-black/20 rounded-md p-2 text-sm" />
+    <input type="{{ $type }}" name="{{ $name }}" value="{{ $value }}" placeholder="{{ $placeholder }}" class="w-full border border-white/50 rounded-xl p-2 text-sm {{ $class }}" />
 </article>

@@ -16,6 +16,9 @@
                 <select name="status" id="status" class="w-full border border-black/20 rounded-md p-2 text-sm">
                     <option value="">All Statuses</option>
                     <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
+                    <option value="reviewed" {{ request('status') == 'reviewed' ? 'selected' : '' }}>Reviewed</option>
+                    <option value="finance_reviewed" {{ request('status') == 'finance_reviewed' ? 'selected' : '' }}>Finance Reviewed</option>
+                    <option value="revise" {{ request('status') == 'revise' ? 'selected' : '' }}>Revise</option>
                     <option value="approved" {{ request('status') == 'approved' ? 'selected' : '' }}>Approved</option>
                     <option value="rejected" {{ request('status') == 'rejected' ? 'selected' : '' }}>Rejected</option>
                 </select>
@@ -49,26 +52,21 @@
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $budget->title }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $budget->user->full_name ?? 'N/A' }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $budget->department->name ?? 'N/A' }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ number_format($budget->total_budget, 2) }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                            <span @class([ 'inline-flex px-2 py-1 text-xs font-semibold rounded-full' , 'bg-yellow-100 text-yellow-800'=> $budget->status === 'pending',
-                                'bg-green-100 text-green-800' => $budget->status === 'approved',
-                                'bg-red-100 text-red-800' => $budget->status === 'rejected',
-                                ])>
-                                {{ ucfirst($budget->status) }}
-                            </span>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">₱{{ number_format($budget->total_budget, 2) }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <x-budget.status-badge :status="$budget->status" />
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $budget->submission_date->format('M d, Y') }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                            <x-button type="button"
-                                onclick="openModalFromButton(this)"
-                                data-id="{{ $budget->id }}"
-                                data-title="{{ $budget->title }}"
-                                data-status="{{ $budget->status }}"
-                                data-date="{{ optional($budget->submission_date)->format('M d, Y') }}"
-                                data-user="{{ optional($budget->user)->full_name ?? 'N/A' }}">
+                            <button
+                                class="btn-view-budget text-blue-600 hover:text-blue-900 font-medium"
+                                data-budget-id="{{ $budget->id }}"
+                                data-budget-title="{{ $budget->title }}"
+                                data-budget-status="{{ $budget->status }}"
+                                data-budget-date="{{ \Carbon\Carbon::parse($budget->submission_date)->format('M d, Y') }}"
+                                data-budget-user="{{ $budget->user->full_name }}">
                                 View Details
-                            </x-button>
+                            </button>
                         </td>
                     </tr>
                     @empty
@@ -88,4 +86,15 @@
         @endif
     </div>
 </div>
+
+<!-- Budget Details Modal -->
+<x-budget.details-modal />
+
+<!-- Include Budget Tracking JS -->
+<script src="{{ asset('js/budget-tracking.js') }}"></script>
+<script>
+    $(document).ready(function() {
+        BudgetTracking.init();
+    });
+</script>
 @endsection
