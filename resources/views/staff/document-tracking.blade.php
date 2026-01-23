@@ -1,62 +1,62 @@
 @extends('layouts.auth-layout')
 @section('main-content')
 <div class="p-6">
-    <h1 class="text-2xl font-bold text-primary mb-4">Document Tracking</h1>
-    <p class="text-gray-600 mb-6">Track budget requests from your department with search and filter capabilities.</p>
+    <h1 class="text-2xl font-bold text-white">Document Tracking</h1>
+    <p class="text-white mb-6">Track budget requests from your department with search and filter capabilities.</p>
 
     <!-- Search and Filter -->
-    <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-200 mb-6">
+    <div class="bg-orange-brown p-4 rounded-lg mb-6">
         <form method="GET" action="{{ route('staff.document.tracking') }}" class="flex flex-col md:flex-row gap-4">
             <div class="flex-1">
-                <label for="search" class="block text-sm font-medium text-gray-700 mb-1">Search</label>
-                <input type="text" name="search" id="search" value="{{ request('search') }}" placeholder="Search by title or user name" class="w-full border border-black/20 rounded-md p-2 text-sm">
+                <label for="search" class="block text-sm font-medium text-white mb-1">Search</label>
+                <input type="text" name="search" id="search" value="{{ request('search') }}" placeholder="Search by title or user name" class="w-full border border-black/20 text-white rounded-md p-2 text-sm">
             </div>
             <div>
-                <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Filter by Status</label>
-                <select name="status" id="status" class="w-full border border-black/20 rounded-md p-2 text-sm">
-                    <option value="">All Statuses</option>
-                    <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
-                    <option value="reviewed" {{ request('status') == 'reviewed' ? 'selected' : '' }}>Reviewed</option>
-                    <option value="finance_reviewed" {{ request('status') == 'finance_reviewed' ? 'selected' : '' }}>Finance Reviewed</option>
-                    <option value="revise" {{ request('status') == 'revise' ? 'selected' : '' }}>Revise</option>
-                    <option value="approved" {{ request('status') == 'approved' ? 'selected' : '' }}>Approved</option>
-                    <option value="rejected" {{ request('status') == 'rejected' ? 'selected' : '' }}>Rejected</option>
+                <label for="status" class="block text-sm font-medium text-white mb-1">Filter by Status</label>
+                <select name="status" id="status" class="w-full border border-black/20 rounded-md p-2 text-white text-sm">
+                    <option class="text-primary" value="">All Statuses</option>
+                    <option class="text-primary" value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
+                    <option class="text-primary" value="reviewed" {{ request('status') == 'reviewed' ? 'selected' : '' }}>Reviewed</option>
+                    <option class="text-primary" value="finance_reviewed" {{ request('status') == 'finance_reviewed' ? 'selected' : '' }}>Finance Reviewed</option>
+                    <option class="text-primary" value="revise" {{ request('status') == 'revise' ? 'selected' : '' }}>Revise</option>
+                    <option class="text-primary" value="approved" {{ request('status') == 'approved' ? 'selected' : '' }}>Approved</option>
+                    <option class="text-primary" value="rejected" {{ request('status') == 'rejected' ? 'selected' : '' }}>Rejected</option>
                 </select>
             </div>
             <div class="flex items-end">
-                <button type="submit" class="bg-primary text-white px-4 py-2 rounded-md hover:bg-opacity-90">Search</button>
+                <button type="submit" class="bg-primary text-white px-4 py-2 text-sm rounded-md hover:bg-opacity-90">Search</button>
             </div>
         </form>
     </div>
 
     <!-- Budget Requests Table -->
-    <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+    <div class="bg-orange-brown rounded-lg shadow-sm border border-primary overflow-hidden">
         <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50">
+            <table class="min-w-full divide-y divide-primary">
+                <thead class="bg-orange-brown">
                     <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Department</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Budget</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Submission Date</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">ID</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Title</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">User</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Department</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Total Budget</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Status</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Submission Date</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Actions</th>
                     </tr>
                 </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
+                <tbody class="bg-orange-brown divide-y divide-primary">
                     @forelse($budgets as $budget)
                     <tr>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $budget->id }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $budget->title }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $budget->user->full_name ?? 'N/A' }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $budget->department->name ?? 'N/A' }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">₱{{ number_format($budget->total_budget, 2) }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-white">{{ $budget->id }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-white">{{ $budget->title }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-white">{{ $budget->user->full_name ?? 'N/A' }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-white">{{ $budget->department->name ?? 'N/A' }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-white">₱{{ number_format($budget->total_budget, 2) }}</td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <x-budget.status-badge :status="$budget->status" />
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $budget->submission_date->format('M d, Y') }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-white">{{ $budget->submission_date->format('M d, Y') }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                             <button
                                 class="btn-view-budget text-blue-600 hover:text-blue-900 font-medium"
@@ -71,7 +71,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="8" class="px-6 py-4 text-center text-sm text-gray-500">No budget requests found</td>
+                        <td colspan="8" class="px-6 py-4 text-center text-sm text-white">No budget requests found</td>
                     </tr>
                     @endforelse
                 </tbody>
@@ -80,7 +80,7 @@
 
         <!-- Pagination -->
         @if($budgets->hasPages())
-        <div class="bg-white px-4 py-3 border-t border-gray-200 sm:px-6">
+        <div class="bg-orange-brown px-4 py-3 border-t border-primary sm:px-6">
             {{ $budgets->appends(request()->query())->links() }}
         </div>
         @endif

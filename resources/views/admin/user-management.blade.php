@@ -1,48 +1,10 @@
 @extends('layouts.auth-layout')
 @section('main-content')
 <div class="p-6">
-    <h1 class="text-2xl font-bold text-primary mb-4">User Management</h1>
-    <p class="text-gray-600 mb-6">Manage users and view system statistics.</p>
-
-    <!-- Overview Statistics -->
-    <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-        <h2 class="text-xl font-semibold text-gray-900 mb-4">User Overview</h2>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <!-- Total Users -->
-            <div class="flex items-center">
-                <svg class="w-10 h-10 text-blue-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
-                </svg>
-                <div class="ml-3">
-                    <p class="text-sm text-gray-600">Total Users</p>
-                    <p class="text-2xl font-bold text-blue-500">{{ $totalUsers }}</p>
-                </div>
-            </div>
-
-            <!-- Total Active Users -->
-            <div class="flex items-center">
-                <svg class="w-10 h-10 text-green-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
-                <div class="ml-3">
-                    <p class="text-sm text-gray-600">Active Users</p>
-                    <p class="text-2xl font-bold text-green-500">{{ $totalActiveUsers }}</p>
-                </div>
-            </div>
-
-            <!-- Total Departments -->
-            <div class="flex items-center">
-                <svg class="w-10 h-10 text-purple-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
-                </svg>
-                <div class="ml-3">
-                    <p class="text-sm text-gray-600">Total Departments</p>
-                    <p class="text-2xl font-bold text-purple-500">{{ $totalDepartments }}</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
+    <article class="space-y-2">
+        <h1 class="text-2xl font-bold text-white">User Management</h1>
+        <p class="text-white">Manage users and view system statistics.</p>
+    </article>
     <!-- Department Management -->
     <div class="flex items-center justify-end">
         <div class="space-x-2 my-5 self-end">
@@ -55,32 +17,64 @@
         </div>
     </div>
 
+    <!-- Overview Statistics -->
+    <div class="shadow-sm">
+        <h2 class="text-2xl font-semibold text-white mb-4">User Overview</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <!-- Total Users -->
+            <div class="flex items-center bg-orange-brown p-6 rounded-lg ">
+
+                <div class="ml-3">
+                    <p class="text-sm text-white">Total Users</p>
+                    <p class="text-2xl font-bold text-blue-500">{{ $totalUsers }}</p>
+                </div>
+            </div>
+
+            <!-- Total Active Users -->
+            <div class="flex items-center bg-orange-brown p-6 rounded-lg ">
+                <div class="ml-3">
+                    <p class="text-sm text-white">Active Users</p>
+                    <p class="text-2xl font-bold text-green-500">{{ $totalActiveUsers }}</p>
+                </div>
+            </div>
+
+            <!-- Total Departments -->
+            <div class="flex items-center bg-orange-brown p-6 rounded-lg ">
+                <div class="ml-3">
+                    <p class="text-sm text-white">Total Departments</p>
+                    <p class="text-2xl font-bold text-purple-500">{{ $totalDepartments }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <!-- Users and Departments Grid -->
     <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 mt-6">
         <!-- Users List -->
         <div class="lg:col-span-3">
-            <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-                <div class="px-6 py-4 border-b border-gray-200">
-                    <h3 class="text-lg font-semibold text-gray-900">Users</h3>
+            <div class="bg-orange-brown rounded-lg shadow-sm">
+                <div class="px-6 py-4">
+                    <h3 class="text-lg font-semibold text-white">List of Users</h3>
                 </div>
                 <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-gray-50">
+                    <table class="min-w-full divide-y divide-primary">
+                        <thead class="bg-orange-brown">
                             <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Department</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Name</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Email</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Role</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Department</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Status</th>
                             </tr>
                         </thead>
-                        <tbody class="bg-white divide-y divide-gray-200">
+                        <tbody class="bg-orange-brown divide-y divide-primary">
                             @forelse($users as $user)
                             <tr>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $user->full_name }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $user->email }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ ucfirst($user->role) }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $user->department->name ?? 'N/A' }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-white">{{ $user->full_name }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-white">{{ $user->email }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-white">{{ ucfirst($user->role) }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-white">{{ $user->department->name ?? 'N/A' }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <span @class([ 'inline-flex px-2 py-1 text-xs font-semibold rounded-full' , 'bg-green-100 text-green-800'=> $user->status === 'active',
                                         'bg-red-100 text-red-800' => $user->status !== 'active',
@@ -92,7 +86,7 @@
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="5" class="px-6 py-4 text-center text-sm text-gray-500">No users found</td>
+                                <td colspan="5" class="px-6 py-4 text-center text-sm text-white">No users found</td>
                             </tr>
                             @endforelse
                         </tbody>
@@ -103,25 +97,25 @@
 
         <!-- Departments List -->
         <div>
-            <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-                <div class="px-6 py-4 border-b border-gray-200">
-                    <h3 class="text-lg font-semibold text-gray-900">Departments</h3>
+            <div class="bg-orange-brown rounded-lg shadow-sm">
+                <div class="px-6 py-4 border-b border-primary">
+                    <h3 class="text-lg font-semibold text-white">Departments</h3>
                 </div>
                 <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-gray-50">
+                    <table class="min-w-full divide-y divide-primary">
+                        <thead class="bg-orange-brown">
                             <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Department Name</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Department Name</th>
                             </tr>
                         </thead>
-                        <tbody class="bg-white divide-y divide-gray-200">
+                        <tbody class="bg-orange-brown divide-y divide-primary">
                             @forelse($departments as $department)
                             <tr>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $department->name }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-white">{{ $department->name }}</td>
                             </tr>
                             @empty
                             <tr>
-                                <td class="px-6 py-4 text-center text-sm text-gray-500">No departments found</td>
+                                <td class="px-6 py-4 text-center text-sm text-white">No departments found</td>
                             </tr>
                             @endforelse
                         </tbody>
@@ -133,7 +127,7 @@
 
     <!-- Department Modal -->
     <div id="departmentModal" class="fixed inset-0 bg-transparent backdrop-blur-sm flex items-center justify-center hidden">
-        <div class="bg-white p-5 border border-black/20 w-96 shadow-lg rounded-md">
+        <div class="bg-orange-brown p-5 border border-black/20 w-96 shadow-lg rounded-md">
             <div class="mt-3">
                 <h3 class="text-lg font-medium text-gray-900 mb-4">Add New Department</h3>
                 <form action="{{ route('admin.departments.store') }}" method="POST">
@@ -153,10 +147,10 @@
 
     <!-- User Modal -->
     <div id="userModal" class="fixed inset-0 bg-transparent backdrop-blur-sm flex items-center justify-center hidden">
-        <div class="bg-white p-6 border border-black/20 w-full max-w-lg shadow-lg rounded-md max-h-[90vh] overflow-y-auto">
+        <div class="bg-orange-brown p-6 border border-black/20 w-full max-w-lg shadow-lg rounded-md max-h-[90vh] overflow-y-auto">
             <div class="mb-4">
                 <h3 class="text-xl font-semibold text-gray-900">Add New User</h3>
-                <p class="text-sm text-gray-600">Create a new user account with appropriate permissions.</p>
+                <p class="text-sm text-white">Create a new user account with appropriate permissions.</p>
             </div>
             <form action="{{ route('admin.users.store') }}" method="POST" class="space-y-4">
                 @csrf

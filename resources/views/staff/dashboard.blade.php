@@ -1,43 +1,35 @@
 @extends('layouts.auth-layout')
 @section('main-content')
-<div class="p-6">
-    <h1 class="text-2xl font-bold text-primary mb-4">Staff Dashboard</h1>
-    <p class="text-gray-600 mb-2">Welcome, {{ $user->full_name }}.</p>
-    <p class="text-gray-600 mb-6">Department: <span class="text-primary font-medium">{{ $user->department->name ?? 'N/A' }}</span> | Access your budget submissions and tracking.</p>
-
+<div class="p-6 space-y-5">
+    <h1 class="text-2xl font-bold text-white mb-4">Dashboard</h1>
+    <article class="space-y-2">
+        <p class="text-white text-xl font-medium">Welcome, {{ $user->full_name }}!</p>
+        <p class="text-sm font-medium text-white bg-accent p-2 rounded-xl w-fit px-4">{{ auth()->user()->department->name ?? 'N/A' }}</p>
+    </article>
     <!-- Department Statistics -->
-    <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-        <h2 class="text-xl font-semibold text-gray-900 mb-4">Department Statistics</h2>
+    <div class="">
+        <h2 class="text-xl font-semibold text-white mb-4">Department Statistics</h2>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <!-- Total Department Budgets -->
-            <div class="flex items-center">
-                <svg class="w-10 h-10 text-blue-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                </svg>
-                <div class="ml-3">
-                    <p class="text-sm text-gray-600">Total Budgets</p>
+            <div class="flex items-center bg-orange-brown p-6 rounded-lg shadow-sm">
+                <div>
+                    <p class="text-base text-white">Total Budgets</p>
                     <p class="text-2xl font-bold text-blue-500">{{ $totalDeptBudgets }}</p>
                 </div>
             </div>
 
             <!-- Pending Department Budgets -->
-            <div class="flex items-center">
-                <svg class="w-10 h-10 text-yellow-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
-                <div class="ml-3">
-                    <p class="text-sm text-gray-600">Pending</p>
+            <div class="flex items-center bg-orange-brown p-6 rounded-lg shadow-sm">
+                <div>
+                    <p class="text-base text-white">Pending</p>
                     <p class="text-2xl font-bold text-yellow-500">{{ $pendingDeptBudgets }}</p>
                 </div>
             </div>
 
             <!-- Approved Department Budgets -->
-            <div class="flex items-center">
-                <svg class="w-10 h-10 text-green-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
-                <div class="ml-3">
-                    <p class="text-sm text-gray-600">Approved</p>
+            <div class="flex items-center bg-orange-brown p-6 rounded-lg shadow-sm">
+                <div>
+                    <p class="text-base text-white">Approved</p>
                     <p class="text-2xl font-bold text-green-500">{{ $approvedDeptBudgets }}</p>
                 </div>
             </div>

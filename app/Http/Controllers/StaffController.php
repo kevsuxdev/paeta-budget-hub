@@ -62,10 +62,11 @@ class StaffController extends Controller
                 $totalBudget += $item['quantity'] * $item['unit_cost'];
             }
 
+            // Ensure documents directory exists
             Storage::makeDirectory('documents');
 
             $budget = Budget::create([
-                'user_id' => Auth::id(),
+                'user_id' => Auth::user()->id,
                 'department_id' => $request->department_id,
                 'title' => $request->title,
                 'justification' => $request->justification,
@@ -87,7 +88,17 @@ class StaffController extends Controller
                 ]);
             }
 
-            return redirect()->route('staff.dashboard')->with('success', 'Budget submitted successfully.');
+            // Create initial log entry
+            BudgetLog::create([
+                'budget_id' => $budget->id,
+                'user_id' => Auth::id(),
+                'action' => 'created',
+                'old_status' => null,
+                'new_status' => 'pending',
+                'notes' => 'Budget request created by ' . Auth::user()->full_name,
+            ]);
+
+            return redirect()->route('staff.document.tracking')->with('success', 'Budget submitted successfully.');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'An error occurred: ' . $e->getMessage())->withInput();
         }

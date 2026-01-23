@@ -1,5 +1,5 @@
-<div class="bg-gray-50 p-4 rounded-lg">
-    <h4 class="font-semibold text-gray-900 mb-3">Request Process</h4>
+<div class="bg-orange-brown p-4 rounded-lg">
+    <h4 class="font-semibold text-white mb-3">Request Process</h4>
     <div class="space-y-3">
         <!-- Step 1: Request Submitted -->
         <div class="flex items-center space-x-3">
@@ -7,8 +7,8 @@
                 <span class="text-white text-sm font-bold">1</span>
             </div>
             <div class="flex-1">
-                <p class="text-sm font-medium text-gray-900">Request Submitted</p>
-                <p class="text-sm text-gray-600" id="submittedDate"></p>
+                <p class="text-sm font-medium text-white">Request Submitted</p>
+                <p class="text-sm text-gray-300" id="submittedDate"></p>
             </div>
             <div class="shrink-0">
                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
@@ -23,8 +23,8 @@
                 <span class="text-white text-sm font-bold">2</span>
             </div>
             <div class="flex-1">
-                <p class="text-sm font-medium text-gray-900">Department Head Review</p>
-                <p class="text-sm text-gray-600" id="deptHeadDate"></p>
+                <p class="text-sm font-medium text-white">Department Head Review</p>
+                <p class="text-sm text-white" id="deptHeadDate"></p>
             </div>
             <div class="shrink-0">
                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium" id="deptHeadStatus">
@@ -39,8 +39,8 @@
                 <span class="text-white text-sm font-bold">3</span>
             </div>
             <div class="flex-1">
-                <p class="text-sm font-medium text-gray-900">Finance Review</p>
-                <p class="text-sm text-gray-600" id="financeDate"></p>
+                <p class="text-sm font-medium text-white">Finance Review</p>
+                <p class="text-sm text-white" id="financeDate"></p>
             </div>
             <div class="shrink-0">
                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium" id="financeStatus">
@@ -55,8 +55,8 @@
                 <span class="text-white text-sm font-bold">4</span>
             </div>
             <div class="flex-1">
-                <p class="text-sm font-medium text-gray-900">Budget Final Approval</p>
-                <p class="text-sm text-gray-600" id="finalDate"></p>
+                <p class="text-sm font-medium text-white">Budget Final Approval</p>
+                <p class="text-sm text-white" id="finalDate"></p>
             </div>
             <div class="shrink-0">
                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800" id="finalStatus">
