@@ -1,5 +1,6 @@
 @extends('layouts.auth-layout')
 @section('main-content')
+
 <div class="p-6 w-full">
     <article class="">
         <h1 class="text-4xl font-bold text-white">Admin Dashboard</h1>
@@ -113,14 +114,107 @@
                     </svg>
                     View Archive
                 </a>
-                <a href="#" class="flex items-center px-4 py-3 bg-secondary text-white rounded-lg hover:bg-secondary/50 transition-colors">
-                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                    </svg>
-                    Generate Reports
-                </a>
             </div>
         </div>
     </div>
+
+    <!-- Department Budget Pie Chart -->
+    <div class="bg-orange-brown rounded-lg shadow-lg p-6 mt-6">
+        <h2 class="text-xl font-semibold text-white mb-4">Approved Budget by Department</h2>
+        <div class="flex justify-center">
+            <canvas id="departmentBudgetChart" style="max-width: 500px; max-height: 500px;"></canvas>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const ctx = document.getElementById('departmentBudgetChart').getContext('2d');
+        const departmentData = JSON.parse('{!! json_encode($departmentBudgets) !!}');
+        const departmentLabels = departmentData.map(dept => dept.department_name);
+        const departmentValues = departmentData.map(dept => dept.total);
+
+        // Generate colors for each department
+        const colors = [
+            'rgba(245, 158, 11, 0.8)', // amber
+            'rgba(249, 115, 22, 0.8)', // orange
+            'rgba(34, 197, 94, 0.8)', // green
+            'rgba(59, 130, 246, 0.8)', // blue
+            'rgba(239, 68, 68, 0.8)', // red
+            'rgba(168, 85, 247, 0.8)', // purple
+            'rgba(236, 72, 153, 0.8)', // pink
+            'rgba(20, 184, 166, 0.8)', // teal
+        ];
+
+        const borderColors = [
+            'rgba(245, 158, 11, 1)',
+            'rgba(249, 115, 22, 1)',
+            'rgba(34, 197, 94, 1)',
+            'rgba(59, 130, 246, 1)',
+            'rgba(239, 68, 68, 1)',
+            'rgba(168, 85, 247, 1)',
+            'rgba(236, 72, 153, 1)',
+            'rgba(20, 184, 166, 1)',
+        ];
+
+        const departmentBudgetChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: departmentLabels,
+                datasets: [{
+                    label: 'Approved Budget (₱)',
+                    data: departmentValues,
+                    backgroundColor: colors.slice(0, departmentLabels.length),
+                    borderColor: borderColors.slice(0, departmentLabels.length),
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'bottom',
+                        labels: {
+                            color: '#ffffff',
+                            padding: 15,
+                            font: {
+                                size: 12
+                            }
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        titleColor: '#ffffff',
+                        bodyColor: '#ffffff',
+                        borderColor: 'rgba(245, 158, 11, 1)',
+                        borderWidth: 1,
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.parsed !== null) {
+                                    label += '₱' + context.parsed.toLocaleString('en-US', {
+                                        minimumFractionDigits: 2,
+                                        maximumFractionDigits: 2
+                                    });
+                                }
+
+                                // Calculate percentage
+                                const total = context.dataset.data.reduce((a, b) => Number(a) + Number(b), 0);
+                                const percentage = ((context.parsed / total) * 100).toFixed(1);
+                                label += ` (${percentage}%)`;
+
+
+                                return label;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
 </div>
 @endsection

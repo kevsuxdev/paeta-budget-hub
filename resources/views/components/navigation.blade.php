@@ -9,21 +9,22 @@
                 <x-nav-links href="{{ route('admin.finance.review') }}" :active="request()->routeIs('admin.finance.review')">Finance Review</x-nav-links>
                 <x-nav-links href="{{ route('admin.approval') }}" :active="request()->routeIs('admin.approval')">Final Approval</x-nav-links>
                 <x-nav-links href="{{ route('admin.user.management') }}" :active="request()->routeIs('admin.user.management')">User Management</x-nav-links>
-                <x-nav-links>Audit Trail</x-nav-links>
-                <x-nav-links>Archive</x-nav-links>
+                <x-nav-links href="{{ route('admin.audit.trail') }}" :active="request()->routeIs('admin.audit.trail')">Audit Trail</x-nav-links>
+                <x-nav-links href="{{ route('admin.archive') }}" :active="request()->routeIs('admin.archive')">Archive</x-nav-links>
             @elseif(auth()->user()->role === 'staff')
                 <x-nav-links href="{{ route('staff.dashboard') }}" :active="request()->routeIs('staff.dashboard')">Dashboard</x-nav-links>
                 <x-nav-links href="{{ route('staff.budget.create') }}" :active="request()->routeIs('staff.budget.create')">Budget Submission</x-nav-links>
                 <x-nav-links href="{{ route('staff.document.tracking') }}" :active="request()->routeIs('staff.document.tracking')">Document Tracking</x-nav-links>
             @elseif(auth()->user()->role === 'dept_head')
                 <x-nav-links href="{{ route('dept_head.dashboard') }}" :active="request()->routeIs('dept_head.dashboard')">Dashboard</x-nav-links>
-                <x-nav-links>Budget Submission</x-nav-links>
+                <x-nav-links href="{{ route('dept_head.budget.create') }}" :active="request()->routeIs('dept_head.budget.create')">Budget Submission</x-nav-links>
                 <x-nav-links href="{{ route('dept_head.document.tracking') }}" :active="request()->routeIs('dept_head.document.tracking')">Document Tracking</x-nav-links>
             @elseif(auth()->user()->role === 'finance')
                 <x-nav-links href="{{ route('finance.dashboard') }}" :active="request()->routeIs('finance.dashboard')">Dashboard</x-nav-links>
                 <x-nav-links href="{{ route('finance.review') }}" :active="request()->routeIs('finance.review')">Finance Review</x-nav-links>
                 <x-nav-links href="{{ route('finance.approval') }}" :active="request()->routeIs('finance.approval')">Final Approval</x-nav-links>
-                <x-nav-links>Audit Trail</x-nav-links>
+                <x-nav-links href="{{ route('finance.audit.trail') }}" :active="request()->routeIs('finance.audit.trail')">Audit Trail</x-nav-links>
+                <x-nav-links href="{{ route('finance.archive') }}" :active="request()->routeIs('finance.archive')">Archive</x-nav-links>
             @endif
         @endauth
         @auth

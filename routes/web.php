@@ -14,8 +14,12 @@ Route::get('/', function () {
 Route::post('/auth/login', [AuthController::class, 'authenticate'])->name('auth.login');
 Route::post('/auth/logout', [AuthController::class, 'logout'])->name('auth.logout')->middleware('auth');
 
+// Password reset for all roles
+Route::post('/user/reset-password', [AuthController::class, 'resetPassword'])->name('user.resetPassword')->middleware('auth');
+
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+    Route::get('/admin/budget/{budget}/download-pdf', [AdminController::class, 'downloadBudgetPdf'])->name('admin.budget.downloadPdf');
     Route::get('/admin/budget/create', [AdminController::class, 'createBudget'])->name('admin.budget.create');
     Route::post('/admin/budget/store', [AdminController::class, 'storeBudget'])->name('admin.budget.store');
     Route::get('/admin/document-tracking', [AdminController::class, 'documentTracking'])->name('admin.document.tracking');
@@ -30,6 +34,10 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/user-management', [AdminController::class, 'userManagement'])->name('admin.user.management');
     Route::post('/admin/departments', [AdminController::class, 'storeDepartment'])->name('admin.departments.store');
     Route::post('/admin/users', [AdminController::class, 'storeUser'])->name('admin.users.store');
+    Route::put('/admin/users/{user}', [AdminController::class, 'updateUser'])->name('admin.users.update');
+    Route::delete('/admin/users/{user}', [AdminController::class, 'deleteUser'])->name('admin.users.destroy');
+    Route::get('/admin/audit-trail', [AdminController::class, 'auditTrail'])->name('admin.audit.trail');
+    Route::get('/admin/archive', [AdminController::class, 'archive'])->name('admin.archive');
 });
 
 Route::middleware(['auth', 'role:staff'])->group(function () {
@@ -42,9 +50,12 @@ Route::middleware(['auth', 'role:staff'])->group(function () {
 Route::middleware(['auth', 'role:dept_head'])->group(function () {
     Route::get('/dept_head/dashboard', [DeptHeadController::class, 'dashboard'])->name('dept_head.dashboard');
     Route::get('/dept_head/document-tracking', [DeptHeadController::class, 'documentTracking'])->name('dept_head.document.tracking');
+    Route::get('/dept_head/budget/create', [DeptHeadController::class, 'createBudget'])->name('dept_head.budget.create');
+    Route::post('/dept_head/budget/store', [DeptHeadController::class, 'storeBudget'])->name('dept_head.budget.store');
     Route::post('/dept_head/budget/{budget}/update-status', [DeptHeadController::class, 'updateBudgetStatus'])->name('dept_head.budget.updateStatus');
     Route::get('/dept_head/budget/{budget}/logs', [DeptHeadController::class, 'getBudgetLogs'])->name('dept_head.budget.logs');
 });
+
 Route::middleware(['auth', 'role:finance'])->group(function () {
     Route::get('/finance/dashboard', [FinanceController::class, 'dashboard'])->name('finance.dashboard');
     Route::get('/finance/review', [FinanceController::class, 'review'])->name('finance.review');
@@ -55,4 +66,6 @@ Route::middleware(['auth', 'role:finance'])->group(function () {
     Route::post('/finance/budget/{budget}/final-reject', [FinanceController::class, 'finalRejectBudget'])->name('finance.budget.finalReject');
     Route::post('/finance/budget/{budget}/approve', [FinanceController::class, 'approveBudget'])->name('finance.budget.approve');
     Route::post('/finance/budget/{budget}/reject', [FinanceController::class, 'rejectBudget'])->name('finance.budget.reject');
+    Route::get('/finance/audit-trail', [FinanceController::class, 'auditTrail'])->name('finance.audit.trail');
+    Route::get('/finance/archive', [FinanceController::class, 'archive'])->name('finance.archive');
 });

@@ -17,6 +17,12 @@ class StaffController extends Controller
     {
         $user = Auth::user();
 
+        // User's budget statistics
+        $totalBudgets = Budget::where('user_id', $user->id)->count();
+        $pendingRequests = Budget::where('user_id', $user->id)->where('status', 'pending')->count();
+        $approvedRequests = Budget::where('user_id', $user->id)->where('status', 'approved')->count();
+        $rejectedRequests = Budget::where('user_id', $user->id)->where('status', 'rejected')->count();
+
         // Department statistics
         $deptBudgets = Budget::where('user_id', $user->id);
 
@@ -24,11 +30,23 @@ class StaffController extends Controller
         $pendingDeptBudgets = (clone $deptBudgets)->where('status', 'pending')->count();
         $approvedDeptBudgets = (clone $deptBudgets)->where('status', 'approved')->count();
 
+        // Recent budget requests
+        $recentRequests = Budget::where('user_id', $user->id)
+            ->with('department')
+            ->orderBy('created_at', 'desc')
+            ->limit(5)
+            ->get();
+
         return view('staff.dashboard', compact(
             'user',
+            'totalBudgets',
+            'pendingRequests',
+            'approvedRequests',
+            'rejectedRequests',
             'totalDeptBudgets',
             'pendingDeptBudgets',
-            'approvedDeptBudgets'
+            'approvedDeptBudgets',
+            'recentRequests'
         ));
     }
 
@@ -62,8 +80,8 @@ class StaffController extends Controller
                 $totalBudget += $item['quantity'] * $item['unit_cost'];
             }
 
-            // Ensure documents directory exists
-            Storage::makeDirectory('documents');
+            // Ensure documents directory exists in public disk
+            Storage::disk('public')->makeDirectory('documents');
 
             $budget = Budget::create([
                 'user_id' => Auth::user()->id,
@@ -74,7 +92,7 @@ class StaffController extends Controller
                 'category' => $request->category,
                 'submission_date' => $request->submission_date,
                 'total_budget' => $totalBudget,
-                'supporting_document' => $request->file('supporting_document')?->store('documents'),
+                'supporting_document' => $request->file('supporting_document')?->store('documents', 'public'),
                 'status' => 'pending',
             ]);
 
@@ -116,7 +134,7 @@ class StaffController extends Controller
             $query->where(function ($q) use ($search) {
                 $q->where('title', 'like', "%{$search}%")
                     ->orWhereHas('user', function ($userQuery) use ($search) {
-                        $userQuery->where('name', 'like', "%{$search}%");
+                        $userQuery->where('full_name', 'like', "%{$search}%");
                     });
             });
         }
@@ -126,7 +144,7 @@ class StaffController extends Controller
             $query->where('status', $request->status);
         }
 
-        $budgets = $query->orderBy('submission_date', 'desc')->paginate(10);
+        $budgets = $query->latest()->paginate(10);
 
         return view('staff.document-tracking', compact('budgets'));
     }
@@ -154,8 +172,27 @@ class StaffController extends Controller
                 ];
             });
 
+        $budget->load('lineItems');
         return response()->json([
-            'budget' => $budget,
+            'budget' => [
+                'id' => $budget->id,
+                'title' => $budget->title,
+                'fiscal_year' => $budget->fiscal_year,
+                'category' => $budget->category,
+                'total_budget' => $budget->total_budget,
+                'justification' => $budget->justification,
+                'status' => $budget->status,
+                'supporting_document' => $budget->supporting_document,
+                'e_signed' => $budget->e_signed,
+                'line_items' => $budget->lineItems->map(function($item) {
+                    return [
+                        'description' => $item->description,
+                        'quantity' => $item->quantity,
+                        'unit_cost' => $item->unit_cost,
+                        'total_cost' => $item->total_cost,
+                    ];
+                }),
+            ],
             'logs' => $logs,
         ]);
     }

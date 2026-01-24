@@ -17,6 +17,8 @@ class Budget extends Model
         'total_budget',
         'supporting_document',
         'status',
+        'e_signed',
+        'approved_by',
     ];
 
     protected $casts = [
@@ -37,5 +39,10 @@ class Budget extends Model
     public function logs()
     {
         return $this->hasMany(BudgetLog::class)->orderBy('created_at', 'desc');
+    }
+
+    public function lineItems()
+    {
+        return $this->hasMany(BudgetLineItem::class, 'budget_id');
     }
 }

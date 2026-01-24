@@ -7,6 +7,22 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
+
+    public function resetPassword(Request $request)
+    {
+        $request->validate([
+            'new_password' => 'required|string|min:8|confirmed',
+        ], [
+            'new_password.confirmed' => 'The password confirmation does not match.'
+        ]);
+
+        $user = Auth::user();
+        $user->password = bcrypt($request->new_password);
+        $user->already_reset_password = true;
+        $user->save();
+
+        return back()->with('success', 'Password reset successfully!');
+    }
     public function authenticate(Request $request)
     {
         $request->validate([

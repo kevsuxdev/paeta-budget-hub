@@ -95,7 +95,7 @@
                 </div>
 
                 <!-- Search and Filter Form -->
-                <form action="{{ route('admin.archive') }}" method="GET" class="flex flex-col md:flex-row gap-2">
+                <form action="{{ route('finance.archive') }}" method="GET" class="flex flex-col md:flex-row gap-2">
                     <!-- Search Input -->
                     <div class="relative">
                         <input
@@ -129,7 +129,7 @@
                     </button>
                     @if($search || $statusFilter)
                         <a
-                            href="{{ route('admin.archive') }}"
+                            href="{{ route('finance.archive') }}"
                             class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 transition-colors text-center"
                         >
                             Clear

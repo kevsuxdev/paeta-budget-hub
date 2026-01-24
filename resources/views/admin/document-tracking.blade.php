@@ -59,7 +59,7 @@
 
         <!-- Pagination -->
         @if($budgets->hasPages())
-            <div class="bg-white px-4 py-3 border-t border-gray-200 sm:px-6">
+            <div class="bg-white px-4 py-3  text-white border-t border-gray-200 sm:px-6">
                 {{ $budgets->appends(request()->query())->links() }}
             </div>
         @endif

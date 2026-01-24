@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use App\Models\Budget;
 use App\Models\BudgetLineItem;
@@ -14,6 +15,33 @@ use Illuminate\Support\Facades\Storage;
 
 class AdminController extends Controller
 {
+    public function downloadBudgetPdf(Budget $budget)
+    {
+
+        $budget->load(['user', 'department', 'lineItems']);
+
+        $logoPath = public_path('assets/logo.png');
+        $logoBase64 = file_exists($logoPath)
+            ? 'data:image/png;base64,' . base64_encode(file_get_contents($logoPath))
+            : null;
+
+        $signPath = $budget->e_signed
+            ? storage_path('app/public/' . $budget->e_signed)
+            : null;
+
+        $signatureBase64 = ($signPath && file_exists($signPath))
+            ? 'data:image/png;base64,' . base64_encode(file_get_contents($signPath))
+            : null;
+
+        $pdf = Pdf::loadView('admin.budget-pdf', [
+            'budget' => $budget,
+            'logo' => $logoBase64,
+            'esignature' => $signatureBase64,
+        ]);
+
+        $filename = 'budget_' . $budget->id . '_' . now()->format('Ymd_His') . '.pdf';
+        return $pdf->download($filename);
+    }
     public function dashboard()
     {
         $totalBudgets = Budget::count();
@@ -26,7 +54,14 @@ class AdminController extends Controller
             ->limit(5)
             ->get();
 
-        return view('admin.dashboard', compact('totalBudgets', 'pendingRequests', 'approvedProjects', 'rejectedProjects', 'recentBudgets'));
+        $departmentBudgets = Budget::where('status', 'approved')
+            ->join('departments', 'budgets.department_id', '=', 'departments.id')
+            ->selectRaw('departments.name as department_name, SUM(budgets.total_budget) as total')
+            ->groupBy('departments.id', 'departments.name')
+            ->orderBy('total', 'desc')
+            ->get();
+
+        return view('admin.dashboard', compact('totalBudgets', 'pendingRequests', 'approvedProjects', 'rejectedProjects', 'recentBudgets', 'departmentBudgets'));
     }
 
     public function createBudget()
@@ -57,8 +92,8 @@ class AdminController extends Controller
                 $totalBudget += $item['quantity'] * $item['unit_cost'];
             }
 
-            // Ensure documents directory exists
-            Storage::makeDirectory('documents');
+            // Ensure documents directory exists in public disk
+            Storage::disk('public')->makeDirectory('documents');
 
             $budget = Budget::create([
                 'user_id' => Auth::user()->id,
@@ -69,7 +104,7 @@ class AdminController extends Controller
                 'category' => $request->category,
                 'submission_date' => $request->submission_date,
                 'total_budget' => $totalBudget,
-                'supporting_document' => $request->file('supporting_document')?->store('documents'),
+                'supporting_document' => $request->file('supporting_document')?->store('documents', 'public'),
                 'status' => 'pending',
             ]);
 
@@ -106,11 +141,11 @@ class AdminController extends Controller
         // Search by title or user name
         if ($request->has('search') && !empty($request->search)) {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('title', 'like', "%{$search}%")
-                  ->orWhereHas('user', function($userQuery) use ($search) {
-                      $userQuery->where('name', 'like', "%{$search}%");
-                  });
+                    ->orWhereHas('user', function ($userQuery) use ($search) {
+                        $userQuery->where('full_name', 'like', "%{$search}%");
+                    });
             });
         }
 
@@ -119,7 +154,8 @@ class AdminController extends Controller
             $query->where('status', $request->status);
         }
 
-        $budgets = $query->orderBy('submission_date', 'desc')->paginate(10);
+        $budgets = $query->latest()
+            ->paginate(10);
 
         return view('admin.document-tracking', compact('budgets'));
     }
@@ -131,8 +167,7 @@ class AdminController extends Controller
         $averageAmount = Budget::avg('total_budget');
 
         $budgets = Budget::with('user', 'department')
-            ->orderByRaw("CASE WHEN status = 'pending' THEN 1 WHEN status = 'approved' THEN 2 ELSE 3 END")
-            ->orderBy('submission_date', 'desc')
+            ->latest()
             ->get();
 
         return view('admin.finance-review', compact('pendingReview', 'totalAmount', 'averageAmount', 'budgets'));
@@ -218,16 +253,42 @@ class AdminController extends Controller
 
     public function finalApproveBudget(Budget $budget)
     {
+        $user = Auth::user();
+        $rules = [
+            'approver_name' => 'required|string|max:255',
+            'acknowledge' => 'required|accepted',
+        ];
+        // Only require e-signature upload if user has no e_signed
+        if (empty($user->e_signed)) {
+            $rules['e_signature'] = 'required|image|mimes:jpeg,png,jpg,gif|max:2048';
+        }
+        $validated = request()->validate($rules);
+
+        $filePath = null;
+        if (empty($user->e_signed) && request()->hasFile('e_signature')) {
+            $file = request()->file('e_signature');
+            $fileName = 'esign_user_' . $user->id . '_' . time() . '.' . $file->getClientOriginalExtension();
+            $filePath = $file->storeAs('e-signatures', $fileName, 'public');
+            // Save to user profile
+            $user->e_signed = $filePath;
+            $user->save();
+        }
+
         $oldStatus = $budget->status;
-        $budget->update(['status' => 'approved']);
+        $budget->update([
+            'status' => 'approved',
+            // Always store the path in the budget, from user profile
+            'e_signed' => $user->e_signed,
+            'approved_by' => $validated['approver_name'],
+        ]);
 
         BudgetLog::create([
             'budget_id' => $budget->id,
-            'user_id' => Auth::id(),
+            'user_id' => $user->id,
             'action' => 'final_approval',
             'old_status' => $oldStatus,
             'new_status' => 'approved',
-            'notes' => 'Budget finally approved by ' . Auth::user()->full_name,
+            'notes' => 'Budget finally approved by ' . $validated['approver_name'],
         ]);
 
         return redirect()->back()->with('success', 'Budget approved successfully.');
@@ -265,7 +326,7 @@ class AdminController extends Controller
     {
         $budget->load(['logs.user.department']);
 
-        $logs = $budget->logs->map(function($log) {
+        $logs = $budget->logs->map(function ($log) {
             return [
                 'id' => $log->id,
                 'action' => $log->action,
@@ -278,6 +339,7 @@ class AdminController extends Controller
             ];
         });
 
+        $budget->load('lineItems');
         return response()->json([
             'logs' => $logs,
             'budget' => [
@@ -285,9 +347,19 @@ class AdminController extends Controller
                 'title' => $budget->title,
                 'fiscal_year' => $budget->fiscal_year,
                 'category' => $budget->category,
-                'total_budget' => number_format($budget->total_budget, 2),
+                'total_budget' => $budget->total_budget,
                 'justification' => $budget->justification,
                 'status' => $budget->status,
+                'supporting_document' => $budget->supporting_document,
+                'e_signed' => $budget->e_signed,
+                'line_items' => $budget->lineItems->map(function ($item) {
+                    return [
+                        'description' => $item->description,
+                        'quantity' => $item->quantity,
+                        'unit_cost' => $item->unit_cost,
+                        'total_cost' => $item->total_cost,
+                    ];
+                }),
             ]
         ]);
     }
@@ -329,5 +401,128 @@ class AdminController extends Controller
         ]);
 
         return redirect()->back()->with('success', 'User created successfully.');
+    }
+
+    public function updateUser(Request $request, User $user)
+    {
+        $request->validate([
+            'username' => 'required|string|max:255|unique:users,username,' . $user->id,
+            'full_name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
+            'phone' => 'nullable|string|max:255',
+            'role' => 'required|in:admin,finance,dept_head,staff',
+            'department_id' => 'nullable|exists:departments,id',
+            'status' => 'required|in:active,inactive',
+        ]);
+
+        $user->update([
+            'username' => $request->username,
+            'full_name' => $request->full_name,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'role' => $request->role,
+            'department_id' => $request->department_id,
+            'status' => $request->status,
+        ]);
+
+        return redirect()->back()->with('success', 'User updated successfully.');
+    }
+
+    public function deleteUser(User $user)
+    {
+        // Prevent deleting self
+        if (Auth::id() === $user->id) {
+            return redirect()->back()->with('error', 'You cannot delete your own account.');
+        }
+
+        $user->delete();
+
+        return redirect()->back()->with('success', 'User deleted successfully.');
+    }
+
+    public function auditTrail(Request $request)
+    {
+        // Statistics
+        $totalApproved = Budget::where('status', 'approved')->count();
+        $totalActivities = BudgetLog::count();
+        $totalBudgetsSubmitted = Budget::count();
+        $activeUsers = User::where('status', 'active')->count();
+
+        // Get activity logs with search functionality
+        $search = $request->input('search');
+
+        $logs = BudgetLog::with(['budget', 'user'])
+            ->when($search, function ($query, $search) {
+                return $query->whereHas('budget', function ($q) use ($search) {
+                    $q->where('title', 'like', '%' . $search . '%');
+                });
+            })
+            ->orderBy('created_at', 'desc')
+            ->paginate(20);
+
+        return view('admin.audit-trail', compact(
+            'totalApproved',
+            'totalActivities',
+            'totalBudgetsSubmitted',
+            'activeUsers',
+            'logs',
+            'search'
+        ));
+    }
+
+    public function archive(Request $request)
+    {
+        // Statistics
+        $totalArchived = Budget::whereIn('status', ['approved', 'rejected'])->count();
+        $approvedBudgets = Budget::where('status', 'approved')->count();
+
+        // Calculate total value with formatting
+        $totalValue = Budget::whereIn('status', ['approved', 'rejected'])->sum('total_budget');
+        $formattedTotalValue = $this->formatCurrency($totalValue);
+
+        $totalDepartments = Department::count();
+
+        // Get search and filter inputs
+        $search = $request->input('search');
+        $statusFilter = $request->input('status');
+
+        // Get archived budgets with search and filter functionality
+        $budgets = Budget::with(['user', 'department'])
+            ->whereIn('status', ['approved', 'rejected'])
+            ->when($search, function ($query, $search) {
+                return $query->where(function ($q) use ($search) {
+                    $q->where('id', 'like', '%' . $search . '%')
+                        ->orWhere('title', 'like', '%' . $search . '%')
+                        ->orWhereHas('department', function ($dept) use ($search) {
+                            $dept->where('name', 'like', '%' . $search . '%');
+                        });
+                });
+            })
+            ->when($statusFilter, function ($query, $statusFilter) {
+                return $query->where('status', $statusFilter);
+            })
+            ->orderBy('updated_at', 'desc')
+            ->paginate(20);
+
+        return view('admin.archive', compact(
+            'totalArchived',
+            'approvedBudgets',
+            'formattedTotalValue',
+            'totalValue',
+            'totalDepartments',
+            'budgets',
+            'search',
+            'statusFilter'
+        ));
+    }
+
+    private function formatCurrency($amount)
+    {
+        if ($amount >= 1000000) {
+            return '₱' . number_format($amount / 1000000, 2) . 'M';
+        } elseif ($amount >= 1000) {
+            return '₱' . number_format($amount / 1000, 2) . 'k';
+        }
+        return '₱' . number_format($amount, 2);
     }
 }

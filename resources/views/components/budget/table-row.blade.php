@@ -1,7 +1,7 @@
 @props(['budget', 'canUpdateStatus' => false])
 
 <tr>
-    <td class="px-6 bg-orange-brown py-4 whitespace-nowrap text-sm text-white">{{ $budget->id }}</td>
+    <td class="px-6 bg-orange-brown py-4 whitespace-nowrap text-sm text-white"># {{ $budget->id }}</td>
     <td class="px-6 bg-orange-brown py-4 whitespace-nowrap text-sm text-white">{{ $budget->title }}</td>
     <td class="px-6 bg-orange-brown py-4 whitespace-nowrap text-sm text-white">{{ $budget->user->full_name ?? 'N/A' }}</td>
     <td class="px-6 bg-orange-brown py-4 whitespace-nowrap text-sm text-white">{{ $budget->department->name ?? 'N/A' }}</td>

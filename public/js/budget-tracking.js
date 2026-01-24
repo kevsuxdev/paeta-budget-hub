@@ -220,11 +220,40 @@ const BudgetModal = {
             });
 
             this.updateBudgetDetails(data.budget);
+            this.updateBudgetLineItems(data.budget.line_items || []);
             this.updateActivityLogs(data.logs);
         } catch (error) {
             console.error('Error fetching budget logs:', error);
             this.showActivityLogsError();
+            this.showBudgetLineItemsError();
         }
+    },
+
+    /**
+     * Update budget line items section
+     */
+    updateBudgetLineItems(lineItems) {
+        const $tbody = $('#budgetLineItemsBody');
+        if (!lineItems || lineItems.length === 0) {
+            $tbody.html('<tr><td colspan="4" class="text-center text-gray-500 py-2">No line items found</td></tr>');
+            return;
+        }
+        const html = lineItems.map(item => `
+            <tr>
+                <td class="px-3 py-2 text-white text-sm font-medium">${this.escapeHtml(item.description)}</td>
+                <td class="px-3 py-2 text-white text-sm font-medium">${item.quantity}</td>
+                <td class="px-3 py-2 text-white text-sm font-medium">₱${parseFloat(item.unit_cost).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                <td class="px-3 py-2 text-white text-sm font-medium">₱${parseFloat(item.total_cost).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+            </tr>
+        `).join('');
+        $tbody.html(html);
+    },
+
+    /**
+     * Show error message in budget line items
+     */
+    showBudgetLineItemsError() {
+        $('#budgetLineItemsBody').html('<tr><td colspan="4" class="text-center text-red-500 py-2">Error loading line items</td></tr>');
     },
 
     /**
@@ -233,8 +262,35 @@ const BudgetModal = {
     updateBudgetDetails(budget) {
         $('#budgetFiscalYear').text(budget.fiscal_year);
         $('#budgetCategory').text(budget.category);
-        $('#budgetTotal').text('$' + budget.total_budget);
+        $('#budgetTotal').text('₱' + parseFloat(budget.total_budget).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
         $('#budgetJustification').text(budget.justification || 'N/A');
+
+        // Supporting Document
+        if (budget.supporting_document) {
+            const url = `/storage/${budget.supporting_document.replace(/^public[\\/]/, '')}`;
+            const ext = url.split('.').pop().toLowerCase();
+            let previewHtml = '';
+            if (["jpg","jpeg","png","gif","bmp","webp"].includes(ext)) {
+                previewHtml = `<img src="${url}" alt="Supporting Document" class="inline h-32 border bg-white rounded shadow"/>`;
+            } else if (ext === "pdf") {
+                previewHtml = `<embed src="${url}" type="application/pdf" class="w-full h-64 rounded border shadow bg-white" />`;
+            } else {
+                previewHtml = `<a href="${url}" target="_blank" class="hover:underline">View Document</a>`;
+            }
+            $('#supportingDocumentLink').html(previewHtml);
+        } else {
+            $('#supportingDocumentLink').text('None');
+        }
+
+        // E-Signature (only if approved)
+        if (budget.status === 'approved' && budget.e_signed) {
+            const url = `/storage/${budget.e_signed.replace(/^public[\\/]/, '')}`;
+            $('#eSignatureLink').html(`<a href="${url}" target="_blank"><img src="${url}" alt="E-Signature" class="inline h-12 border bg-white rounded shadow"/></a>`);
+            $('#eSignatureSection').removeClass('hidden');
+        } else {
+            $('#eSignatureLink').empty();
+            $('#eSignatureSection').addClass('hidden');
+        }
     },
 
     /**
