@@ -220,6 +220,7 @@ class FinanceController extends Controller
     public function finalApproveBudget(Budget $budget)
     {
         // Validate the request
+        /** @var \App\Models\User $user */
         $user = Auth::user();
         $rules = [
             'approver_name' => 'required|string|max:255',

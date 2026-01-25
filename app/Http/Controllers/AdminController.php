@@ -253,6 +253,7 @@ class AdminController extends Controller
 
     public function finalApproveBudget(Budget $budget)
     {
+        /** @var \App\Models\User $user */
         $user = Auth::user();
         $rules = [
             'approver_name' => 'required|string|max:255',
@@ -265,6 +266,7 @@ class AdminController extends Controller
         $validated = request()->validate($rules);
 
         $filePath = null;
+
         if (empty($user->e_signed) && request()->hasFile('e_signature')) {
             $file = request()->file('e_signature');
             $fileName = 'esign_user_' . $user->id . '_' . time() . '.' . $file->getClientOriginalExtension();

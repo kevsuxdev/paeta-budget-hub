@@ -15,7 +15,7 @@ class AuthController extends Controller
         ], [
             'new_password.confirmed' => 'The password confirmation does not match.'
         ]);
-
+        /** @var \App\Models\User $user */
         $user = Auth::user();
         $user->password = bcrypt($request->new_password);
         $user->already_reset_password = true;
