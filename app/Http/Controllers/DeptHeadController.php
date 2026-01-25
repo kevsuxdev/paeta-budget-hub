@@ -129,7 +129,7 @@ class DeptHeadController extends Controller
             }
 
             // Ensure documents directory exists
-            Storage::makeDirectory('documents');
+           Storage::disk('public')->makeDirectory('documents');
 
             $budget = Budget::create([
                 'user_id' => Auth::user()->id,
@@ -140,8 +140,9 @@ class DeptHeadController extends Controller
                 'category' => $request->category,
                 'submission_date' => $request->submission_date,
                 'total_budget' => $totalBudget,
-                'supporting_document' => $request->file('supporting_document')?->store('documents'),
+                'supporting_document' => $request->file('supporting_document')?->store('documents', 'public'),
                 'status' => 'pending',
+                'date_updated' => now(),
             ]);
 
             foreach ($request->line_items as $item) {
@@ -192,7 +193,14 @@ class DeptHeadController extends Controller
         $newStatus = $request->status;
 
         if ($oldStatus !== $newStatus) {
-            $budget->update(['status' => $newStatus]);
+            $updateData = [
+                'status' => $newStatus,
+                'date_updated' => now(),
+            ];
+            if ($newStatus === 'reviewed') {
+                $updateData['dept_head_reviewed_at'] = now();
+            }
+            $budget->update($updateData);
 
             $remarks = $request->remarks ?? 'Status changed from ' . ucfirst($oldStatus) . ' to ' . ucfirst($newStatus) . ' by ' . Auth::user()->full_name;
 
@@ -239,4 +247,57 @@ class DeptHeadController extends Controller
             'logs' => $logs,
         ]);
     }
+
+        // New method: fetch budget details and line items for modal
+        public function getBudgetDetails(Budget $budget)
+        {
+            // Verify that the budget belongs to the dept_head's department
+            if ($budget->department_id !== Auth::user()->department_id) {
+                return response()->json(['error' => 'Unauthorized'], 403);
+            }
+
+            $budget->load(['user', 'department', 'lineItems']);
+
+            $logs = BudgetLog::where('budget_id', $budget->id)
+                ->with(['user.department'])
+                ->orderBy('created_at', 'desc')
+                ->get()
+                ->map(function ($log) {
+                    return [
+                        'action' => $log->action,
+                        'old_status' => $log->old_status,
+                        'new_status' => $log->new_status,
+                        'notes' => $log->notes,
+                        'user_name' => $log->user->full_name ?? 'Unknown User',
+                        'department_name' => $log->user->department->name ?? 'Unknown Department',
+                        'timestamp' => $log->created_at->format('M d, Y h:i A'),
+                    ];
+                });
+
+            return response()->json([
+                'budget' => [
+                    'id' => $budget->id,
+                    'title' => $budget->title,
+                    'user' => $budget->user->full_name ?? 'N/A',
+                    'department' => $budget->department->name ?? 'N/A',
+                    'total_budget' => $budget->total_budget,
+                    'status' => $budget->status,
+                    'submission_date' => $budget->submission_date->format('M d, Y'),
+                    'justification' => $budget->justification,
+                    'category' => $budget->category,
+                    'fiscal_year' => $budget->fiscal_year,
+                    'supporting_document' => $budget->supporting_document,
+                    'e_signed' => $budget->e_signed ?? false,
+                    'line_items' => $budget->lineItems->map(function ($item) {
+                        return [
+                            'description' => $item->description,
+                            'quantity' => $item->quantity,
+                            'unit_cost' => $item->unit_cost,
+                            'total_cost' => $item->total_cost,
+                        ];
+                    }),
+                ],
+                'logs' => $logs,
+            ]);
+        }
 }

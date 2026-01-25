@@ -54,6 +54,7 @@ Route::middleware(['auth', 'role:dept_head'])->group(function () {
     Route::get('/dept_head/budget/create', [DeptHeadController::class, 'createBudget'])->name('dept_head.budget.create');
     Route::post('/dept_head/budget/store', [DeptHeadController::class, 'storeBudget'])->name('dept_head.budget.store');
     Route::post('/dept_head/budget/{budget}/update-status', [DeptHeadController::class, 'updateBudgetStatus'])->name('dept_head.budget.updateStatus');
+    Route::get('/dept_head/budget/{budget}', [DeptHeadController::class, 'getBudgetDetails'])->name('dept_head.budget.details');
     Route::get('/dept_head/budget/{budget}/logs', [DeptHeadController::class, 'getBudgetLogs'])->name('dept_head.budget.logs');
 });
 
@@ -69,4 +70,5 @@ Route::middleware(['auth', 'role:finance'])->group(function () {
     Route::post('/finance/budget/{budget}/reject', [FinanceController::class, 'rejectBudget'])->name('finance.budget.reject');
     Route::get('/finance/audit-trail', [FinanceController::class, 'auditTrail'])->name('finance.audit.trail');
     Route::get('/finance/archive', [FinanceController::class, 'archive'])->name('finance.archive');
+    Route::get('/finance/budget/{budget}/download-pdf', [FinanceController::class, 'downloadBudgetPdf'])->name('finance.budget.downloadPdf');
 });

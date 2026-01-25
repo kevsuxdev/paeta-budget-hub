@@ -28,7 +28,7 @@ class AdminController extends Controller
         $user->save();
 
         // Log the password change for notification (no budget_id, so use null)
-        \App\Models\BudgetLog::create([
+        BudgetLog::create([
             'budget_id' => null,
             'user_id' => $user->id,
             'action' => 'password_changed',
@@ -248,7 +248,20 @@ class AdminController extends Controller
         $newStatus = $request->status;
 
         if ($oldStatus !== $newStatus) {
-            $budget->update(['status' => $newStatus]);
+            $updateData = [
+                'status' => $newStatus,
+                'date_updated' => now(),
+            ];
+            if ($newStatus === 'reviewed') {
+                $updateData['dept_head_reviewed_at'] = now();
+            }
+            if ($newStatus === 'finance_reviewed') {
+                $updateData['finance_reviewed_at'] = now();
+            }
+            if ($newStatus === 'approved') {
+                $updateData['final_approved_at'] = now();
+            }
+            $budget->update($updateData);
 
             $remarks = $request->remarks ?? 'Status changed from ' . ucfirst($oldStatus) . ' to ' . ucfirst($newStatus) . ' by ' . Auth::user()->full_name;
 
@@ -509,7 +522,7 @@ class AdminController extends Controller
         $approvedBudgets = Budget::where('status', 'approved')->count();
 
         // Calculate total value with formatting
-        $totalValue = Budget::whereIn('status', ['approved', 'rejected'])->sum('total_budget');
+        $totalValue = Budget::whereIn('status', ['approved'])->sum('total_budget');
         $formattedTotalValue = $this->formatCurrency($totalValue);
 
         $totalDepartments = Department::count();

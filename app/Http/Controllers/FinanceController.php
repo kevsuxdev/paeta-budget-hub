@@ -7,6 +7,7 @@ use App\Models\Budget;
 use App\Models\BudgetLog;
 use App\Models\Department;
 use App\Models\User;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Auth;
 
 class FinanceController extends Controller
@@ -108,7 +109,7 @@ class FinanceController extends Controller
         $approvedBudgets = Budget::where('status', 'approved')->count();
 
         // Calculate total value with formatting
-        $totalValue = Budget::whereIn('status', ['approved', 'rejected'])->sum('total_budget');
+        $totalValue = Budget::whereIn('status', ['approved'])->sum('total_budget');
         $formattedTotalValue = $this->formatCurrency($totalValue);
 
         $totalDepartments = Department::count();
@@ -145,6 +146,33 @@ class FinanceController extends Controller
             'search',
             'statusFilter'
         ));
+    }
+    public function downloadBudgetPdf(Budget $budget)
+    {
+
+        $budget->load(['user', 'department', 'lineItems']);
+
+        $logoPath = public_path('assets/logo.png');
+        $logoBase64 = file_exists($logoPath)
+            ? 'data:image/png;base64,' . base64_encode(file_get_contents($logoPath))
+            : null;
+
+        $signPath = $budget->e_signed
+            ? storage_path('app/public/' . $budget->e_signed)
+            : null;
+
+        $signatureBase64 = ($signPath && file_exists($signPath))
+            ? 'data:image/png;base64,' . base64_encode(file_get_contents($signPath))
+            : null;
+
+        $pdf = Pdf::loadView('admin.budget-pdf', [
+            'budget' => $budget,
+            'logo' => $logoBase64,
+            'esignature' => $signatureBase64,
+        ]);
+
+        $filename = 'budget_' . $budget->id . '_' . now()->format('Ymd_His') . '.pdf';
+        return $pdf->download($filename);
     }
     public function auditTrail(Request $request)
     {
@@ -191,7 +219,14 @@ class FinanceController extends Controller
         }
 
         if ($oldStatus !== $newStatus) {
-            $budget->update(['status' => $newStatus]);
+            $updateData = [
+                'status' => $newStatus,
+                'date_updated' => now(),
+            ];
+            if ($newStatus === 'finance_reviewed') {
+                $updateData['finance_reviewed_at'] = now();
+            }
+            $budget->update($updateData);
 
             $remarks = $request->remarks ?? 'Status changed from ' . ucfirst($oldStatus) . ' to ' . ucfirst(str_replace('_', ' ', $newStatus)) . ' by ' . Auth::user()->full_name;
 
@@ -255,6 +290,8 @@ class FinanceController extends Controller
             // Always store the path in the budget, from user profile
             'e_signed' => $user->e_signed,
             'approved_by' => $validated['approver_name'],
+            'date_updated' => now(),
+            'final_approved_at' => now(),
         ]);
 
         BudgetLog::create([
@@ -272,7 +309,10 @@ class FinanceController extends Controller
     public function finalRejectBudget(Budget $budget)
     {
         $oldStatus = $budget->status;
-        $budget->update(['status' => 'rejected']);
+        $budget->update([
+            'status' => 'rejected',
+            'date_updated' => now(),
+        ]);
 
         BudgetLog::create([
             'budget_id' => $budget->id,
@@ -288,6 +328,9 @@ class FinanceController extends Controller
 
     public function getBudgetLogs(Budget $budget)
     {
+        // Eager load lineItems for the budget
+        $budget->load('lineItems');
+
         $logs = BudgetLog::where('budget_id', $budget->id)
             ->with(['user.department'])
             ->orderBy('created_at', 'desc')

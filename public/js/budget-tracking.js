@@ -213,8 +213,16 @@ const BudgetModal = {
                 baseUrl = '/admin';
             }
 
+
+            // Use details endpoint for dept_head
+            let detailsUrl = `${baseUrl}/budget/${budgetId}`;
+            if (baseUrl === '/dept_head') {
+                detailsUrl = `${baseUrl}/budget/${budgetId}`;
+            } else {
+                detailsUrl = `${baseUrl}/budget/${budgetId}/logs`;
+            }
             const data = await $.ajax({
-                url: `${baseUrl}/budget/${budgetId}/logs`,
+                url: detailsUrl,
                 method: 'GET',
                 dataType: 'json'
             });

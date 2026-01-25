@@ -205,7 +205,7 @@
                                 </button>
                                 <span class="text-gray-500">|</span>
                                 <a
-                                    href="{{ route('admin.budget.downloadPdf', $budget->id) }}"
+                                    href="{{ route('finance.budget.downloadPdf', $budget->id) }}"
                                     class="text-red-400 hover:text-red-300 font-medium"
                                     target="_blank"
                                 >

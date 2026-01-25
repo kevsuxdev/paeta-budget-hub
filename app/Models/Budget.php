@@ -19,11 +19,19 @@ class Budget extends Model
         'status',
         'e_signed',
         'approved_by',
+        'date_updated',
+        'dept_head_reviewed_at',
+        'finance_reviewed_at',
+        'final_approved_at',
     ];
 
     protected $casts = [
         'submission_date' => 'date',
         'total_budget' => 'decimal:2',
+        'date_updated' => 'datetime',
+        'dept_head_reviewed_at' => 'datetime',
+        'finance_reviewed_at' => 'datetime',
+        'final_approved_at' => 'datetime',
     ];
 
     public function user()

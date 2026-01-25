@@ -108,6 +108,7 @@ class StaffController extends Controller
                 'total_budget' => $totalBudget,
                 'supporting_document' => $request->file('supporting_document')?->store('documents', 'public'),
                 'status' => 'pending',
+                'date_updated' => now(),
             ]);
 
             foreach ($request->line_items as $item) {

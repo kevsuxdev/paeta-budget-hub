@@ -17,9 +17,28 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        User::factory()->create([
-            'full_name' => 'Staff',
-            'email' => 'staff@example.com',
-        ]);
+        $users = [
+            [
+                'full_name' => 'Administrator',
+                'email' => 'admin@paeta.gov.ph',
+                'role' => 'admin',
+            ],
+            [
+                'full_name' => 'Staff',
+                'email' => 'staff@paeta.gov.ph',
+                'role' => 'staff',
+            ],
+            [
+                'full_name' => 'Finance',
+                'email' => 'finance@paeta.gov.ph',
+                'role' => 'finance',
+            ],
+            [
+                'full_name' => 'Department Head kevs',
+                'email' => 'head@paeta.gov.ph',
+            ]
+        ];
+
+        User::factory()->createMany($users);
     }
 }
