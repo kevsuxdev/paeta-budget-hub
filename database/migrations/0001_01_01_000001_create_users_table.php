@@ -21,7 +21,7 @@ return new class extends Migration
             $table->enum('role', ['admin', 'finance', 'dept_head', 'staff'])->default('staff');
             $table->foreignId('department_id')->nullable()->constrained('departments')->nullOnDelete();
             $table->enum('status', ['active', 'inactive'])->default('active');
-            $table->string('e_signed')->nullable()->after('status'); // Path to e-signature file
+            $table->string('e_signed')->nullable(); // Path to e-signature file
             $table->timestamps();
         });
 

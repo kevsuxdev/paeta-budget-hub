@@ -9,7 +9,6 @@
     </article>
     <x-input-fields label="Email Address" name="email" type="email" value="{{ old('email') }}" placeholder="ex. johndoe@paeta.gov.ph"/>
     <x-input-fields label="Password" name="password" type="password" value="{{ old('password') }}" placeholder="***************" />
-    <a href="#" class="text-sm text-white hover:underline">Forgot Password?</a>
     <x-errors/>
     <x-button>Sign In</x-button>
 </form>

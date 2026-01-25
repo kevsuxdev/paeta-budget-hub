@@ -59,7 +59,7 @@
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-white">{{ $budget->submission_date->format('M d, Y') }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                             <button
-                                class="btn-view-budget text-blue-600 hover:text-blue-900 font-medium"
+                                class="btn-view-budget bg-primary text-white px-4 py-2 rounded-md cursor-pointer font-medium"
                                 data-budget-id="{{ $budget->id }}"
                                 data-budget-title="{{ $budget->title }}"
                                 data-budget-status="{{ $budget->status }}"

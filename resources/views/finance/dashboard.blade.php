@@ -11,7 +11,58 @@
     <script>document.addEventListener('DOMContentLoaded', openResetPasswordModal);</script>
 @endif
 <div class="p-6 space-y-6">
-    <h1 class="text-2xl font-bold text-white mb-4">Finance Dashboard</h1>
+    <div class="w-full flex items-center justify-between">
+        <h1 class="text-2xl font-bold text-white mb-4">Finance Dashboard</h1>
+        <div class="relative">
+            <button id="notificationBell" class="relative focus:outline-none" title="Notifications" onclick="toggleNotifications()">
+                <svg class="w-7 h-7 cursor-pointer text-white" fill="yellow" stroke="black" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                </svg>
+            </button>
+            <div id="notificationDropdown" class="hidden absolute right-0 mt-2 w-96 bg-white rounded-lg shadow-lg z-50 max-h-96 overflow-y-auto border border-gray-200">
+                <div class="p-4 border-b font-semibold text-gray-700">Notifications</div>
+                <ul class="divide-y divide-gray-200">
+                    @forelse($notifications as $notification)
+                        <li class="p-4 hover:bg-gray-100 transition">
+                            <div class="flex items-start gap-2">
+                                <div class="shrink-0 mt-1">
+                                    <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                                    </svg>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <div class="text-sm text-gray-800 font-medium">
+                                        <span class="font-bold">{{ $notification->user->full_name ?? 'System' }}</span>
+                                        <span class="ml-1">{{ $notification->action }}</span>
+                                        <span class="ml-1 text-gray-500">on</span>
+                                        <span class="ml-1 font-semibold">{{ $notification->budget->title ?? 'Budget' }}</span>
+                                    </div>
+                                    <div class="text-xs text-gray-500 mt-1">{{ $notification->notes }}</div>
+                                    <div class="text-xs text-gray-400 mt-1">{{ $notification->created_at->format('M d, Y h:i A') }}</div>
+                                </div>
+                            </div>
+                        </li>
+                    @empty
+                        <li class="p-4 text-center text-gray-500">No notifications yet.</li>
+                    @endforelse
+                </ul>
+            </div>
+        </div>
+    </div>
+    <script>
+        function toggleNotifications() {
+            const dropdown = document.getElementById('notificationDropdown');
+            dropdown.classList.toggle('hidden');
+        }
+        // Optional: Hide dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            const bell = document.getElementById('notificationBell');
+            const dropdown = document.getElementById('notificationDropdown');
+            if (!bell.contains(event.target) && !dropdown.contains(event.target)) {
+                dropdown.classList.add('hidden');
+            }
+        });
+    </script>
     <article class="space-y-2">
         <p class="text-white text-xl font-medium">Welcome, Finance Officer!</p>
         <p class="text-sm font-medium text-white bg-accent p-2 rounded-xl w-fit px-4">Finance Department</p>

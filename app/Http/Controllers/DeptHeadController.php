@@ -56,6 +56,14 @@ class DeptHeadController extends Controller
             $chartData[] = $monthlyData->get($i, 0);
         }
 
+        // Fetch all budget logs for this department's budgets
+        $deptBudgetIds = Budget::where('department_id', $departmentId)->pluck('id');
+        $notifications = BudgetLog::with(['budget', 'user'])
+            ->whereIn('budget_id', $deptBudgetIds)
+            ->orderBy('created_at', 'desc')
+            ->limit(20)
+            ->get();
+
         return view('dept_head.dashboard', compact(
             'user',
             'totalBudgets',
@@ -65,7 +73,8 @@ class DeptHeadController extends Controller
             'recentRequests',
             'availableYears',
             'selectedYear',
-            'chartData'
+            'chartData',
+            'notifications'
         ));
     }
 

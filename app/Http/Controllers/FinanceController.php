@@ -28,6 +28,12 @@ class FinanceController extends Controller
             ->orderBy('total', 'desc')
             ->get();
 
+        // Fetch recent budget logs for notifications (last 20)
+        $notifications = BudgetLog::with(['budget', 'user'])
+            ->orderBy('created_at', 'desc')
+            ->limit(20)
+            ->get();
+
         return view('finance.dashboard', compact(
             'pendingReview',
             'totalRequests',
@@ -35,7 +41,8 @@ class FinanceController extends Controller
             'rejectedCount',
             'totalAmount',
             'averageAmount',
-            'departmentBudgets'
+            'departmentBudgets',
+            'notifications'
         ));
     }
 

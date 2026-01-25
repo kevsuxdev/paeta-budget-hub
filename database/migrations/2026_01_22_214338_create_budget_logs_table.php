@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('budget_logs', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('budget_id')->constrained('budgets')->cascadeOnDelete();
+            $table->foreignId('budget_id')->nullable()->constrained('budgets')->nullOnDelete();
             $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();
             $table->string('action'); // 'created', 'status_changed', 'updated'
             $table->string('old_status')->nullable();

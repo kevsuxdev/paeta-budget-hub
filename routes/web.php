@@ -35,6 +35,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::post('/admin/departments', [AdminController::class, 'storeDepartment'])->name('admin.departments.store');
     Route::post('/admin/users', [AdminController::class, 'storeUser'])->name('admin.users.store');
     Route::put('/admin/users/{user}', [AdminController::class, 'updateUser'])->name('admin.users.update');
+    Route::post('/admin/users/change-password', [AdminController::class, 'changeUserPassword'])->name('admin.users.changePassword');
     Route::delete('/admin/users/{user}', [AdminController::class, 'deleteUser'])->name('admin.users.destroy');
     Route::get('/admin/audit-trail', [AdminController::class, 'auditTrail'])->name('admin.audit.trail');
     Route::get('/admin/archive', [AdminController::class, 'archive'])->name('admin.archive');

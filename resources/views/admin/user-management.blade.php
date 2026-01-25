@@ -66,6 +66,7 @@
                                 <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Role</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Department</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Status</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Actions</th>
                             </tr>
                         </thead>
                         <tbody class="bg-orange-brown divide-y divide-primary">
@@ -75,15 +76,42 @@
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-white">{{ $user->email }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-white">{{ ucfirst($user->role) }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-white">{{ $user->department->name ?? 'N/A' }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap">
+                                <td class="px-6 py-4 whitespace-nowrap flex items-center gap-2">
                                     <span @class([ 'inline-flex px-2 py-1 text-xs font-semibold rounded-full' , 'bg-green-100 text-green-800'=> $user->status === 'active',
                                         'bg-red-100 text-red-800' => $user->status !== 'active',
                                         ])>
                                         {{ ucfirst($user->status) }}
                                     </span>
-
+                                </td>
+                                <td>
+                                    <button
+                                        type="button"
+                                        class="ml-2 px-2 py-2 bg-primary cursor-pointer text-white rounded hover:bg-primary/80 text-xs"
+                                        data-user-id="{{ $user->id }}"
+                                        data-user-name="{{ $user->full_name }}"
+                                        onclick="openChangePasswordModalFromButton(this)">
+                                        Change Password
+                                    </button>
                                 </td>
                             </tr>
+                            <!-- Change Password Modal -->
+                            <div id="changePasswordModal" class="fixed inset-0 bg-black/40 flex items-center justify-center z-50 hidden">
+                                <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-sm">
+                                    <h3 class="text-lg font-semibold mb-2 text-gray-800">Change Password for <span id="changePasswordUserName"></span></h3>
+                                    <form id="changePasswordForm" method="POST" action="{{ route('admin.users.changePassword') }}">
+                                        @csrf
+                                        <input type="hidden" name="user_id" id="changePasswordUserId">
+                                        <div class="mb-4">
+                                            <label for="new_password" class="block text-sm font-medium text-gray-700 mb-1">New Password</label>
+                                            <input type="password" name="new_password" id="new_password" class="w-full border border-gray-300 rounded-md p-2" required minlength="6">
+                                        </div>
+                                        <div class="flex justify-end gap-2">
+                                            <button type="button" onclick="closeChangePasswordModal()" class="px-4 cursor-pointer py-2 bg-gray-300 rounded hover:bg-gray-400 text-sm">Cancel</button>
+                                            <button type="submit" class="px-4 py-2 bg-primary text-white rounded hover:bg-primary/80 text-sm cursor-pointer">Change Password</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
                             @empty
                             <tr>
                                 <td colspan="5" class="px-6 py-4 text-center text-sm text-white">No users found</td>
@@ -152,7 +180,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <label for="username" class="block text-sm font-medium text-white mb-1">Username</label>
-                        <input type="text" name="username" id="username" class="w-full border border-white/60 rounded-md p-2 text-sm " required>
+                        <input type="text" name="username" id="username" class="w-full border text-white border-white/60 rounded-md p-2 text-sm " required>
                     </div>
                     <div>
                         <label for="full_name" class="block text-sm font-medium text-white mb-1">Full Name</label>
@@ -194,11 +222,11 @@
                             <option class="text-primary" value="inactive">Inactive</option>
                         </select>
                     </div>
-                </input>
-                <div class="flex justify-end space-x-3 pt-4">
-                    <button type="button" onclick="closeUserModal()" class="px-4 py-2 bg-red-600 rounded-md hover:bg-red-700 cursor-pointer text-white transition-colors text-sm">Cancel</button>
-                    <x-button>Create User</x-button>
-                </div>
+                    </input>
+                    <div class="flex justify-end space-x-3 pt-4">
+                        <button type="button" onclick="closeUserModal()" class="px-4 py-2 bg-red-600 rounded-md hover:bg-red-700 cursor-pointer text-white transition-colors text-sm">Cancel</button>
+                        <x-button>Create User</x-button>
+                    </div>
             </form>
         </div>
     </div>
@@ -213,6 +241,24 @@
 <script>
     function openDepartmentModal() {
         document.getElementById('departmentModal').classList.remove('hidden');
+    }
+
+    function openChangePasswordModalFromButton(button) {
+        const userId = button.dataset.userId;
+        const userName = button.dataset.userName;
+
+        openChangePasswordModal(userId, userName);
+    }
+
+    function openChangePasswordModal(userId, userName) {
+        document.getElementById('changePasswordUserId').value = userId;
+        document.getElementById('changePasswordUserName').textContent = userName;
+        document.getElementById('changePasswordModal').classList.remove('hidden');
+    }
+
+    function closeChangePasswordModal() {
+        document.getElementById('changePasswordModal').classList.add('hidden');
+        document.getElementById('changePasswordForm').reset();
     }
 
     function closeDepartmentModal() {

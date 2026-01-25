@@ -15,6 +15,30 @@ use Illuminate\Support\Facades\Storage;
 
 class AdminController extends Controller
 {
+    public function changeUserPassword(Request $request)
+    {
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'new_password' => 'required|string|min:6',
+        ]);
+
+        $user = User::findOrFail($request->user_id);
+        $user->password = bcrypt($request->new_password);
+        $user->already_reset_password = true;
+        $user->save();
+
+        // Log the password change for notification (no budget_id, so use null)
+        \App\Models\BudgetLog::create([
+            'budget_id' => null,
+            'user_id' => $user->id,
+            'action' => 'password_changed',
+            'old_status' => null,
+            'new_status' => null,
+            'notes' => 'Password was changed by admin',
+        ]);
+
+        return redirect()->back()->with('success', 'Password changed successfully for ' . $user->full_name);
+    }
     public function downloadBudgetPdf(Budget $budget)
     {
 
@@ -61,7 +85,13 @@ class AdminController extends Controller
             ->orderBy('total', 'desc')
             ->get();
 
-        return view('admin.dashboard', compact('totalBudgets', 'pendingRequests', 'approvedProjects', 'rejectedProjects', 'recentBudgets', 'departmentBudgets'));
+        // Fetch recent budget logs for notifications (last 20)
+        $notifications = BudgetLog::with(['budget', 'user'])
+            ->orderBy('created_at', 'desc')
+            ->limit(20)
+            ->get();
+
+        return view('admin.dashboard', compact('totalBudgets', 'pendingRequests', 'approvedProjects', 'rejectedProjects', 'recentBudgets', 'departmentBudgets', 'notifications'));
     }
 
     public function createBudget()
@@ -396,7 +426,7 @@ class AdminController extends Controller
             'full_name' => $request->full_name,
             'email' => $request->email,
             'phone' => $request->phone,
-            'password' => Hash::make('password'),
+            'password' => Hash::make('paeta@password'),
             'role' => $request->role,
             'department_id' => $request->department_id,
             'status' => $request->status,

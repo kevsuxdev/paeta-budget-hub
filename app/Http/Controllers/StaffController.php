@@ -37,6 +37,19 @@ class StaffController extends Controller
             ->limit(5)
             ->get();
 
+        // Fetch all budget logs for this user's budgets and password changes
+        $userBudgetIds = Budget::where('user_id', $user->id)->pluck('id');
+        $notifications = BudgetLog::with(['budget', 'user'])
+            ->where(function($q) use ($userBudgetIds, $user) {
+                $q->whereIn('budget_id', $userBudgetIds)
+                  ->orWhere(function($q2) use ($user) {
+                      $q2->whereNull('budget_id')->where('user_id', $user->id)->where('action', 'password_changed');
+                  });
+            })
+            ->orderBy('created_at', 'desc')
+            ->limit(20)
+            ->get();
+
         return view('staff.dashboard', compact(
             'user',
             'totalBudgets',
@@ -46,7 +59,8 @@ class StaffController extends Controller
             'totalDeptBudgets',
             'pendingDeptBudgets',
             'approvedDeptBudgets',
-            'recentRequests'
+            'recentRequests',
+            'notifications'
         ));
     }
 
