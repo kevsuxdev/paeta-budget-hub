@@ -6,13 +6,13 @@
 
     <!-- Alert Messages -->
     @if(session('success'))
-    <x-alert-message type="success" :message="session('success')" />
+        <x-alert-message type="success" :message="session('success')" />
     @endif
     @if(session('info'))
-    <x-alert-message type="info" :message="session('info')" />
+        <x-alert-message type="info" :message="session('info')" />
     @endif
     @if(session('error'))
-    <x-alert-message type="error" :message="session('error')" />
+        <x-alert-message type="error" :message="session('error')" />
     @endif
 
     <!-- Overview Statistics -->
@@ -65,72 +65,76 @@
                         <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Department</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Total Budget</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Status</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Submission Date</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Due Date</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Actions</th>
                     </tr>
                 </thead>
                 <tbody class="bg-orange-brown divide-y divide-primary">
                     @forelse($budgets as $budget)
-                    <tr class="hover:bg-primary/50 transition-colors">
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-white">{{ $budget->id }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm font-medium text-white">{{ $budget->title }}</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-white">{{ $budget->user->full_name }}</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-white">{{ $budget->department->name }}</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-white">₱ {{ number_format($budget->total_budget, 2) }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <x-budget.status-badge :status="$budget->status" />
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-white">
-                            {{ \Carbon\Carbon::parse($budget->submission_date)->format('M d, Y') }}
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm space-x-2">
-                            <button
-                                class="btn-view-budget text-blue-600 hover:text-blue-900 font-medium"
-                                data-budget-id="{{ $budget->id }}"
-                                data-budget-title="{{ $budget->title }}"
-                                data-budget-status="{{ $budget->status }}"
-                                data-budget-date="{{ \Carbon\Carbon::parse($budget->submission_date)->format('M d, Y') }}"
-                                data-budget-user="{{ $budget->user->full_name }}">
-                                View Details
-                            </button>
-                            <span class="text-gray-300">|</span>
-                            <button
-                                type="button"
-                                class="btn-approve-budget text-green-600 hover:text-green-900 font-medium"
-                                data-budget-id="{{ $budget->id }}"
-                                data-budget-title="{{ $budget->title }}">
-                                Approve
-                            </button>
-                            <span class="text-gray-300">|</span>
-                            <form action="{{ route('admin.budget.finalReject', $budget->id) }}" method="POST" class="inline">
-                                @csrf
+                        <tr class="hover:bg-primary/50 transition-colors">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-white">{{ $budget->id }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm font-medium text-white">{{ $budget->title }}</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-white">{{ $budget->user->full_name }}</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-white">{{ $budget->department->name }}</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-white">₱ {{ number_format($budget->total_budget, 2) }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <x-budget.status-badge :status="$budget->status" />
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-white">
+                                {{ \Carbon\Carbon::parse($budget->submission_date)->format('M d, Y') }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm space-x-2">
                                 <button
-                                    type="submit"
-                                    class="text-red-600 hover:text-red-900 font-medium"
-                                    onclick="return confirm('Are you sure you want to reject this budget?')">
-                                    Reject
+                                    type="button"
+                                    class="btn-view-budget text-blue-600 hover:text-blue-900 font-medium"
+                                    data-budget-id="{{ $budget->id }}"
+                                    data-budget-title="{{ $budget->title }}"
+                                    data-budget-status="{{ $budget->status }}"
+                                    data-budget-date="{{ \Carbon\Carbon::parse($budget->submission_date)->format('M d, Y') }}"
+                                    data-budget-user="{{ $budget->user->full_name }}"
+                                    >
+                                    View Details
                                 </button>
-                            </form>
-                        </td>
-                    </tr>
+                                <span class="text-gray-300">|</span>
+                                <button
+                                    type="button"
+                                    class="btn-approve-budget text-green-600 hover:text-green-900 font-medium"
+                                    data-budget-id="{{ $budget->id }}"
+                                    data-budget-title="{{ $budget->title }}"
+                                >
+                                    Approve
+                                </button>
+                                <span class="text-gray-300">|</span>
+                                <form action="{{ route('finance.budget.finalReject', $budget->id) }}" method="POST" class="inline">
+                                    @csrf
+                                    <button
+                                        type="submit"
+                                        class="text-red-600 hover:text-red-900 font-medium"
+                                        onclick="return confirm('Are you sure you want to reject this budget?')"
+                                    >
+                                        Reject
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
                     @empty
-                    <tr>
-                        <td colspan="8" class="px-6 py-8 text-center">
-                            <div class="flex flex-col items-center justify-center">
-                                <svg class="w-16 h-16 text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                                </svg>
-                                <p class="text-lg font-medium text-white mb-1">No budgets pending final approval</p>
-                                <p class="text-gray-500">All finance-reviewed budgets have been processed.</p>
-                            </div>
-                        </td>
-                    </tr>
+                        <tr>
+                            <td colspan="8" class="px-6 py-8 text-center">
+                                <div class="flex flex-col items-center justify-center">
+                                    <svg class="w-16 h-16 text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                    </svg>
+                                    <p class="text-lg font-medium text-white mb-1">No budgets pending final approval</p>
+                                    <p class="text-gray-500">All finance-reviewed budgets have been processed.</p>
+                                </div>
+                            </td>
+                        </tr>
                     @endforelse
                 </tbody>
             </table>
@@ -138,9 +142,9 @@
 
         <!-- Pagination -->
         @if($budgets->hasPages())
-        <div class="px-6 py-4 border-t border-gray-200">
-            {{ $budgets->links() }}
-        </div>
+            <div class="px-6 py-4 border-t border-gray-200">
+                {{ $budgets->links() }}
+            </div>
         @endif
     </div>
 </div>
@@ -174,7 +178,8 @@
                         name="approver_name"
                         required
                         class="w-full px-3 py-2 bg-primary border border-gray-600 text-white rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500"
-                        placeholder="Enter your full name">
+                        placeholder="Enter your full name"
+                    >
                 </div>
 
                 @php $user = request()->user(); @endphp
@@ -183,57 +188,62 @@
                         E-Signature <span class="text-red-400">*</span>
                     </label>
                     @if(empty($user->e_signed))
-                    <input
-                        type="file"
-                        id="e_signature"
-                        name="e_signature"
-                        required
-                        accept="image/*"
-                        class="w-full px-3 py-2 bg-primary border border-gray-600 text-white rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500">
-                    <p class="mt-1 text-sm text-gray-300">Upload your signature image (PNG, JPG, etc.)</p>
-                    @else
-                    <div class="flex items-center gap-4">
-                        <img src="{{ asset('storage/' . $user->e_signed) }}" alt="E-Signature" class="h-16 border rounded bg-white p-1">
-                        <span class="text-green-300 text-sm">Signature on file</span>
-                    </div>
-                    @endif
-
-                    <div class="bg-primary rounded-lg p-4">
-                        <p class="text-sm font-semibold text-white mb-2">Certification:</p>
-                        <p class="text-sm text-white mb-2">By signing this document, you certify that:</p>
-                        <ul class="list-disc list-inside text-sm text-white space-y-1 ml-2">
-                            <li>You have reviewed all budget details</li>
-                            <li>This approval is authorized and legitimate</li>
-                            <li>This signature is legally binding</li>
-                        </ul>
-                    </div>
-
-                    <div class="flex items-start">
                         <input
-                            type="checkbox"
-                            id="acknowledge"
-                            name="acknowledge"
+                            type="file"
+                            id="e_signature"
+                            name="e_signature"
                             required
-                            class="mt-1 h-4 w-4 text-purple-500 border-gray-600 rounded bg-primary">
-                        <label for="acknowledge" class="ml-2 text-sm text-white">
-                            I acknowledge and certify the above statements <span class="text-red-400">*</span>
-                        </label>
-                    </div>
+                            accept="image/*"
+                            class="w-full px-3 py-2 bg-primary border border-gray-600 text-white rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500"
+                        >
+                        <p class="mt-1 text-sm text-gray-300">Upload your signature image (PNG, JPG, etc.)</p>
+                    @else
+                        <div class="flex items-center gap-4">
+                            <img src="{{ asset('storage/' . $user->e_signed) }}" alt="E-Signature" class="h-16 border rounded bg-white p-1">
+                            <span class="text-green-300 text-sm">Signature on file</span>
+                        </div>
+                    @endif
                 </div>
 
-                <div class="mt-6 flex justify-end space-x-3">
-                    <button
-                        type="button"
-                        onclick="closeApprovalModal()"
-                        class="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500">
-                        Cancel
-                    </button>
-                    <button
-                        type="submit"
-                        class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500">
-                        Approve Budget
-                    </button>
+                <div class="bg-primary rounded-lg p-4">
+                    <p class="text-sm font-semibold text-white mb-2">Certification:</p>
+                    <p class="text-sm text-white mb-2">By signing this document, you certify that:</p>
+                    <ul class="list-disc list-inside text-sm text-white space-y-1 ml-2">
+                        <li>You have reviewed all budget details</li>
+                        <li>This approval is authorized and legitimate</li>
+                        <li>This signature is legally binding</li>
+                    </ul>
                 </div>
+
+                <div class="flex items-start">
+                    <input
+                        type="checkbox"
+                        id="acknowledge"
+                        name="acknowledge"
+                        required
+                        class="mt-1 h-4 w-4 text-purple-500 border-gray-600 rounded bg-primary"
+                    >
+                    <label for="acknowledge" class="ml-2 text-sm text-white">
+                        I acknowledge and certify the above statements <span class="text-red-400">*</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="mt-6 flex justify-end space-x-3">
+                <button
+                    type="button"
+                    onclick="closeApprovalModal()"
+                    class="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500"
+                >
+                    Cancel
+                </button>
+                <button
+                    type="submit"
+                    class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500"
+                >
+                    Approve Budget
+                </button>
+            </div>
         </form>
     </div>
 </div>
@@ -241,16 +251,18 @@
 <x-budget.details-modal />
 
 <script src="{{ asset('js/budget-tracking.js') }}"></script>
+<script src="{{ asset('js/budget-tracking.js') }}"></script>
 <script>
     $(document).ready(function() {
         BudgetTracking.init();
 
+        // Handle approve button click
         $('.btn-approve-budget').on('click', function() {
             const budgetId = $(this).data('budget-id');
             const budgetTitle = $(this).data('budget-title');
 
             $('#modalBudgetTitle').text(budgetTitle);
-            $('#approvalForm').attr('action', `/admin/budget/${budgetId}/final-approve`);
+            $('#approvalForm').attr('action', `/finance/budget/${budgetId}/final-approve`);
 
             $('#approvalModal').removeClass('hidden');
         });
@@ -261,6 +273,7 @@
         $('#approvalForm')[0].reset();
     }
 
+    // Close modal when clicking outside
     $('#approvalModal').on('click', function(e) {
         if (e.target.id === 'approvalModal') {
             closeApprovalModal();

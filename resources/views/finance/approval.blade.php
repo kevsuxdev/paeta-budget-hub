@@ -65,7 +65,7 @@
                         <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Department</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Total Budget</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Status</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Submission Date</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Due Date</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Actions</th>
                     </tr>
                 </thead>
@@ -91,13 +91,14 @@
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm space-x-2">
                                 <button
+                                    type="button"
                                     class="btn-view-budget text-blue-600 hover:text-blue-900 font-medium"
                                     data-budget-id="{{ $budget->id }}"
                                     data-budget-title="{{ $budget->title }}"
                                     data-budget-status="{{ $budget->status }}"
                                     data-budget-date="{{ \Carbon\Carbon::parse($budget->submission_date)->format('M d, Y') }}"
                                     data-budget-user="{{ $budget->user->full_name }}"
-                                >
+                                    >
                                     View Details
                                 </button>
                                 <span class="text-gray-300">|</span>

@@ -37,7 +37,7 @@
         <table class="info-table">
             <tr><th>Title</th><td>{{ $budget->title }}</td></tr>
             <tr><th>Name of Submitter</th><td>{{ $budget->user->full_name }}</td></tr>
-            <tr><th>Submission Date</th><td>{{ $budget->submission_date ? $budget->submission_date->format('M d, Y') : '' }}</td></tr>
+            <tr><th>Due Date</th><td>{{ $budget->submission_date ? $budget->submission_date->format('M d, Y') : '' }}</td></tr>
             <tr><th>Department</th><td>{{ $budget->department->name ?? 'N/A' }}</td></tr>
             <tr><th>Fiscal Year</th><td>{{ $budget->fiscal_year }}</td></tr>
             <tr><th>Budget Category</th><td>{{ $budget->category }}</td></tr>

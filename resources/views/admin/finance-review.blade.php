@@ -61,7 +61,7 @@
                         <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Department</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Total Budget</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Status</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Submission Date</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Due Date</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Actions</th>
                     </tr>
                 </thead>

@@ -1,5 +1,5 @@
 <aside class="w-64 bg-primary text-background min-h-screen p-4">
-    <h1 class="text-xl font-bold mb-6">Paeta Budget Hub</h1>
+    <h1 class="text-xl font-bold mb-6">Paete Budget Hub</h1>
     <nav class="space-y-2">
         @auth
             @if(auth()->user()->role === 'admin')
@@ -22,6 +22,7 @@
             @elseif(auth()->user()->role === 'finance')
                 <x-nav-links href="{{ route('finance.dashboard') }}" :active="request()->routeIs('finance.dashboard')">Dashboard</x-nav-links>
                 <x-nav-links href="{{ route('finance.review') }}" :active="request()->routeIs('finance.review')">Finance Review</x-nav-links>
+                <x-nav-links href="{{ route('finance.release') }}" :active="request()->routeIs('finance.release')">Release Quarterly Budget</x-nav-links>
                 <x-nav-links href="{{ route('finance.approval') }}" :active="request()->routeIs('finance.approval')">Final Approval</x-nav-links>
                 <x-nav-links href="{{ route('finance.audit.trail') }}" :active="request()->routeIs('finance.audit.trail')">Audit Trail</x-nav-links>
                 <x-nav-links href="{{ route('finance.archive') }}" :active="request()->routeIs('finance.archive')">Archive</x-nav-links>

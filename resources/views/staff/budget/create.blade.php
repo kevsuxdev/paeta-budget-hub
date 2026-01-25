@@ -15,18 +15,19 @@
             <h2 class="text-2xl font-semibold text-primary mb-4">Budget Details</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
+                    @php $user = request()->user(); @endphp
                     <label for="department_id" class="block text-sm font-medium text-primary mb-2">Department</label>
-                    <select name="department_id" id="department_id" class="w-full border border-white/70 rounded-md text-primary p-2 text-sm bg-white" required>
-                        <option class="text-primary" value="">Select Department</option>
+                    <select id="department_id" class="w-full border border-white/70 rounded-md text-primary p-2 text-sm bg-white" disabled>
                         @foreach($departments as $department)
-                        <option class="text-primary" value="{{ $department->id }}">{{ $department->name }}</option>
+                            <option class="text-primary" value="{{ $department->id }}" {{ $department->id == ($user->department_id ?? null) ? 'selected' : '' }}>{{ $department->name }}</option>
                         @endforeach
                     </select>
+                    <input type="hidden" name="department_id" value="{{ $user->department_id ?? '' }}">
                 </div>
                 <x-input-fields class="bg-white" name="title" label="Title" type="text" placeholder="ex. Shared Budget" />
                 <x-input-fields class="bg-white" name="fiscal_year" label="Fiscal Year" type="number" />
                 <x-input-fields class="bg-white" name="category" label="Category" type="text" />
-                <x-input-fields class="bg-white" name="submission_date" label="Submission Date" type="date" />
+                <x-input-fields class="bg-white" name="submission_date" label="Due Date" type="date" min="{{ \Carbon\Carbon::tomorrow()->format('Y-m-d') }}" />
             </div>
             <div class="mt-6">
                 <label for="justification" class="block text-sm font-medium text-primary mb-2">Justification</label>

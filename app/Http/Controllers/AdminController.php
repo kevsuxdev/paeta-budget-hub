@@ -109,7 +109,7 @@ class AdminController extends Controller
                 'justification' => 'nullable|string',
                 'fiscal_year' => 'required|string',
                 'category' => 'required|string',
-                'submission_date' => 'required|date',
+                'submission_date' => 'required|date|after:today',
                 'supporting_document' => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png',
                 'line_items' => 'required|array|min:1',
                 'line_items.*.description' => 'required|string',
@@ -327,6 +327,27 @@ class AdminController extends Controller
             'approved_by' => $validated['approver_name'],
         ]);
 
+        // If the department has savings (budget_release), deduct from it up to the budget amount
+        $department = Department::find($budget->department_id);
+        if ($department && $department->budget_release > 0) {
+            $available = (float) $department->budget_release;
+            $needed = (float) $budget->total_budget;
+            $deduct = min($available, $needed);
+
+            $oldRelease = $department->budget_release;
+            $department->budget_release = max(0, $oldRelease - $deduct);
+            $department->save();
+
+            BudgetLog::create([
+                'budget_id' => $budget->id,
+                'user_id' => $user->id,
+                'action' => 'savings_used',
+                'old_status' => null,
+                'new_status' => null,
+                'notes' => sprintf('Used ₱%s from %s savings toward budget #%d — savings decreased from ₱%s to ₱%s', number_format($deduct, 2), $department->name, $budget->id, number_format($oldRelease, 2), number_format($department->budget_release, 2)),
+            ]);
+        }
+
         BudgetLog::create([
             'budget_id' => $budget->id,
             'user_id' => $user->id,
@@ -422,6 +443,12 @@ class AdminController extends Controller
         return redirect()->back()->with('success', 'Department added successfully.');
     }
 
+    public function destroyDepartment(Department $department)
+    {
+        $department->delete();
+        return redirect()->back()->with('success', 'Department deleted successfully.');
+    }
+
     public function storeUser(Request $request)
     {
         $request->validate([
@@ -439,7 +466,7 @@ class AdminController extends Controller
             'full_name' => $request->full_name,
             'email' => $request->email,
             'phone' => $request->phone,
-            'password' => Hash::make('paeta@password'),
+            'password' => Hash::make('paete@password'),
             'role' => $request->role,
             'department_id' => $request->department_id,
             'status' => $request->status,

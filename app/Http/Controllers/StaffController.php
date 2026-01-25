@@ -50,6 +50,13 @@ class StaffController extends Controller
             ->limit(20)
             ->get();
 
+        // If the user belongs to a department, get the department budget from departments table
+        $departmentTotal = 0;
+        if ($user->department_id) {
+            $department = Department::find($user->department_id);
+            $departmentTotal = $department?->budget_release ?? 0;
+        }
+
         return view('staff.dashboard', compact(
             'user',
             'totalBudgets',
@@ -60,7 +67,8 @@ class StaffController extends Controller
             'pendingDeptBudgets',
             'approvedDeptBudgets',
             'recentRequests',
-            'notifications'
+            'notifications',
+            'departmentTotal'
         ));
     }
 
@@ -81,7 +89,7 @@ class StaffController extends Controller
                 'justification' => 'nullable|string',
                 'fiscal_year' => 'required|string',
                 'category' => 'required|string',
-                'submission_date' => 'required|date',
+                'submission_date' => 'required|date|after:today',
                 'supporting_document' => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png',
                 'line_items' => 'required|array|min:1',
                 'line_items.*.description' => 'required|string',

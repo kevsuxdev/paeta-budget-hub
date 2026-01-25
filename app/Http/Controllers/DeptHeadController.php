@@ -23,6 +23,10 @@ class DeptHeadController extends Controller
         $approvedRequests = Budget::where('department_id', $departmentId)->where('status', 'approved')->count();
         $rejectedRequests = Budget::where('department_id', $departmentId)->where('status', 'rejected')->count();
 
+        // Department budget is stored on the departments table (budget_release)
+        $department = Department::find($departmentId);
+        $departmentTotal = $department?->budget_release ?? 0;
+
         // Recent budget requests from the department
         $recentRequests = Budget::where('department_id', $departmentId)
             ->with(['user', 'department'])
@@ -70,6 +74,7 @@ class DeptHeadController extends Controller
             'pendingRequests',
             'approvedRequests',
             'rejectedRequests',
+            'departmentTotal',
             'recentRequests',
             'availableYears',
             'selectedYear',
@@ -115,7 +120,7 @@ class DeptHeadController extends Controller
                 'justification' => 'nullable|string',
                 'fiscal_year' => 'required|string',
                 'category' => 'required|string',
-                'submission_date' => 'required|date',
+                'submission_date' => 'required|date|after:today',
                 'supporting_document' => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png',
                 'line_items' => 'required|array|min:1',
                 'line_items.*.description' => 'required|string',
@@ -175,6 +180,23 @@ class DeptHeadController extends Controller
     {
         $departments = Department::all();
         return view('dept_head.budget.create', compact('departments'));
+    }
+
+    public function editBudget(Budget $budget)
+    {
+        // Verify that the budget belongs to the dept_head's department
+        if ($budget->department_id !== Auth::user()->department_id) {
+            return redirect()->back()->with('error', 'You can only edit budgets from your department.');
+        }
+
+        // Only allow editing when pending or revise
+        if (!in_array($budget->status, ['pending', 'revise'])) {
+            return redirect()->back()->with('error', 'Only pending or revised budgets can be edited.');
+        }
+
+        $departments = Department::all();
+        $budget->load('lineItems');
+        return view('dept_head.budget.edit', compact('departments', 'budget'));
     }
 
     public function updateBudgetStatus(Request $request, Budget $budget)
@@ -299,5 +321,84 @@ class DeptHeadController extends Controller
                 ],
                 'logs' => $logs,
             ]);
+        }
+
+        public function updateBudget(Request $request, Budget $budget)
+        {
+            // Verify owner department
+            if ($budget->department_id !== Auth::user()->department_id) {
+                return redirect()->back()->with('error', 'You can only edit budgets from your department.');
+            }
+
+            // Only allow editing when pending or revise
+            if (!in_array($budget->status, ['pending', 'revise'])) {
+                return redirect()->back()->with('error', 'Only pending or revised budgets can be edited.');
+            }
+
+            $request->validate([
+                'title' => 'required|string|max:255',
+                'justification' => 'nullable|string',
+                'fiscal_year' => 'required|string',
+                'category' => 'required|string',
+                'submission_date' => 'required|date|after:today',
+                'supporting_document' => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png',
+                'line_items' => 'required|array|min:1',
+                'line_items.*.description' => 'required|string',
+                'line_items.*.quantity' => 'required|integer|min:1',
+                'line_items.*.unit_cost' => 'required|numeric|min:0',
+            ]);
+
+            try {
+                // calculate total
+                $totalBudget = 0;
+                foreach ($request->line_items as $item) {
+                    $totalBudget += $item['quantity'] * $item['unit_cost'];
+                }
+
+                // handle supporting doc
+                if ($request->hasFile('supporting_document')) {
+                    Storage::disk('public')->makeDirectory('documents');
+                    $path = $request->file('supporting_document')->store('documents', 'public');
+                    // optionally delete old file
+                    if ($budget->supporting_document) {
+                        Storage::disk('public')->delete($budget->supporting_document);
+                    }
+                    $budget->supporting_document = $path;
+                }
+
+                $budget->title = $request->title;
+                $budget->justification = $request->justification;
+                $budget->fiscal_year = $request->fiscal_year;
+                $budget->category = $request->category;
+                $budget->submission_date = $request->submission_date;
+                $budget->total_budget = $totalBudget;
+                $budget->date_updated = now();
+                $budget->save();
+
+                // replace line items
+                BudgetLineItem::where('budget_id', $budget->id)->delete();
+                foreach ($request->line_items as $item) {
+                    BudgetLineItem::create([
+                        'budget_id' => $budget->id,
+                        'description' => $item['description'],
+                        'quantity' => $item['quantity'],
+                        'unit_cost' => $item['unit_cost'],
+                        'total_cost' => $item['quantity'] * $item['unit_cost'],
+                    ]);
+                }
+
+                BudgetLog::create([
+                    'budget_id' => $budget->id,
+                    'user_id' => Auth::id(),
+                    'action' => 'edited',
+                    'old_status' => $budget->status,
+                    'new_status' => $budget->status,
+                    'notes' => 'Budget edited by ' . Auth::user()->full_name,
+                ]);
+
+                return redirect()->back()->with('success', 'Budget updated successfully.');
+            } catch (\Exception $e) {
+                return redirect()->back()->with('error', 'An error occurred: ' . $e->getMessage());
+            }
         }
 }

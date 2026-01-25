@@ -15,18 +15,19 @@
             <h2 class="text-2xl font-semibold text-white mb-4">Budget Details</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
+                    @php $user = request()->user(); @endphp
                     <label for="department_id" class="block text-sm font-medium text-white mb-2">Department</label>
-                    <select name="department_id" id="department_id" class="w-full border border-white/60 rounded-md text-white p-2 text-sm bg-transparent" required>
-                        <option value="">Select Department</option>
+                    <select id="department_id" class="w-full border border-white/60 rounded-md text-white p-2 text-sm bg-transparent" disabled>
                         @foreach($departments as $department)
-                        <option value="{{ $department->id }}">{{ $department->name }}</option>
+                            <option value="{{ $department->id }}" {{ $department->id == ($user->department_id ?? null) ? 'selected' : '' }}>{{ $department->name }}</option>
                         @endforeach
                     </select>
+                    <input type="hidden" name="department_id" value="{{ $user->department_id ?? '' }}">
                 </div>
                 <x-input-fields name="title" label="Title" type="text" placeholder="e.g. Shared Budget" />
                 <x-input-fields name="fiscal_year" label="Fiscal Year" type="number" />
                 <x-input-fields name="category" label="Category" type="text" />
-                <x-input-fields name="submission_date" label="Submission Date" type="date" />
+                <x-input-fields name="submission_date" label="Due Date" type="date" min="{{ \Carbon\Carbon::tomorrow()->format('Y-m-d') }}" />
             </div>
             <div class="mt-6">
                 <label for="justification" class="block text-sm font-medium text-white mb-2">Justification</label>

@@ -154,7 +154,7 @@
                                     <div class="text-white font-medium">{{ $log->budget->title }}</div>
                                     <div class="text-xs text-gray-400">ID: {{ $log->budget->id }}</div>
                                 @else
-                                    <span class="text-gray-400 italic">Budget deleted</span>
+                                    <span class="text-white italic">Not Applicable</span>
                                 @endif
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm">

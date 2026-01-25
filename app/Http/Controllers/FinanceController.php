@@ -60,6 +60,54 @@ class FinanceController extends Controller
         return view('finance.review', compact('pendingReview', 'totalAmount', 'averageAmount', 'budgets'));
     }
 
+    /**
+     * Show release page for allocating approved budgets to departments.
+     */
+    public function release()
+    {
+        $approvedBudgets = Budget::where('status', 'approved')->with('department')->get();
+        $departments = Department::all();
+
+        // Recent release logs (show latest 20)
+        $releaseLogs = BudgetLog::where('action', 'released')
+            ->with(['user.department', 'budget'])
+            ->orderBy('created_at', 'desc')
+            ->limit(20)
+            ->get();
+
+        return view('finance.release', compact('approvedBudgets', 'departments', 'releaseLogs'));
+    }
+
+    /**
+     * Handle allocation (release) of a budget amount to a department.
+     */
+    public function allocateBudget(Request $request)
+    {
+        $data = $request->validate([
+            'department_id' => 'required|exists:departments,id',
+            'amount' => 'required|numeric|min:0',
+            'quarter' => 'nullable|string|max:20',
+        ]);
+
+        $department = Department::findOrFail($data['department_id']);
+        $amount = $data['amount'];
+        // Update department budget_release
+        $oldRelease = $department->budget_release ?? 0;
+        $department->budget_release = $oldRelease + $amount;
+        $department->save();
+
+        // Record a budget log for the release/allocation action
+        BudgetLog::create([
+            'user_id' => Auth::id(),
+            'action' => 'released',
+            'old_status' => $budget->status ?? null,
+            'new_status' => $budget->status ?? null,
+            'notes' => sprintf('Released ₱%s to %s (department savings) (quarter: %s) by %s — department release updated from ₱%s to ₱%s', number_format($amount, 2), $department->name, $data['quarter'] ?? 'N/A', Auth::user()->full_name, number_format($oldRelease, 2), $department->budget_release),
+        ]);
+
+        return redirect()->route('finance.release')->with('success', 'Allocation recorded successfully.');
+    }
+
     public function approveBudget(Budget $budget)
     {
         $oldStatus = $budget->status;
@@ -293,6 +341,27 @@ class FinanceController extends Controller
             'date_updated' => now(),
             'final_approved_at' => now(),
         ]);
+
+        // If the department has savings (budget_release), deduct from it up to the budget amount
+        $department = Department::find($budget->department_id);
+        if ($department && $department->budget_release > 0) {
+            $available = (float) $department->budget_release;
+            $needed = (float) $budget->total_budget;
+            $deduct = min($available, $needed);
+
+            $oldRelease = $department->budget_release;
+            $department->budget_release = max(0, $oldRelease - $deduct);
+            $department->save();
+
+            BudgetLog::create([
+                'budget_id' => $budget->id,
+                'user_id' => $user->id,
+                'action' => 'savings_used',
+                'old_status' => null,
+                'new_status' => null,
+                'notes' => sprintf('Used ₱%s from %s savings toward budget #%d — savings decreased from ₱%s to ₱%s', number_format($deduct, 2), $department->name, $budget->id, number_format($oldRelease, 2), number_format($department->budget_release, 2)),
+            ]);
+        }
 
         BudgetLog::create([
             'budget_id' => $budget->id,

@@ -2,7 +2,7 @@
     @csrf
     <article  class="flex items-start justify-between">
         <div  class="space-y-2">
-            <h1 class="text-2xl font-semibold">Welcome to Paeta Budget Hub</h1>
+            <h1 class="text-2xl font-semibold">Welcome to Paete Budget Hub</h1>
             <p class="text-sm">Please enter your credentials to access your account.</p>
         </div>
         <img src="{{ asset('assets/logo.png') }}" alt="Paeta Logo" class="w-12 h-12 object-contain"/>

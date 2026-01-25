@@ -8,6 +8,11 @@ class Department extends Model
 {
     protected $fillable = [
         'name',
+        'budget_release',
+    ];
+
+    protected $casts = [
+        'budget_release' => 'decimal:2',
     ];
     public function users()
     {

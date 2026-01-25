@@ -139,6 +139,27 @@
         </div>
     </div>
 
+    @if(isset($departmentTotal) && $user->department_id)
+        <div class="mt-6">
+            <h2 class="text-xl font-semibold text-white mb-4">Department Budget</h2>
+            <div class="grid grid-cols-1 md:grid-cols-1 gap-4">
+                <div class="bg-orange-brown rounded-lg p-6 shadow-lg w-full md:w-1/3">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-white mb-1">Department Budget (₱)</p>
+                            <p class="text-3xl font-bold text-indigo-400">{{ number_format($departmentTotal, 2) }}</p>
+                        </div>
+                        <div class="bg-indigo-500/20 rounded-full p-3">
+                            <svg class="w-8 h-8 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-3.314 0-6 1.79-6 4s2.686 4 6 4 6-1.79 6-4-2.686-4-6-4zM12 4v4m0 8v4" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
+
     <!-- Quick Actions -->
     <div>
         <h2 class="text-xl font-semibold text-white mb-4">Quick Actions</h2>
