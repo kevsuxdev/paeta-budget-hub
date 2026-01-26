@@ -7,13 +7,13 @@
     </article>
     <!-- Alert Messages -->
     @if(session('success'))
-        <x-alert-message type="success" :message="session('success')" />
+    <x-alert-message type="success" :message="session('success')" />
     @endif
     @if(session('info'))
-        <x-alert-message type="info" :message="session('info')" />
+    <x-alert-message type="info" :message="session('info')" />
     @endif
     @if(session('error'))
-        <x-alert-message type="error" :message="session('error')" />
+    <x-alert-message type="error" :message="session('error')" />
     @endif
 
     <!-- Overview Statistics -->
@@ -46,6 +46,23 @@
         </div>
     </div>
 
+    <!-- Department Filter -->
+    @if(isset($departments) && $departments->count())
+    <div class="mb-4">
+        <form method="GET" class="flex items-center gap-2">
+            <label for="department_id" class="text-white sr-only">Department</label>
+            <select name="department_id" id="department_id" class="rounded-md p-2 bg-orange-brown text-white border border-primary">
+                <option value="">All Departments</option>
+                @foreach($departments as $department)
+                <option value="{{ $department->id }}" {{ request('department_id') == $department->id ? 'selected' : '' }}>{{ $department->name }}</option>
+                @endforeach
+            </select>
+            <button type="submit" class="inline-flex items-center px-3 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">Filter</button>
+            <a href="{{ url()->current() }}" class="inline-flex items-center px-3 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">Clear</a>
+        </form>
+    </div>
+    @endif
+
     <!-- Budget Requests List -->
     <div class="bg-orange-brown rounded-lg shadow-sm overflow-hidden">
         <div class="px-6 py-4 border-b border-primary">
@@ -67,10 +84,38 @@
                 </thead>
                 <tbody class="bg-white divide-y divide-primary">
                     @forelse($budgets as $budget)
-                        <x-budget.table-row
-                            :budget="$budget"
-                            :canUpdateStatus="true"
-                        />
+                    <tr>
+                        <td class="px-6 bg-orange-brown py-4 whitespace-nowrap text-sm text-white"># {{ $budget->id }}</td>
+                        <td class="px-6 bg-orange-brown py-4 whitespace-nowrap text-sm text-white">{{ $budget->title }}</td>
+                        <td class="px-6 bg-orange-brown py-4 whitespace-nowrap text-sm text-white">{{ $budget->user->full_name ?? 'N/A' }}</td>
+                        <td class="px-6 bg-orange-brown py-4 whitespace-nowrap text-sm text-white">{{ $budget->department->name ?? 'N/A' }}</td>
+                        <td class="px-6 bg-orange-brown py-4 whitespace-nowrap text-sm text-white">{{ number_format($budget->total_budget, 2) }}</td>
+                        <td class="px-6 bg-orange-brown py-4 whitespace-nowrap text-sm text-white">
+                            <x-budget.status-badge :status="$budget->status" />
+                        </td>
+                        <td class="px-6 bg-orange-brown py-4 whitespace-nowrap text-sm text-white">{{ $budget->submission_date->format('M d, Y') }}</td>
+                        <td class="px-6 bg-orange-brown py-4 whitespace-nowrap text-sm font-medium">
+                            <div class="flex items-center gap-2">
+                                <x-button
+                                    type="button"
+                                    class="btn-view-budget"
+                                    data-budget-id="{{ $budget->id }}"
+                                    data-budget-title="{{ $budget->title }}"
+                                    data-budget-status="{{ $budget->status }}"
+                                    data-budget-date="{{ $budget->submission_date->format('M d, Y') }}"
+                                    data-budget-user="{{ $budget->user->full_name ?? 'N/A' }}">
+                                    View Details
+                                </x-button>
+                                <button
+                                    type="button"
+                                    class="btn-update-status inline-flex items-center px-3 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+                                    data-budget-id="{{ $budget->id }}"
+                                    data-budget-status="{{ $budget->status }}">
+                                    Update Status
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
                     @empty
                     <tr>
                         <td colspan="8" class="px-6 py-4 text-center text-sm text-white">No budget requests found</td>

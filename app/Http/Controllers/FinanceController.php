@@ -47,17 +47,23 @@ class FinanceController extends Controller
         ));
     }
 
-    public function review()
+    public function review(Request $request)
     {
-        $pendingReview = Budget::where('status', 'pending')->count();
-        $totalAmount = Budget::sum('total_budget');
-        $averageAmount = Budget::avg('total_budget');
+        $query = Budget::with('user', 'department');
 
-        $budgets = Budget::with('user', 'department')
-            ->latest()
-            ->get();
+        if ($request->has('department_id') && !empty($request->department_id)) {
+            $query->where('department_id', $request->department_id);
+        }
 
-        return view('finance.review', compact('pendingReview', 'totalAmount', 'averageAmount', 'budgets'));
+        $pendingReview = (clone $query)->where('status', 'pending')->count();
+        $totalAmount = (clone $query)->sum('total_budget');
+        $averageAmount = (clone $query)->avg('total_budget') ?? 0;
+
+        $budgets = $query->latest()->get();
+
+        $departments = Department::all();
+
+        return view('finance.review', compact('pendingReview', 'totalAmount', 'averageAmount', 'budgets', 'departments'));
     }
 
     /**
@@ -293,18 +299,24 @@ class FinanceController extends Controller
         return redirect()->back()->with('info', 'No changes made to budget status.');
     }
 
-    public function approval()
+    public function approval(Request $request)
     {
-        $pendingApproval = Budget::where('status', 'finance_reviewed')->count();
-        $totalAmount = Budget::where('status', 'finance_reviewed')->sum('total_budget');
-        $averageAmount = Budget::where('status', 'finance_reviewed')->avg('total_budget') ?? 0;
+        $query = Budget::with('user', 'department')
+            ->where('status', 'finance_reviewed');
 
-        $budgets = Budget::with('user', 'department')
-            ->where('status', 'finance_reviewed')
-            ->orderBy('submission_date', 'desc')
-            ->paginate(10);
+        if ($request->has('department_id') && !empty($request->department_id)) {
+            $query->where('department_id', $request->department_id);
+        }
 
-        return view('finance.approval', compact('pendingApproval', 'totalAmount', 'averageAmount', 'budgets'));
+        $pendingApproval = (clone $query)->count();
+        $totalAmount = (clone $query)->sum('total_budget');
+        $averageAmount = (clone $query)->avg('total_budget') ?? 0;
+
+        $budgets = $query->orderBy('submission_date', 'desc')->paginate(10);
+
+        $departments = Department::all();
+
+        return view('finance.approval', compact('pendingApproval', 'totalAmount', 'averageAmount', 'budgets', 'departments'));
     }
 
     public function finalApproveBudget(Budget $budget)
@@ -359,7 +371,7 @@ class FinanceController extends Controller
                 'action' => 'savings_used',
                 'old_status' => null,
                 'new_status' => null,
-                'notes' => sprintf('Used ₱%s from %s savings toward budget #%d — savings decreased from ₱%s to ₱%s', number_format($deduct, 2), $department->name, $budget->id, number_format($oldRelease, 2), number_format($department->budget_release, 2)),
+                'notes' => sprintf('Used ₱%s from %s savings toward budget #%d — savings decreased from ₱%s to ₱%s', number_format((float)$deduct, 2), $department->name, $budget->id, number_format((float)$oldRelease, 2), number_format((float)$department->budget_release, 2)),
             ]);
         }
 

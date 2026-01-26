@@ -101,6 +101,20 @@
                                         onclick="openUpdateDepartmentModalFromButton(this)">
                                         Update Department
                                     </button>
+                                    <button
+                                        type="button"
+                                        class="ml-2 px-2 py-2 bg-yellow-600 cursor-pointer text-white rounded hover:bg-yellow-700 text-xs edit-user-btn"
+                                        data-user-id="{{ $user->id }}"
+                                        data-username="{{ $user->username }}"
+                                        data-user-name="{{ $user->full_name }}"
+                                        data-email="{{ $user->email }}"
+                                        data-phone="{{ $user->phone }}"
+                                        data-role="{{ $user->role }}"
+                                        data-department-id="{{ $user->department->id ?? '' }}"
+                                        data-status="{{ $user->status }}"
+                                        onclick="openEditUserModalFromButton(this)">
+                                        Edit
+                                    </button>
                                 </td>
                             </tr>
                             @empty
@@ -120,6 +134,65 @@
                 <div class="px-6 py-4 border-b border-primary">
                     <h3 class="text-lg font-semibold text-white">Departments</h3>
                 </div>
+                                        <!-- Edit User Modal -->
+                                        <div id="editUserModal" class="fixed inset-0 bg-transparent backdrop-blur-sm flex items-center justify-center hidden">
+                                            <div class="bg-orange-brown p-6 border border-white/60 w-full max-w-lg shadow-lg rounded-md max-h-[90vh] overflow-y-auto">
+                                                <h3 class="text-xl font-semibold text-white mb-2">Edit User</h3>
+                                                <form id="editUserForm" method="POST" class="space-y-4">
+                                                    @csrf
+                                                    @method('PUT')
+                                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                        <div>
+                                                            <label for="edit_username" class="block text-sm font-medium text-white mb-1">Username</label>
+                                                            <input type="text" name="username" id="edit_username" class="w-full border text-white border-white/60 rounded-md p-2 text-sm" required>
+                                                        </div>
+                                                        <div>
+                                                            <label for="edit_full_name" class="block text-sm font-medium text-white mb-1">Full Name</label>
+                                                            <input type="text" name="full_name" id="edit_full_name" class="w-full border text-white border-white/60 rounded-md p-2 text-sm" required>
+                                                        </div>
+                                                        <div class="md:col-span-2">
+                                                            <label for="edit_email" class="block text-sm font-medium text-white mb-1">Email</label>
+                                                            <input type="email" name="email" id="edit_email" class="w-full border text-white border-white/60 rounded-md p-2 text-sm" required>
+                                                        </div>
+                                                        <div>
+                                                            <label for="edit_phone" class="block text-sm font-medium text-white mb-1">Phone</label>
+                                                            <input type="tel" name="phone" id="edit_phone" class="w-full border text-white border-white/60 rounded-md p-2 text-sm">
+                                                        </div>
+                                                        <div>
+                                                            <label for="edit_role" class="block text-sm font-medium text-white mb-1">Role</label>
+                                                            <select name="role" id="edit_role" class="w-full border text-white border-white/60 rounded-md p-2 text-sm" required>
+                                                                <option value="">Select Role</option>
+                                                                <option value="admin">Admin</option>
+                                                                <option value="finance">Finance</option>
+                                                                <option value="staff">Staff</option>
+                                                                <option value="dept_head">Department Head</option>
+                                                            </select>
+                                                        </div>
+                                                        <div id="edit_department_field">
+                                                            <label for="edit_department_id" class="block text-sm font-medium text-white mb-1">Department</label>
+                                                            <select name="department_id" id="edit_department_id" class="w-full border text-white border-white/60 rounded-md p-2 text-sm">
+                                                                <option value="">Select Department</option>
+                                                                @foreach($departments as $department)
+                                                                <option value="{{ $department->id }}">{{ $department->name }}</option>
+                                                                @endforeach
+                                                            </select>
+                                                        </div>
+                                                        <div>
+                                                            <label for="edit_status" class="block text-sm font-medium text-white mb-1">Status</label>
+                                                            <select name="status" id="edit_status" class="w-full border text-white border-white/60 rounded-md p-2 text-sm" required>
+                                                                <option value="active">Active</option>
+                                                                <option value="inactive">Inactive</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="flex justify-end space-x-3 pt-4">
+                                                        <button type="button" onclick="closeEditUserModal()" class="px-4 py-2 bg-red-600 rounded-md hover:bg-red-700 text-white cursor-pointer text-sm">Cancel</button>
+                                                        <button type="submit" class="px-4 py-2 bg-primary text-white rounded hover:bg-primary/80 text-sm">Save Changes</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+
                 <div class="overflow-x-auto">
                     <table class="min-w-full divide-y divide-primary">
                         <tbody class="bg-orange-brown divide-y divide-primary">
@@ -352,6 +425,73 @@
             modal.classList.add('hidden');
             form.reset();
         };
+
+        // Edit User Modal
+        window.openEditUserModalFromButton = function(button) {
+            const userId = button.dataset.userId;
+            const username = button.dataset.username || '';
+            const userName = button.dataset.userName || '';
+            const email = button.dataset.email || '';
+            const phone = button.dataset.phone || '';
+            const role = button.dataset.role || '';
+            const deptId = button.dataset.departmentId || '';
+            const status = button.dataset.status || 'active';
+            window.openEditUserModal(userId, { username, userName, email, phone, role, deptId, status });
+        };
+
+        window.openEditUserModal = function(userId, data) {
+            const modal = document.getElementById('editUserModal');
+            const form = document.getElementById('editUserForm');
+            if (!modal || !form) return;
+            // Populate fields
+            form.action = `${window.updateDepartmentFormBase}/${userId}`;
+            document.getElementById('edit_username').value = data.username || '';
+            document.getElementById('edit_full_name').value = data.userName || '';
+            document.getElementById('edit_email').value = data.email || '';
+            document.getElementById('edit_phone').value = data.phone || '';
+            document.getElementById('edit_role').value = data.role || '';
+            document.getElementById('edit_department_id').value = data.deptId || '';
+            document.getElementById('edit_status').value = data.status || 'active';
+            // Show/hide department field based on role
+            const deptField = document.getElementById('edit_department_field');
+            const deptSelect = document.getElementById('edit_department_id');
+            if (data.role === 'staff' || data.role === 'dept_head') {
+                deptField.style.display = 'block';
+                deptSelect.required = true;
+            } else {
+                deptField.style.display = 'none';
+                deptSelect.required = false;
+            }
+
+            modal.classList.remove('hidden');
+        };
+
+        window.closeEditUserModal = function() {
+            const modal = document.getElementById('editUserModal');
+            const form = document.getElementById('editUserForm');
+            if (!modal) return;
+            modal.classList.add('hidden');
+            if (form) form.reset();
+        };
+
+        // Handle role change inside edit modal
+        const editRoleEl = document.getElementById('edit_role');
+        if (editRoleEl) {
+            editRoleEl.addEventListener('change', function() {
+                const departmentField = document.getElementById('edit_department_field');
+                const departmentSelect = document.getElementById('edit_department_id');
+                const role = this.value;
+
+                if (role === 'staff' || role === 'dept_head') {
+                    departmentField.style.display = 'block';
+                    departmentSelect.required = true;
+                } else {
+                    departmentField.style.display = 'none';
+                    departmentSelect.required = false;
+                    departmentSelect.value = '';
+                }
+            });
+        }
 
         // Delete Department Modal
         window.deleteDepartmentFormBase = "{{ url('admin/departments') }}";
