@@ -1,8 +1,8 @@
 @extends('layouts.auth-layout')
 @section('main-content')
 <div class="p-6">
-    <h1 class="text-2xl font-bold text-white">Budget Archive</h1>
-    <p class="text-white mb-6">View and manage archived budget documents (approved and rejected).</p>
+    <h1 class="text-3xl font-bold text-black">Budget Archive</h1>
+    <p class="text-black font-medium mb-6">View and manage archived budget documents (approved and rejected).</p>
 
     <!-- Alert Messages -->
     @if(session('success'))
@@ -211,7 +211,7 @@
                                 >
                                     Download PDF
                                 </a>
-                              
+
                                 @if($budget->supporting_document)
                                     <span class="text-gray-500">|</span>
                                     <a

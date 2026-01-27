@@ -1,8 +1,8 @@
 @extends('layouts.auth-layout')
 @section('main-content')
 <div class="p-6">
-    <h1 class="text-2xl font-bold text-white">Audit Trail</h1>
-    <p class="text-white mb-6">Track all budget activities and system events in real-time.</p>
+    <h1 class="text-3xl font-bold text-black">Audit Trail</h1>
+    <p class="text-black font-medium mb-6">Track all budget activities and system events in real-time.</p>
 
     <!-- Alert Messages -->
     @if(session('success'))

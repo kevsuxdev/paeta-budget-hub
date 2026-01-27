@@ -2,8 +2,8 @@
 @section('main-content')
 <div class="p-6">
     <article class="space-y-2">
-        <h1 class="text-2xl font-bold text-white">Finance Review</h1>
-        <p class="text-white mb-6">Review and manage budget requests for financial approval.</p>
+        <h1 class="text-3xl font-bold text-black">Finance Review</h1>
+        <p class="text-black font-medium mb-6">Review and manage budget requests for financial approval.</p>
     </article>
     <!-- Alert Messages -->
     @if(session('success'))

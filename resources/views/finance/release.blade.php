@@ -1,8 +1,8 @@
 @extends('layouts.auth-layout')
 @section('main-content')
 <div class="p-6">
-    <h1 class="text-2xl font-bold text-white">Release Quarterly Budget</h1>
-    <p class="text-white mb-6">Allocate approved budget amounts to departments for the quarter.</p>
+    <h1 class="text-3xl font-bold text-black">Release Quarterly Budget</h1>
+    <p class="text-black font-medium mb-6">Allocate approved budget amounts to departments for the quarter.</p>
 
     @if(session('success'))
     <x-alert-message type="success" :message="session('success')" />

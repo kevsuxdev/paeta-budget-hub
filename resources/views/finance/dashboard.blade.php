@@ -12,7 +12,7 @@
 @endif
 <div class="p-6 space-y-6">
     <div class="w-full flex items-center justify-between">
-        <h1 class="text-2xl font-bold text-white mb-4">Finance Dashboard</h1>
+        <h1 class="text-2xl font-bold text-black">Finance Dashboard</h1>
         <div class="relative">
             <button id="notificationBell" class="relative focus:outline-none" title="Notifications" onclick="toggleNotifications()">
                 <svg class="w-7 h-7 cursor-pointer text-white" fill="yellow" stroke="black" viewBox="0 0 24 24">
@@ -64,7 +64,7 @@
         });
     </script>
     <article class="space-y-2">
-        <p class="text-white text-xl font-medium">Welcome, Finance Officer!</p>
+        <p class="text-black text-xl font-medium">Welcome, Finance Officer!</p>
         <p class="text-sm font-medium text-white bg-accent p-2 rounded-xl w-fit px-4">Finance Department</p>
     </article>
 

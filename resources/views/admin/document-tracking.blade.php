@@ -3,8 +3,8 @@
 @section('main-content')
 <div class="p-6">
     <article class="space-y-2">
-        <h1 class="text-2xl font-bold text-white">Document Tracking</h1>
-        <p class="text-primary mb-6">Track and manage all budget requests with search and filter capabilities.</p>
+        <h1 class="text-3xl font-bold text-black">Document Tracking</h1>
+        <p class="text-black font-medium mb-6">Track and manage all budget requests with search and filter capabilities.</p>
     </article>
     <!-- Alert Messages -->
     @if(session('success'))

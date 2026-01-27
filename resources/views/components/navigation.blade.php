@@ -1,5 +1,8 @@
 <aside class="min-w-72 bg-primary text-background h-screen px-6 py-8 flex flex-col">
-    <h1 class="text-xl font-bold mb-6">Paete Budget Hub</h1>
+    <div class="flex items-center gap-2 mb-5">
+        <img src="{{ asset('assets/logo.png') }}" alt="Logo" class="w-12 h-12" />
+        <h1 class="text-xl font-bold mb-6">Paete Budget Hub</h1>
+    </div>
     <nav class="space-y-2">
         @auth
         @if(auth()->user()->role === 'admin')

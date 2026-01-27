@@ -1,8 +1,8 @@
 @extends('layouts.auth-layout')
 @section('main-content')
 <div class="p-6">
-    <h1 class="text-2xl font-bold text-white">Document Tracking</h1>
-    <p class="text-white mb-6">Track budget requests from your department with search and filter capabilities.</p>
+    <h1 class="text-2xl font-bold text-black">Document Tracking</h1>
+    <p class="text-black font-medium mb-6">Track budget requests from your department with search and filter capabilities.</p>
 
     <!-- Search and Filter -->
     <div class="bg-orange-brown p-4 rounded-lg mb-6">

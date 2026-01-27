@@ -2,8 +2,8 @@
 @section('main-content')
 <div class="p-6">
     <article class="space-y-2">
-        <h1 class="text-2xl font-bold text-white">User Management</h1>
-        <p class="text-white">Manage users and view system statistics.</p>
+        <h1 class="text-3xl font-bold text-black">User Management</h1>
+        <p class="text-black font-medium">Manage users and view system statistics.</p>
     </article>
 
     <!-- Department Management Buttons -->

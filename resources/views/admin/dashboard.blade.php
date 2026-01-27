@@ -55,8 +55,8 @@
         });
     </script>
     <article class="">
-        <h1 class="text-4xl font-bold text-white">Admin Dashboard</h1>
-        <p>Welcome to the LGU Budgeting Tracking System. As an admin, you have access to all features.</p>
+        <h1 class="text-4xl font-bold text-black">Admin Dashboard</h1>
+    <p lass="font-medium text-black">Welcome to the LGU Budgeting Tracking System. As an admin, you have access to all features.</p>
     </article>
 
     <!-- Overview Statistics -->

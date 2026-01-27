@@ -2,8 +2,8 @@
 
 @section('main-content')
 <div class="p-6">
-    <h1 class="text-2xl font-bold text-primary mb-4">Document Tracking</h1>
-    <p class="text-gray-600 mb-6">Track and manage budget requests from your department.</p>
+    <h1 class="text-3xl font-bold text-black">Document Tracking</h1>
+    <p class="text-black font-medium mb-6">Track and manage budget requests from your department.</p>
 
     <!-- Alert Messages -->
     @if(session('success'))

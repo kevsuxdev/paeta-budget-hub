@@ -1,8 +1,8 @@
 @extends('layouts.auth-layout')
 @section('main-content')
 <div class="p-6">
-    <h1 class="text-2xl font-bold text-white">Final Approval</h1>
-    <p class="text-white mb-6">Review and give final approval to budgets that have passed finance review.</p>
+    <h1 class="text-3xl font-bold text-black">Final Approval</h1>
+    <p class="text-black font-medium mb-6">Review and give final approval to budgets that have passed finance review.</p>
 
     <!-- Alert Messages -->
     @if(session('success'))
