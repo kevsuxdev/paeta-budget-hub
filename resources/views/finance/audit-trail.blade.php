@@ -149,7 +149,7 @@
                                     </div>
                                 </div>
                             </td>
-                            <td class="px-6 py-4 text-sm">
+                            <td class="px-6 py-4 text-sm whitespace-nowrap">
                                 @if($log->budget)
                                     <div class="text-white font-medium">{{ $log->budget->title }}</div>
                                     <div class="text-xs text-gray-400">ID: {{ $log->budget->id }}</div>
@@ -191,7 +191,7 @@
                                     {{ ucwords(str_replace('_', ' ', $log->action)) }}
                                 </span>
                             </td>
-                            <td class="px-6 py-4 text-sm text-white">
+                            <td class="px-6 py-4 text-sm text-white whitespace-nowrap">
                                 @if($log->old_status || $log->new_status)
                                     <div class="flex items-center space-x-2">
                                         @if($log->old_status)
@@ -225,7 +225,7 @@
                                 @endif
                             </td>
                             <td class="px-6 py-4 text-sm text-white">
-                                <div class="max-w-xs truncate" title="{{ $log->notes }}">
+                                <div class="whitespace-wrap" title="{{ $log->notes }}">
                                     {{ $log->notes ?? '-' }}
                                 </div>
                             </td>

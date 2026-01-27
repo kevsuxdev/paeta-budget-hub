@@ -108,13 +108,14 @@
                                     data-budget-user="{{ $budget->user->full_name ?? 'N/A' }}">
                                     View Details
                                 </x-button>
-                                <button
-                                    type="button"
-                                    class="btn-update-status inline-flex items-center px-3 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
-                                    data-budget-id="{{ $budget->id }}"
-                                    data-budget-status="{{ $budget->status }}">
-                                    Update Status
-                                </button>
+                                @if(auth()->id() == $budget->user_id)
+                                    <a href="{{ route('admin.budget.edit', $budget->id) }}" class="inline-block bg-white/10 text-white px-3 py-2 rounded-md hover:bg-opacity-90 text-sm">Edit</a>
+                                    <form method="POST" action="{{ route('admin.budget.destroy', $budget->id) }}" onsubmit="return confirm('Are you sure you want to delete this budget?');" class="inline-block">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="inline-block bg-red-600 text-white px-3 py-2 rounded-md hover:bg-red-700 text-sm">Delete</button>
+                                    </form>
+                                @endif
                             </div>
                         </td>
                     </tr>

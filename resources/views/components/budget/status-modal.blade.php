@@ -19,9 +19,8 @@
                         <option value="reviewed">Reviewed</option>
                         <option value="rejected">Rejected</option>
                     @elseif($userRole === 'finance')
-                        <option value="finance_reviewed">Finance Reviewed</option>
+                        <option value="finance_reviewed">Reviewed</option>
                         <option value="revise">Revise</option>
-                        <option value="approved">Approved</option>
                         <option value="rejected">Rejected</option>
                     @else
                         <option value="pending">Pending</option>

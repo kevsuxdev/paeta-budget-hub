@@ -8,21 +8,20 @@
     </article>
     <!-- Alert Messages -->
     @if(session('success'))
-        <x-alert-message type="success" :message="session('success')" />
+    <x-alert-message type="success" :message="session('success')" />
     @endif
     @if(session('info'))
-        <x-alert-message type="info" :message="session('info')" />
+    <x-alert-message type="info" :message="session('info')" />
     @endif
     @if(session('error'))
-        <x-alert-message type="error" :message="session('error')" />
+    <x-alert-message type="error" :message="session('error')" />
     @endif
 
     <!-- Search and Filter -->
     <x-budget.search-filter
         :route="route('admin.document.tracking')"
         :searchValue="request('search', '')"
-        :statusValue="request('status', '')"
-    />
+        :statusValue="request('status', '')" />
 
     <!-- Budget Requests Table -->
     <div class="bg-white rounded-lg shadow-sm border border-primary overflow-hidden">
@@ -42,16 +41,38 @@
                 </thead>
                 <tbody class="bg-orange-brown divide-y divide-primary">
                     @forelse($budgets as $budget)
-                        <x-budget.table-row
-                            :budget="$budget"
-                            :canUpdateStatus="auth()->user()->role === 'admin' || auth()->user()->role === 'dept_head'"
-                        />
+                    <tr>
+                        <td class="px-6 bg-orange-brown py-4 whitespace-nowrap text-sm text-white"># {{ $budget->id }}</td>
+                        <td class="px-6 bg-orange-brown py-4 whitespace-nowrap text-sm text-white">{{ $budget->title }}</td>
+                        <td class="px-6 bg-orange-brown py-4 whitespace-nowrap text-sm text-white">{{ $budget->user->full_name ?? 'N/A' }}</td>
+                        <td class="px-6 bg-orange-brown py-4 whitespace-nowrap text-sm text-white">{{ $budget->department->name ?? 'N/A' }}</td>
+                        <td class="px-6 bg-orange-brown py-4 whitespace-nowrap text-sm text-white">{{ number_format($budget->total_budget, 2) }}</td>
+                        <td class="px-6 bg-orange-brown py-4 whitespace-nowrap text-sm text-white">
+                            <x-budget.status-badge :status="$budget->status" />
+                        </td>
+                        <td class="px-6 bg-orange-brown py-4 whitespace-nowrap text-sm text-white">{{ $budget->submission_date->format('M d, Y') }}</td>
+                        <td class="px-6 bg-orange-brown py-4 whitespace-nowrap text-sm font-medium">
+                            <div class="flex items-center gap-2">
+                                <x-button
+                                    type="button"
+                                    class="btn-view-budget"
+                                    data-budget-id="{{ $budget->id }}"
+                                    data-budget-title="{{ $budget->title }}"
+                                    data-budget-status="{{ $budget->status }}"
+                                    data-budget-date="{{ $budget->submission_date->format('M d, Y') }}"
+                                    data-budget-user="{{ $budget->user->full_name ?? 'N/A' }}">
+                                    View Details
+                                </x-button>
+                            </div>
+                        </td>
+                    </tr>
+
                     @empty
-                        <tr>
-                            <td colspan="8" class="px-6 py-4 text-center text-sm text-gray-500">
-                                No budget requests found
-                            </td>
-                        </tr>
+                    <tr>
+                        <td colspan="8" class="px-6 py-4 text-center text-sm text-gray-500">
+                            No budget requests found
+                        </td>
+                    </tr>
                     @endforelse
                 </tbody>
             </table>
@@ -59,9 +80,9 @@
 
         <!-- Pagination -->
         @if($budgets->hasPages())
-            <div class="bg-white px-4 py-3  text-white border-t border-gray-200 sm:px-6">
-                {{ $budgets->appends(request()->query())->links() }}
-            </div>
+        <div class="bg-white px-4 py-3  text-white border-t border-gray-200 sm:px-6">
+            {{ $budgets->appends(request()->query())->links() }}
+        </div>
         @endif
     </div>
 

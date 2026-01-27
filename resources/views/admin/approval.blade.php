@@ -118,26 +118,6 @@
                                     >
                                     View Details
                                 </button>
-                                <span class="text-gray-300">|</span>
-                                <button
-                                    type="button"
-                                    class="btn-approve-budget text-green-600 hover:text-green-900 font-medium"
-                                    data-budget-id="{{ $budget->id }}"
-                                    data-budget-title="{{ $budget->title }}"
-                                >
-                                    Approve
-                                </button>
-                                <span class="text-gray-300">|</span>
-                                <form action="{{ route('finance.budget.finalReject', $budget->id) }}" method="POST" class="inline">
-                                    @csrf
-                                    <button
-                                        type="submit"
-                                        class="text-red-600 hover:text-red-900 font-medium"
-                                        onclick="return confirm('Are you sure you want to reject this budget?')"
-                                    >
-                                        Reject
-                                    </button>
-                                </form>
                             </td>
                         </tr>
                     @empty

@@ -158,7 +158,9 @@ class AdminController extends Controller
                 'notes' => 'Budget request created by ' . Auth::user()->full_name,
             ]);
 
-            return redirect()->route('admin.dashboard')->with('success', 'Budget submitted successfully.');
+            return redirect()
+                ->back()
+                ->with('success', 'Budget request submitted successfully!');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'An error occurred: ' . $e->getMessage())->withInput();
         }
@@ -209,6 +211,113 @@ class AdminController extends Controller
         $departments = Department::all();
 
         return view('admin.finance-review', compact('pendingReview', 'totalAmount', 'averageAmount', 'budgets', 'departments'));
+    }
+
+    /**
+     * Show edit form for a budget (admin)
+     */
+    public function editBudget(Budget $budget)
+    {
+        $departments = Department::all();
+        $budget->load('lineItems');
+        return view('staff.budget.edit', compact('budget', 'departments'));
+    }
+
+    /**
+     * Update budget (admin)
+     */
+    public function updateBudget(Request $request, Budget $budget)
+    {
+        try {
+            $request->validate([
+                'department_id' => 'required|exists:departments,id',
+                'title' => 'required|string|max:255',
+                'justification' => 'nullable|string',
+                'fiscal_year' => 'required|string',
+                'category' => 'required|string',
+                'submission_date' => 'required|date|after:today',
+                'supporting_document' => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png',
+                'line_items' => 'required|array|min:1',
+                'line_items.*.description' => 'required|string',
+                'line_items.*.quantity' => 'required|integer|min:1',
+                'line_items.*.unit_cost' => 'required|numeric|min:0',
+            ]);
+
+            $totalBudget = 0;
+            foreach ($request->line_items as $item) {
+                $totalBudget += $item['quantity'] * $item['unit_cost'];
+            }
+
+            // Handle supporting document replacement
+            $supportingPath = $budget->supporting_document;
+            if ($request->hasFile('supporting_document')) {
+                Storage::disk('public')->makeDirectory('documents');
+                if ($supportingPath && Storage::disk('public')->exists($supportingPath)) {
+                    Storage::disk('public')->delete($supportingPath);
+                }
+                $supportingPath = $request->file('supporting_document')->store('documents', 'public');
+            }
+
+            $oldStatus = $budget->status;
+
+            $budget->update([
+                'department_id' => $request->department_id,
+                'title' => $request->title,
+                'justification' => $request->justification,
+                'fiscal_year' => $request->fiscal_year,
+                'category' => $request->category,
+                'submission_date' => $request->submission_date,
+                'total_budget' => $totalBudget,
+                'supporting_document' => $supportingPath,
+                'date_updated' => now(),
+                'status' => 'pending',
+            ]);
+
+            // Replace line items
+            $budget->lineItems()->delete();
+            foreach ($request->line_items as $item) {
+                BudgetLineItem::create([
+                    'budget_id' => $budget->id,
+                    'description' => $item['description'],
+                    'quantity' => $item['quantity'],
+                    'unit_cost' => $item['unit_cost'],
+                    'total_cost' => $item['quantity'] * $item['unit_cost'],
+                ]);
+            }
+
+            // Log update
+            BudgetLog::create([
+                'budget_id' => $budget->id,
+                'user_id' => Auth::id(),
+                'action' => 'updated',
+                'old_status' => $oldStatus,
+                'new_status' => $budget->status,
+                'notes' => 'Budget updated by admin ' . Auth::user()->full_name,
+            ]);
+
+            return redirect()->route('admin.finance.review')->with('success', 'Budget updated successfully.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'An error occurred: ' . $e->getMessage())->withInput();
+        }
+    }
+
+    /**
+     * Destroy budget (admin)
+     */
+    public function destroyBudget(Budget $budget)
+    {
+        try {
+            if ($budget->supporting_document && Storage::disk('public')->exists($budget->supporting_document)) {
+                Storage::disk('public')->delete($budget->supporting_document);
+            }
+            $budget->lineItems()->delete();
+            $budget->logs()->delete();
+            $budget->delete();
+
+            return redirect()->route('admin.finance.review')->with('success', 'Budget deleted successfully.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'An error occurred: ' . $e->getMessage());
+        }
     }
 
     public function approveBudget(Budget $budget)

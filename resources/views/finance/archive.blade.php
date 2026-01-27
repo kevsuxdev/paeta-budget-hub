@@ -211,16 +211,6 @@
                                 >
                                     Download PDF
                                 </a>
-                                @if($budget->status === 'approved' && $budget->e_signed)
-                                    <span class="text-gray-500">|</span>
-                                    <a
-                                        href="{{ asset('storage/' . $budget->e_signed) }}"
-                                        download="esignature_budget_{{ $budget->id }}.{{ pathinfo($budget->e_signed, PATHINFO_EXTENSION) }}"
-                                        class="text-green-400 hover:text-green-300 font-medium"
-                                    >
-                                        E-Signature
-                                    </a>
-                                @endif
                                 @if($budget->supporting_document)
                                     <span class="text-gray-500">|</span>
                                     <a

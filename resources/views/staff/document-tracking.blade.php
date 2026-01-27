@@ -14,7 +14,7 @@
             <div>
                 <label for="status" class="block text-sm font-medium text-white mb-1">Filter by Status</label>
                 <select name="status" id="status" class="w-full border border-black/20 rounded-md p-2 text-white text-sm">
-                    <option class="text-primary" value="">All Statuses</option>
+                    <option class="text-primary" value="">All Status</option>
                     <option class="text-primary" value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
                     <option class="text-primary" value="reviewed" {{ request('status') == 'reviewed' ? 'selected' : '' }}>Reviewed</option>
                     <option class="text-primary" value="finance_reviewed" {{ request('status') == 'finance_reviewed' ? 'selected' : '' }}>Finance Reviewed</option>
@@ -67,6 +67,16 @@
                                 data-budget-user="{{ $budget->user->full_name }}">
                                 View Details
                             </button>
+                            @if(auth()->id() == $budget->user_id && ($budget->status == 'pending' || $budget->status == 'revise'))
+                            <a href="{{ route('staff.budget.edit', $budget->id) }}" class="ml-2 inline-block bg-white/10 text-white px-3 py-2 rounded-md hover:bg-opacity-90 text-sm">Edit</a>
+                            @endif
+                            @if(auth()->id() == $budget->user_id && $budget->status == 'pending')
+                            <form action="{{ route('staff.budget.destroy', $budget->id) }}" method="POST" class="inline-block">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="ml-2 inline-block bg-red-600 text-white px-3 py-2 rounded-md hover:bg-red-700 text-sm" onclick="return confirm('Are you sure you want to delete this budget?');">Delete</button>
+                            </form>
+                            @endif
                         </td>
                     </tr>
                     @empty

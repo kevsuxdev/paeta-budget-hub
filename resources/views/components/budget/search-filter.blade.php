@@ -16,7 +16,7 @@
         <div>
             <label for="status" class="block text-sm font-medium text-white mb-1">Filter by Status</label>
             <select name="status" id="status" class="w-full border border-black/20 text-white rounded-md p-2 text-sm">
-                <option class="text-primary" value="">All Statuses</option>
+                <option class="text-primary" value="">All Status</option>
                 <option class="text-primary" value="pending" {{ $statusValue == 'pending' ? 'selected' : '' }}>Pending</option>
                 <option class="text-primary" value="reviewed" {{ $statusValue == 'reviewed' ? 'selected' : '' }}>Reviewed</option>
                 <option class="text-primary" value="finance_reviewed" {{ $statusValue == 'finance_reviewed' ? 'selected' : '' }}>Finance Reviewed</option>

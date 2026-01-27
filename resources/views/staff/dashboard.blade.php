@@ -205,7 +205,7 @@
                             <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Department</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Total Budget</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Status</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Submitted</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Due Date</th>
                         </tr>
                     </thead>
                     <tbody class="bg-orange-brown divide-y divide-primary">
@@ -230,8 +230,7 @@
                                     <x-budget.status-badge :status="$budget->status" />
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-white">
-                                    <div>{{ $budget->created_at->format('M d, Y') }}</div>
-                                    <div class="text-xs text-gray-400">{{ $budget->created_at->format('h:i A') }}</div>
+                                    <div>{{ $budget->submission_date->format('M d, Y') }}</div>
                                 </td>
                             </tr>
                         @empty

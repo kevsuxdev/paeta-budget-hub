@@ -49,7 +49,7 @@ class FinanceController extends Controller
 
     public function review(Request $request)
     {
-        $query = Budget::with('user', 'department');
+        $query = Budget::with('user', 'department')->where('status', 'reviewed');
 
         if ($request->has('department_id') && !empty($request->department_id)) {
             $query->where('department_id', $request->department_id);

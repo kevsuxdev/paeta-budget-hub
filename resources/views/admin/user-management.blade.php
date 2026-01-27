@@ -134,64 +134,64 @@
                 <div class="px-6 py-4 border-b border-primary">
                     <h3 class="text-lg font-semibold text-white">Departments</h3>
                 </div>
-                                        <!-- Edit User Modal -->
-                                        <div id="editUserModal" class="fixed inset-0 bg-transparent backdrop-blur-sm flex items-center justify-center hidden">
-                                            <div class="bg-orange-brown p-6 border border-white/60 w-full max-w-lg shadow-lg rounded-md max-h-[90vh] overflow-y-auto">
-                                                <h3 class="text-xl font-semibold text-white mb-2">Edit User</h3>
-                                                <form id="editUserForm" method="POST" class="space-y-4">
-                                                    @csrf
-                                                    @method('PUT')
-                                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                                        <div>
-                                                            <label for="edit_username" class="block text-sm font-medium text-white mb-1">Username</label>
-                                                            <input type="text" name="username" id="edit_username" class="w-full border text-white border-white/60 rounded-md p-2 text-sm" required>
-                                                        </div>
-                                                        <div>
-                                                            <label for="edit_full_name" class="block text-sm font-medium text-white mb-1">Full Name</label>
-                                                            <input type="text" name="full_name" id="edit_full_name" class="w-full border text-white border-white/60 rounded-md p-2 text-sm" required>
-                                                        </div>
-                                                        <div class="md:col-span-2">
-                                                            <label for="edit_email" class="block text-sm font-medium text-white mb-1">Email</label>
-                                                            <input type="email" name="email" id="edit_email" class="w-full border text-white border-white/60 rounded-md p-2 text-sm" required>
-                                                        </div>
-                                                        <div>
-                                                            <label for="edit_phone" class="block text-sm font-medium text-white mb-1">Phone</label>
-                                                            <input type="tel" name="phone" id="edit_phone" class="w-full border text-white border-white/60 rounded-md p-2 text-sm">
-                                                        </div>
-                                                        <div>
-                                                            <label for="edit_role" class="block text-sm font-medium text-white mb-1">Role</label>
-                                                            <select name="role" id="edit_role" class="w-full border text-white border-white/60 rounded-md p-2 text-sm" required>
-                                                                <option value="">Select Role</option>
-                                                                <option value="admin">Admin</option>
-                                                                <option value="finance">Finance</option>
-                                                                <option value="staff">Staff</option>
-                                                                <option value="dept_head">Department Head</option>
-                                                            </select>
-                                                        </div>
-                                                        <div id="edit_department_field">
-                                                            <label for="edit_department_id" class="block text-sm font-medium text-white mb-1">Department</label>
-                                                            <select name="department_id" id="edit_department_id" class="w-full border text-white border-white/60 rounded-md p-2 text-sm">
-                                                                <option value="">Select Department</option>
-                                                                @foreach($departments as $department)
-                                                                <option value="{{ $department->id }}">{{ $department->name }}</option>
-                                                                @endforeach
-                                                            </select>
-                                                        </div>
-                                                        <div>
-                                                            <label for="edit_status" class="block text-sm font-medium text-white mb-1">Status</label>
-                                                            <select name="status" id="edit_status" class="w-full border text-white border-white/60 rounded-md p-2 text-sm" required>
-                                                                <option value="active">Active</option>
-                                                                <option value="inactive">Inactive</option>
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                    <div class="flex justify-end space-x-3 pt-4">
-                                                        <button type="button" onclick="closeEditUserModal()" class="px-4 py-2 bg-red-600 rounded-md hover:bg-red-700 text-white cursor-pointer text-sm">Cancel</button>
-                                                        <button type="submit" class="px-4 py-2 bg-primary text-white rounded hover:bg-primary/80 text-sm">Save Changes</button>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
+                <!-- Edit User Modal -->
+                <div id="editUserModal" class="fixed inset-0 bg-transparent backdrop-blur-sm flex items-center justify-center hidden">
+                    <div class="bg-orange-brown p-6 border border-white/60 w-full max-w-lg shadow-lg rounded-md max-h-[90vh] overflow-y-auto">
+                        <h3 class="text-xl font-semibold text-white mb-2">Edit User</h3>
+                        <form id="editUserForm" method="POST" class="space-y-4">
+                            @csrf
+                            @method('PUT')
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label for="edit_username" class="block text-sm font-medium text-white mb-1">Username</label>
+                                    <input type="text" name="username" id="edit_username" class="w-full border text-white border-white/60 rounded-md p-2 text-sm" required>
+                                </div>
+                                <div>
+                                    <label for="edit_full_name" class="block text-sm font-medium text-white mb-1">Full Name</label>
+                                    <input type="text" name="full_name" id="edit_full_name" class="w-full border text-white border-white/60 rounded-md p-2 text-sm" required>
+                                </div>
+                                <div class="md:col-span-2">
+                                    <label for="edit_email" class="block text-sm font-medium text-white mb-1">Email</label>
+                                    <input type="email" name="email" id="edit_email" class="w-full border text-white border-white/60 rounded-md p-2 text-sm" required>
+                                </div>
+                                <div>
+                                    <label for="edit_phone" class="block text-sm font-medium text-white mb-1">Phone</label>
+                                    <input type="number" name="phone" id="edit_phone" class="w-full border text-white border-white/60 rounded-md p-2 text-sm">
+                                </div>
+                                <div>
+                                    <label for="edit_role" class="block text-sm font-medium text-white mb-1">Role</label>
+                                    <select name="role" id="edit_role" class="w-full border text-white border-white/60 rounded-md p-2 text-sm" required>
+                                        <option class="text-primary" value="">Select Role</option>
+                                        <option class="text-primary" value="admin">Admin</option>
+                                        <option class="text-primary" value="finance">Finance</option>
+                                        <option class="text-primary" value="staff">Staff</option>
+                                        <option class="text-primary" value="dept_head">Department Head</option>
+                                    </select>
+                                </div>
+                                <div id="edit_department_field">
+                                    <label for="edit_department_id" class="block text-sm font-medium text-white mb-1">Department</label>
+                                    <select name="department_id" id="edit_department_id" class="w-full border text-white border-white/60 rounded-md p-2 text-sm">
+                                        <option class="text-primary" value="">Select Department</option>
+                                        @foreach($departments as $department)
+                                        <option class="text-primary" value="{{ $department->id }}">{{ $department->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="edit_status" class="block text-sm font-medium text-white mb-1">Status</label>
+                                    <select name="status" id="edit_status" class="w-full border text-white border-white/60 rounded-md p-2 text-sm" required>
+                                        <option class="text-primary" value="active">Active</option>
+                                        <option class="text-primary" value="inactive">Inactive</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="flex justify-end space-x-3 pt-4">
+                                <button type="button" onclick="closeEditUserModal()" class="px-4 py-2 bg-red-600 rounded-md hover:bg-red-700 text-white cursor-pointer text-sm">Cancel</button>
+                                <button type="submit" class="px-4 py-2 bg-primary text-white rounded hover:bg-primary/80 text-sm">Save Changes</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
 
                 <div class="overflow-x-auto">
                     <table class="min-w-full divide-y divide-primary">
@@ -275,7 +275,7 @@
                 </div>
                 <div>
                     <label for="phone" class="block text-sm font-medium text-white mb-1">Phone</label>
-                    <input type="tel" name="phone" id="phone" class="w-full border text-white border-white/60 rounded-md p-2 text-sm">
+                    <input type="number" name="phone" id="phone" class="w-full border text-white border-white/60 rounded-md p-2 text-sm">
                 </div>
                 <input type="hidden" name="password" value="password">
                 <input type="hidden" name="password_confirmation" value="password">
@@ -436,7 +436,15 @@
             const role = button.dataset.role || '';
             const deptId = button.dataset.departmentId || '';
             const status = button.dataset.status || 'active';
-            window.openEditUserModal(userId, { username, userName, email, phone, role, deptId, status });
+            window.openEditUserModal(userId, {
+                username,
+                userName,
+                email,
+                phone,
+                role,
+                deptId,
+                status
+            });
         };
 
         window.openEditUserModal = function(userId, data) {

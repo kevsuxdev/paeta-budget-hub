@@ -3,9 +3,32 @@
 <div class="p-6">
     <!-- Header -->
     <div class="mb-8">
-        <h1 class="text-3xl font-bold text-primary mb-2">Budget Request Submission</h1>
-        <p class="text-gray-600">Submit a new budget request by filling out the details below. Include all necessary line items and supporting documentation.</p>
+        <h1 class="text-3xl font-bold text-black mb-1">Budget Request Submission</h1>
+        <p class="text-black font-medium">Submit a new budget request by filling out the details below. Include all necessary line items and supporting documentation.</p>
     </div>
+
+    @if (session('success'))
+    <div
+        id="success-alert"
+        class="mb-6 flex items-center justify-between rounded-lg bg-green-100 border border-green-300 p-4 text-green-800">
+        <div class="flex items-center gap-2">
+            <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M5 13l4 4L19 7" />
+            </svg>
+            <span class="text-sm font-medium">
+                {{ session('success') }}
+            </span>
+        </div>
+
+        <button
+            type="button"
+            onclick="document.getElementById('success-alert').remove()"
+            class="text-green-700 hover:text-green-900 text-sm font-semibold">
+            ✕
+        </button>
+    </div>
+    @endif
 
     <form action="{{ route('admin.budget.store') }}" method="POST" enctype="multipart/form-data" class="space-y-8">
         @csrf
@@ -25,7 +48,7 @@
                 </div>
                 <x-input-fields class="bg-white" name="title" label="Title" type="text" placeholder="ex. Shared Budget" />
                 <x-input-fields class="bg-white" name="fiscal_year" label="Fiscal Year" type="number" />
-                <x-input-fields class="bg-white" name="category" label="Category" type="text" />
+                <x-input-fields class="bg-white" name="category" label="Budget Category" type="text" />
                 <x-input-fields class="bg-white" name="submission_date" label="Due Date" type="date" min="{{ \Carbon\Carbon::tomorrow()->format('Y-m-d') }}" />
             </div>
             <div class="mt-6">
@@ -72,16 +95,18 @@
             <label
                 for="supporting_document"
                 id="dropzone"
-                class="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-primary text-primary rounded-lg cursor-pointer
+                class="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-primary rounded-lg cursor-pointer
                bg-primary hover:bg-primary/80 transition text-center">
-                <svg class="w-8 h-8 text-gray-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+
+                <svg class="w-8 h-8 text-gray-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M7 16V12M7 12V8M7 12h4m6 4v-1a3 3 0 00-3-3H6a3 3 0 00-3 3v1" />
                 </svg>
 
                 <p class="text-sm text-white" id="upload-text">
-                    <span class="font-medium ">Click to upload</span> or drag and drop
+                    <span class="font-medium">Click to upload</span> or drag and drop
                 </p>
+
                 <p class="text-xs text-white mt-1">
                     PDF, DOC, DOCX, JPG, JPEG, PNG
                 </p>
@@ -93,6 +118,17 @@
                     class="hidden"
                     accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" />
             </label>
+
+            <!-- File Preview -->
+            <div id="file-preview" class="hidden mt-4 flex items-center justify-between bg-white rounded-md px-4 py-2">
+                <span id="file-name" class="text-sm text-gray-700 truncate"></span>
+                <button
+                    type="button"
+                    id="remove-file"
+                    class="text-red-600 text-sm font-medium hover:underline">
+                    Remove
+                </button>
+            </div>
         </div>
 
         <div class="flex justify-end">
@@ -127,19 +163,19 @@
         newItem.innerHTML = `
             <article>
                 <label class="text-sm font-medium">Description</label>
-                <input type="text" name="line_items[${itemCount}][description]" class="w-full border border-black/20 rounded-md p-2 text-sm" required>
+                <input type="text" name="line_items[${itemCount}][description]" class="w-full bg-white border border-white/60 rounded-md p-2 text-sm description text-primary" required>
             </article>
             <article>
                 <label class="text-sm font-medium">Quantity</label>
-                <input type="number" name="line_items[${itemCount}][quantity]" min="1" class="w-full border border-black/20 rounded-md p-2 text-sm quantity" required>
+                <input type="number" name="line_items[${itemCount}][quantity]" min="1" class="w-full bg-white border border-white/60 rounded-md p-2 text-sm quantity text-primary quantity" required>
             </article>
             <article>
                 <label class="text-sm font-medium">Unit Cost</label>
-                <input type="number" step="0.01" name="line_items[${itemCount}][unit_cost]" min="0" class="w-full border border-black/20 rounded-md p-2 text-sm unit-cost" required>
+                <input type="number" step="0.01" name="line_items[${itemCount}][unit_cost]" min="0" class="w-full bg-white border border-white/60 rounded-md p-2 text-sm quantity text-primary unit-cost" required>
             </article>
             <article>
                 <label class="text-sm font-medium">Total Cost</label>
-                <input type="number" step="0.01" class="w-full border border-black/20 rounded-md p-2 text-sm total-cost" readonly>
+                <input type="number" step="0.01" class="w-full bg-white border border-white/60 rounded-md p-2 text-sm quantity text-primary total-cost" readonly>
             </article>
             <div class="flex items-end">
                 <button type="button" class="remove-item bg-red-500 text-primary px-3 py-2 rounded-md hover:bg-red-600">Remove</button>
@@ -203,6 +239,25 @@
             e.preventDefault();
             dropzone.classList.add('border-primary', 'bg-primary/5');
         });
+    });
+
+    const fileInput = document.getElementById('supporting_document');
+    const filePreview = document.getElementById('file-preview');
+    const fileName = document.getElementById('file-name');
+    const removeBtn = document.getElementById('remove-file');
+
+    fileInput.addEventListener('change', () => {
+        if (fileInput.files.length > 0) {
+            fileName.textContent = fileInput.files[0].name;
+            filePreview.classList.remove('hidden');
+            uploadText.innerHTML = '<span class="font-medium">File selected</span>';
+        }
+    });
+
+    removeBtn.addEventListener('click', () => {
+        fileInput.value = '';
+        filePreview.classList.add('hidden');
+        uploadText.innerHTML = '<span class="font-medium">Click to upload</span> or drag and drop';
     });
 
     ['dragleave', 'drop'].forEach(event => {

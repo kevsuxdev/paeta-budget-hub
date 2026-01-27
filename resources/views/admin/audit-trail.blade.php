@@ -148,8 +148,8 @@
                         </td>
                         <td class="px-6 py-4 text-sm">
                             @if($log->budget)
-                            <div class="text-white font-medium">{{ $log->budget->title }}</div>
-                            <div class="text-xs text-gray-400">ID: {{ $log->budget->id }}</div>
+                            <div class="text-white font-medium whitespace-nowrap">{{ $log->budget->title }}</div>
+                            <div class="text-xs text-gray-400 whitespace-nowrap">ID: {{ $log->budget->id }}</div>
                             @else
                             <span class="text-white italic">Not Applicable</span>
                             @endif
@@ -222,7 +222,7 @@
                             @endif
                         </td>
                         <td class="px-6 py-4 text-sm text-white">
-                            <div class="max-w-xs truncate" title="{{ $log->notes }}">
+                            <div class="whitespace-wrap" title="{{ $log->notes }}">
                                 {{ $log->notes ?? '-' }}
                             </div>
                         </td>

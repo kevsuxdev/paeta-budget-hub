@@ -38,6 +38,14 @@ class AuthController extends Controller
             ])->onlyInput('email');
         }
 
+        if (Auth::user()->status === 'inactive') {
+            Auth::logout();
+
+            return back()->withErrors([
+                'email' => 'Your account is inactive. Please contact the administrator.',
+            ])->onlyInput('email');
+        }
+
         $request->session()->regenerate();
 
         return match (Auth::user()->role) {

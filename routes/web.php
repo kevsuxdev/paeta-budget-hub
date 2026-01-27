@@ -25,6 +25,9 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/document-tracking', [AdminController::class, 'documentTracking'])->name('admin.document.tracking');
     Route::get('/admin/budget/{budget}/logs', [AdminController::class, 'getBudgetLogs'])->name('admin.budget.logs');
     Route::get('/admin/finance-review', [AdminController::class, 'financeReview'])->name('admin.finance.review');
+    Route::get('/admin/budget/{budget}/edit', [AdminController::class, 'editBudget'])->name('admin.budget.edit');
+    Route::put('/admin/budget/{budget}', [AdminController::class, 'updateBudget'])->name('admin.budget.update');
+    Route::delete('/admin/budget/{budget}', [AdminController::class, 'destroyBudget'])->name('admin.budget.destroy');
     Route::get('/admin/approval', [AdminController::class, 'approval'])->name('admin.approval');
     Route::post('/admin/budget/{budget}/approve', [AdminController::class, 'approveBudget'])->name('admin.budget.approve');
     Route::post('/admin/budget/{budget}/reject', [AdminController::class, 'rejectBudget'])->name('admin.budget.reject');
@@ -46,6 +49,9 @@ Route::middleware(['auth', 'role:staff'])->group(function () {
     Route::get('/staff/dashboard', [StaffController::class, 'dashboard'])->name('staff.dashboard');
     Route::get('/staff/budget/create', [StaffController::class, 'createBudget'])->name('staff.budget.create');
     Route::post('/staff/budget/store', [StaffController::class, 'storeBudget'])->name('staff.budget.store');
+    Route::get('/staff/budget/{budget}/edit', [StaffController::class, 'editBudget'])->name('staff.budget.edit');
+    Route::put('/staff/budget/{budget}', [StaffController::class, 'updateBudget'])->name('staff.budget.update');
+    Route::delete('/staff/budget/{budget}', [StaffController::class, 'destroyBudget'])->name('staff.budget.destroy');
     Route::get('/staff/document-tracking', [StaffController::class, 'documentTracking'])->name('staff.document.tracking');
     Route::get('/staff/budget/{budget}/logs', [StaffController::class, 'getBudgetLogs'])->name('staff.budget.logs');
 });

@@ -121,7 +121,7 @@
                             <th class="px-4 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Title</th>
                             <th class="px-4 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Department</th>
                             <th class="px-4 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Status</th>
-                            <th class="px-4 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Date</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Due Date</th>
                         </tr>
                     </thead>
                     <tbody class="bg-orange-brown divide-y divide-primary">

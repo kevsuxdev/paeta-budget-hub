@@ -40,11 +40,11 @@ class StaffController extends Controller
         // Fetch all budget logs for this user's budgets and password changes
         $userBudgetIds = Budget::where('user_id', $user->id)->pluck('id');
         $notifications = BudgetLog::with(['budget', 'user'])
-            ->where(function($q) use ($userBudgetIds, $user) {
+            ->where(function ($q) use ($userBudgetIds, $user) {
                 $q->whereIn('budget_id', $userBudgetIds)
-                  ->orWhere(function($q2) use ($user) {
-                      $q2->whereNull('budget_id')->where('user_id', $user->id)->where('action', 'password_changed');
-                  });
+                    ->orWhere(function ($q2) use ($user) {
+                        $q2->whereNull('budget_id')->where('user_id', $user->id)->where('action', 'password_changed');
+                    });
             })
             ->orderBy('created_at', 'desc')
             ->limit(20)
@@ -138,10 +138,139 @@ class StaffController extends Controller
                 'new_status' => 'pending',
                 'notes' => 'Budget request created by ' . Auth::user()->full_name,
             ]);
-
-            return redirect()->route('staff.document.tracking')->with('success', 'Budget submitted successfully.');
+            return redirect()
+                ->route('staff.budget.create')
+                ->with('success', 'Budget request submitted successfully!');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'An error occurred: ' . $e->getMessage())->withInput();
+        }
+    }
+
+    /**
+     * Show the form for editing the specified budget.
+     */
+    public function editBudget(Budget $budget)
+    {
+        if ($budget->user_id !== Auth::id()) {
+            return redirect()->back()->with('error', 'Unauthorized');
+        }
+
+        $departments = Department::all();
+        $budget->load('lineItems');
+
+        return view('staff.budget.edit', compact('budget', 'departments'));
+    }
+
+    /**
+     * Update the specified budget in storage.
+     */
+    public function updateBudget(Request $request, Budget $budget)
+    {
+        if ($budget->user_id !== Auth::id()) {
+            return redirect()->back()->with('error', 'Unauthorized');
+        }
+
+        try {
+            $request->validate([
+                'department_id' => 'required|exists:departments,id',
+                'title' => 'required|string|max:255',
+                'justification' => 'nullable|string',
+                'fiscal_year' => 'required|string',
+                'category' => 'required|string',
+                'submission_date' => 'required|date|after:today',
+                'supporting_document' => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png',
+                'line_items' => 'required|array|min:1',
+                'line_items.*.description' => 'required|string',
+                'line_items.*.quantity' => 'required|integer|min:1',
+                'line_items.*.unit_cost' => 'required|numeric|min:0',
+            ]);
+
+            $totalBudget = 0;
+            foreach ($request->line_items as $item) {
+                $totalBudget += $item['quantity'] * $item['unit_cost'];
+            }
+
+            // Handle supporting document replacement
+            $supportingPath = $budget->supporting_document;
+            if ($request->hasFile('supporting_document')) {
+                // Ensure documents directory exists
+                Storage::disk('public')->makeDirectory('documents');
+
+                // Delete old file if exists
+                if ($supportingPath && Storage::disk('public')->exists($supportingPath)) {
+                    Storage::disk('public')->delete($supportingPath);
+                }
+
+                $supportingPath = $request->file('supporting_document')->store('documents', 'public');
+            }
+
+            $oldStatus = $budget->status;
+
+            $budget->update([
+                'department_id' => $request->department_id,
+                'title' => $request->title,
+                'justification' => $request->justification,
+                'fiscal_year' => $request->fiscal_year,
+                'category' => $request->category,
+                'submission_date' => $request->submission_date,
+                'total_budget' => $totalBudget,
+                'supporting_document' => $supportingPath,
+                'date_updated' => now(),
+                'status' => 'pending',
+            ]);
+
+            // Replace line items
+            $budget->lineItems()->delete();
+            foreach ($request->line_items as $item) {
+                BudgetLineItem::create([
+                    'budget_id' => $budget->id,
+                    'description' => $item['description'],
+                    'quantity' => $item['quantity'],
+                    'unit_cost' => $item['unit_cost'],
+                    'total_cost' => $item['quantity'] * $item['unit_cost'],
+                ]);
+            }
+
+            // Log update
+            BudgetLog::create([
+                'budget_id' => $budget->id,
+                'user_id' => Auth::id(),
+                'action' => 'updated',
+                'old_status' => $oldStatus,
+                'new_status' => $budget->status,
+                'notes' => 'Budget updated by ' . Auth::user()->full_name,
+            ]);
+
+            return redirect()->route('staff.document.tracking')->with('success', 'Budget updated successfully.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'An error occurred: ' . $e->getMessage())->withInput();
+        }
+    }
+
+    /**
+     * Remove the specified budget from storage.
+     */
+    public function destroyBudget(Budget $budget)
+    {
+        if ($budget->user_id !== Auth::id()) {
+            return redirect()->back()->with('error', 'Unauthorized');
+        }
+
+        try {
+            // Delete supporting document if exists
+            if ($budget->supporting_document && Storage::disk('public')->exists($budget->supporting_document)) {
+                Storage::disk('public')->delete($budget->supporting_document);
+            }
+
+            // Delete related line items and logs if not cascaded
+            $budget->lineItems()->delete();
+            $budget->logs()->delete();
+
+            $budget->delete();
+
+            return redirect()->route('staff.document.tracking')->with('success', 'Budget deleted successfully.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'An error occurred: ' . $e->getMessage());
         }
     }
 
@@ -207,7 +336,7 @@ class StaffController extends Controller
                 'status' => $budget->status,
                 'supporting_document' => $budget->supporting_document,
                 'e_signed' => $budget->e_signed,
-                'line_items' => $budget->lineItems->map(function($item) {
+                'line_items' => $budget->lineItems->map(function ($item) {
                     return [
                         'description' => $item->description,
                         'quantity' => $item->quantity,
