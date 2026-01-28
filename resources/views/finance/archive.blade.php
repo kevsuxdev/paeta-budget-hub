@@ -194,7 +194,7 @@
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm space-x-2">
                                 <button
-                                    class="btn-view-budget px-3 py-1 text-sm text-black-700 bg-blue-100 rounded hover:bg-blue-200"
+                                    class="btn-view-budget px-3 py-1 text-sm text-black-700 bg-blue-100 rounded hover:bg-blue-200 font-medium"
                                     data-budget-id="{{ $budget->id }}"
                                     data-budget-title="{{ $budget->title }}"
                                     data-budget-status="{{ $budget->status }}"
@@ -206,7 +206,7 @@
                                 <span class="text-gray-500">|</span>
                                 <a
                                     href="{{ route('finance.budget.downloadPdf', $budget->id) }}"
-                                    class="px-3 py-1 text-sm text-black-700 bg-red-100 rounded hover:bg-red-200"
+                                    class="px-3 py-1 text-sm text-black-700 bg-red-100 rounded hover:bg-red-200 font-medium"
                                     target="_blank"
                                 >
                                     Download PDF
@@ -217,7 +217,7 @@
                                         href="{{ asset('storage/' . $budget->supporting_document) }}"
                                         download="document_budget_{{ $budget->id }}.{{ pathinfo($budget->supporting_document, PATHINFO_EXTENSION) }}"
                                         target="_blank"
-                                        class="text-amber-400 hover:text-amber-300 font-medium"
+                                        class="px-3 py-1 text-sm text-black-400 bg-amber-100 rounded hover:bg-amber-200 font-medium"
                                     >
                                         Document
                                     </a>
