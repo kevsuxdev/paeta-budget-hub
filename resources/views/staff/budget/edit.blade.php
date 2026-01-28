@@ -3,10 +3,10 @@
 <div class="p-6">
     <!-- Header -->
     <div class="mb-8">
-        <h1 class="text-3xl font-bold text-primary mb-2">Edit Budget Request</h1>
-        <p class="text-gray-600">Update the budget request details below. You can add or remove line items and replace supporting documents.</p>
+        <h1 class="text-3xl font-bold text-black mb-1">Edit Budget Request</h1>
+        <p class="text-black font-medium">Update the budget request details below. You can add or remove line items and replace supporting documents.</p>
     </div>
-
+    
     <form action="{{ route('staff.budget.update', $budget->id) }}" method="POST" enctype="multipart/form-data" class="space-y-8">
         @csrf
         @method('PUT')
