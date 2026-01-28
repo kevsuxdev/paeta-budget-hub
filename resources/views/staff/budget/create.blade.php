@@ -148,12 +148,13 @@
     }
 
     function calculateGrandTotal() {
-        let grandTotal = 0;
-        document.querySelectorAll('.total-cost').forEach(input => {
-            grandTotal += parseFloat(input.value) || 0;
-        });
-        document.getElementById('grand-total').textContent = grandTotal.toFixed(2);
-    }
+    let grandTotal = 0;
+    document.querySelectorAll('.total-cost').forEach(input => {
+        grandTotal += parseFloat(input.value) || 0;
+    });
+    // Format with commas and 2 decimal places
+    document.getElementById('grand-total').textContent = grandTotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
 
     document.getElementById('add-item').addEventListener('click', function() {
         const lineItems = document.getElementById('line-items');
