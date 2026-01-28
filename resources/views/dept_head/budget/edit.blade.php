@@ -3,8 +3,8 @@
 <div class="p-6">
     <!-- Header -->
     <div class="mb-8">
-        <h1 class="text-3xl font-bold text-white mb-2">Edit Budget Request</h1>
-        <p class="text-gray-300">Update the budget request details and supporting documents.</p>
+        <h1 class="text-3xl font-bold text-black mb-1">Edit Budget Request</h1>
+        <p class="text-black font-medium">Update the budget request details and supporting documents.</p>
     </div>
 
     <form action="{{ route('dept_head.budget.update', $budget) }}" method="POST" enctype="multipart/form-data" class="space-y-8">
