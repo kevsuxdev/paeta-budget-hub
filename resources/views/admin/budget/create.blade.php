@@ -148,7 +148,7 @@
         calculateGrandTotal();
     }
 
-    function calculateGrandTotal() {
+   function calculateGrandTotal() {
     let grandTotal = 0;
     document.querySelectorAll('.total-cost').forEach(input => {
         grandTotal += parseFloat(input.value) || 0;
