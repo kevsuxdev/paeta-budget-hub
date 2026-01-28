@@ -153,6 +153,7 @@
     document.querySelectorAll('.total-cost').forEach(input => {
         grandTotal += parseFloat(input.value) || 0;
     });
+    // Format with commas and 2 decimal places
     document.getElementById('grand-total').textContent = grandTotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
