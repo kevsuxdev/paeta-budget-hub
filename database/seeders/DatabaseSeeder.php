@@ -20,22 +20,22 @@ class DatabaseSeeder extends Seeder
         $users = [
             [
                 'full_name' => 'Administrator',
-                'email' => 'admin@paeta.gov.ph',
+                'email' => 'admin@paete.gov.ph',
                 'role' => 'admin',
             ],
             [
                 'full_name' => 'Staff',
-                'email' => 'staff@paeta.gov.ph',
+                'email' => 'staff@paete.gov.ph',
                 'role' => 'staff',
             ],
             [
                 'full_name' => 'Finance',
-                'email' => 'finance@paeta.gov.ph',
+                'email' => 'finance@paete.gov.ph',
                 'role' => 'finance',
             ],
             [
                 'full_name' => 'Department Head kevs',
-                'email' => 'head@paeta.gov.ph',
+                'email' => 'head@paete.gov.ph',
             ]
         ];
 

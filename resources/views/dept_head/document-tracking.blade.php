@@ -64,7 +64,7 @@
                                 </x-button>
 
                                 @if(auth()->id() == $budget->user_id && ($budget->status == 'pending' || $budget->status == 'revise'))
-                                    <a href="{{ route('staff.budget.edit', $budget->id) }}" class="ml-2 inline-block bg-white/10 text-white px-3 py-2 rounded-md hover:bg-opacity-90 text-sm">Edit</a>
+                                    <a href="{{ route('dept_head.budget.edit', $budget->id) }}" class="ml-2 inline-block bg-white/10 text-white px-3 py-2 rounded-md hover:bg-opacity-90 text-sm">Edit</a>
                                 @endif
 
                                 <button
