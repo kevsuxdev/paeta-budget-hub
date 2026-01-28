@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <title>Budget Information PDF</title>
     <style>
-        body { font-family: Arial, sans-serif; font-size: 13px; color: #222; }
+        body { font-family: 'DejaVu Sans', sans-serif; font-size: 13px; color: #222; }
         .header { text-align: center; margin-bottom: 20px; display: flex; align-items: center; }
         .section { margin-bottom: 18px; }
         .section-title { font-weight: bold; font-size: 16px; margin-bottom: 8px; color: #333; }
@@ -18,7 +18,6 @@
         .header-table {
             margin-bottom: 20px;
         }
-
     </style>
 </head>
 <body>
@@ -28,7 +27,7 @@
                 <img src="{{ public_path('assets/logo.png') }}" style="max-height:80px;">
             </td>
             <td style="text-align: center;">
-                <h2 style="margin:0;">Paeta Budget Hub</h2>
+                <h2 style="margin:0;">Paete Budget Hub</h2>
             </td>
         </tr>
     </table>
@@ -63,8 +62,8 @@
                 <tr>
                     <td>{{ $item->description }}</td>
                     <td>{{ $item->quantity }}</td>
-                    <td>₱{{ number_format($item->unit_cost, 2) }}</td>
-                    <td>₱{{ number_format($item->total_cost, 2) }}</td>
+                    <td>&#8369;{{ number_format($item->unit_cost, 2) }}</td>
+                    <td>&#8369;{{ number_format($item->total_cost, 2) }}</td>
                 </tr>
                 @endforeach
             </tbody>
