@@ -206,7 +206,7 @@
                                 <span class="text-gray-500">|</span>
                                 <a
                                     href="{{ route('admin.budget.downloadPdf', $budget->id) }}"
-                                    class="text-red-400 hover:text-red-300 font-medium"
+                                    class="px-3 py-1 text-sm text-black-700 bg-red-100 rounded hover:bg-red-200"
                                     target="_blank"
                                 >
                                     Download PDF
