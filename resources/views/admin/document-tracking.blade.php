@@ -53,6 +53,16 @@
                         <td class="px-6 bg-orange-brown py-4 whitespace-nowrap text-sm text-white">{{ $budget->submission_date->format('M d, Y') }}</td>
                         <td class="px-6 bg-orange-brown py-4 whitespace-nowrap text-sm font-medium">
                             <div class="flex items-center gap-2">
+                                @if(auth()->id() == $budget->user_id && ($budget->status == 'pending' || $budget->status == 'revise'))
+                                <a href="{{ route('admin.budget.edit', $budget->id) }}" class="ml-2 inline-block bg-white/10 text-white px-3 py-2 rounded-md hover:bg-opacity-90 text-sm">Edit</a>
+                                @endif
+                                @if(auth()->id() == $budget->user_id && $budget->status == 'pending')
+                                <form action="{{ route('admin.budget.destroy', $budget->id) }}" method="POST" class="inline-block">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="ml-2 inline-block bg-red-600 text-white px-3 py-2 rounded-md hover:bg-red-700 text-sm" onclick="return confirm('Are you sure you want to delete this budget?');">Delete</button>
+                                </form>
+                                @endif
                                 <x-button
                                     type="button"
                                     class="btn-view-budget"

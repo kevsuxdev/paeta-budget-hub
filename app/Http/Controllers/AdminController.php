@@ -220,7 +220,7 @@ class AdminController extends Controller
     {
         $departments = Department::all();
         $budget->load('lineItems');
-        return view('staff.budget.edit', compact('budget', 'departments'));
+        return view('admin.budget.edit', compact('budget', 'departments'));
     }
 
     /**
