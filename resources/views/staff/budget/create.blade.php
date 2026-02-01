@@ -6,6 +6,7 @@
         <h1 class="text-3xl font-bold text-black mb-1">Budget Request Submission</h1>
         <p class="text-black font-medium">Submit a new budget request by filling out the details below. Include all necessary line items and supporting documentation.</p>
     </div>
+
     @if (session('success'))
     <div
         id="success-alert"
@@ -37,14 +38,13 @@
             <h2 class="text-2xl font-semibold text-primary mb-4">Budget Details</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                    @php $user = request()->user(); @endphp
                     <label for="department_id" class="block text-sm font-medium text-primary mb-2">Department</label>
-                    <select id="department_id" class="w-full border border-white/70 rounded-md text-primary p-2 text-sm bg-white" disabled>
+                    <select name="department_id" id="department_id" class="w-full border border-white/70 rounded-md text-primary p-2 text-sm bg-white" required>
+                        <option class="text-primary" value="">Select Department</option>
                         @foreach($departments as $department)
-                        <option class="text-primary" value="{{ $department->id }}" {{ $department->id == ($user->department_id ?? null) ? 'selected' : '' }}>{{ $department->name }}</option>
+                        <option class="text-primary" value="{{ $department->id }}">{{ $department->name }}</option>
                         @endforeach
                     </select>
-                    <input type="hidden" name="department_id" value="{{ $user->department_id ?? '' }}">
                 </div>
                 <x-input-fields class="bg-white" name="title" label="Title" type="text" placeholder="ex. Shared Budget" />
                 <x-input-fields class="bg-white" name="fiscal_year" label="Fiscal Year" type="number" />
@@ -76,12 +76,12 @@
                         <input type="number" step="0.01" class="w-full bg-white border border-black/20 rounded-md p-2 text-sm total-cost" readonly>
                     </article>
                     <div class="flex items-end">
-                        <button type="button" class="remove-item bg-red-500 text-primary px-3 py-2 rounded-md hover:bg-red-600 hidden">Remove</button>
+                        <button type="button" class="remove-item bg-red-500 text-white px-3 py-2 rounded-md hover:bg-red-600 hidden">Remove</button>
                     </div>
                 </div>
             </div>
             <div class="mt-4 flex justify-between items-center">
-                <button type="button" id="add-item" class="bg-primary text-white px-4 text-sm py-2 rounded-md hover:bg-opacity-90">Add Line Item</button>
+                <button type="button" id="add-item"  class="text-white px-4 text-sm py-2 rounded-md bg-primary hover:bg-secondary">Add Line Item</button>
                 <div class="text-lg font-semibold">
                     Grand Total: <span id="grand-total" class="text-sm text-primary">0.00</span>
                 </div>
@@ -91,7 +91,6 @@
         <!-- Third Section: Supporting Documents -->
         <div class="bg-orange-200 p-6 rounded-lg shadow-sm text-primary">
             <h2 class="text-xl font-semibold text-primary mb-6">Supporting Documents</h2>
-
             <label
                 for="supporting_document"
                 id="dropzone"
@@ -120,16 +119,16 @@
             </label>
 
             <!-- File Preview -->
-            <div id="file-preview" class="hidden mt-4 flex items-center justify-between bg-white rounded-md px-4 py-2">
-                <span id="file-name" class="text-sm text-gray-700 truncate"></span>
+            <div id="file-preview" class="hidden mt-4 flex items-center justify-between bg-primary/80 rounded-md px-4 py-2">
+                <span id="file-name" class="text-sm text-white truncate"></span>
                 <button
                     type="button"
                     id="remove-file"
-                    class="text-red-600 text-sm font-medium hover:underline">
-                    Remove
+                    class="px-3 py-2 rounded-md bg-primary hover:bg-red-300">❌
                 </button>
             </div>
         </div>
+
         <div class="flex justify-end">
             <x-button>Submit Budget</x-button>
         </div>
@@ -148,12 +147,12 @@
     }
 
     function calculateGrandTotal() {
-        let grandTotal = 0;
-        document.querySelectorAll('.total-cost').forEach(input => {
-            grandTotal += parseFloat(input.value) || 0;
-        });
-        document.getElementById('grand-total').textContent = grandTotal.toFixed(2);
-    }
+    let grandTotal = 0;
+    document.querySelectorAll('.total-cost').forEach(input => {
+        grandTotal += parseFloat(input.value) || 0;
+    });
+    document.getElementById('grand-total').textContent = grandTotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
 
     document.getElementById('add-item').addEventListener('click', function() {
         const lineItems = document.getElementById('line-items');
@@ -177,7 +176,7 @@
                 <input type="number" step="0.01" class="w-full bg-white border border-white/60 rounded-md p-2 text-sm quantity text-primary total-cost" readonly>
             </article>
             <div class="flex items-end">
-                <button type="button" class="remove-item bg-red-500 text-primary px-3 py-2 rounded-md hover:bg-red-600">Remove</button>
+                <button type="button" class="remove-item bg-red-500 text-white px-3 py-2 rounded-md hover:bg-red-600">Remove</button>
             </div>
         `;
         lineItems.appendChild(newItem);
@@ -240,13 +239,6 @@
         });
     });
 
-    ['dragleave', 'drop'].forEach(event => {
-        dropzone.addEventListener(event, e => {
-            e.preventDefault();
-            dropzone.classList.remove('border-primary', 'bg-primary/5');
-        });
-    });
-
     const fileInput = document.getElementById('supporting_document');
     const filePreview = document.getElementById('file-preview');
     const fileName = document.getElementById('file-name');
@@ -264,6 +256,13 @@
         fileInput.value = '';
         filePreview.classList.add('hidden');
         uploadText.innerHTML = '<span class="font-medium">Click to upload</span> or drag and drop';
+    });
+
+    ['dragleave', 'drop'].forEach(event => {
+        dropzone.addEventListener(event, e => {
+            e.preventDefault();
+            dropzone.classList.remove('border-primary', 'bg-primary/5');
+        });
     });
 </script>
 @endsection

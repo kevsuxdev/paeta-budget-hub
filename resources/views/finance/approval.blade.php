@@ -109,7 +109,7 @@
                            <td class="px-6 py-4 whitespace-nowrap text-sm space-x-2">
                                 <button
                                     type="button"
-                                    class="btn-view-budget px-3 py-1 text-sm text-black-700 bg-blue-100 rounded hover:bg-blue-200"
+                                    class="btn-view-budget px-3 py-1 text-sm text-black-700 bg-blue-100 rounded hover:bg-blue-200 font-medium"
                                     data-budget-id="{{ $budget->id }}"
                                     data-budget-title="{{ $budget->title }}"
                                     data-budget-status="{{ $budget->status }}"
@@ -121,7 +121,7 @@
                                 <span class="text-gray-300">|</span>
                                 <button
                                     type="button"
-                                    class="btn-approve-budget px-3 py-1 text-sm text-black-700 bg-green-100 rounded hover:bg-green-200"
+                                    class="btn-approve-budget px-3 py-1 text-sm text-black-700 bg-green-100 rounded hover:bg-green-200 font-medium"
                                     data-budget-id="{{ $budget->id }}"
                                     data-budget-title="{{ $budget->title }}"
                                 >
@@ -132,7 +132,7 @@
                                     @csrf
                                     <button
                                         type="submit"
-                                        class="px-3 py-1 text-sm text-black-700 bg-red-100 rounded hover:bg-red-200"
+                                        class="px-3 py-1 text-sm text-black-700 bg-red-100 rounded hover:bg-red-200 font-medium"
                                         onclick="return confirm('Are you sure you want to reject this budget?')"
                                     >
                                         Reject
