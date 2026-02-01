@@ -1,7 +1,7 @@
 @extends('layouts.auth-layout')
 @section('main-content')
 <div class="p-6">
-        <!-- Alert Messages -->
+   <!-- Alert Messages -->
     @if(session('success'))
     <x-alert-message type="success" :message="session('success')" />
     @endif
@@ -27,7 +27,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                     @php $user = request()->user(); @endphp
-                    <label for="department_id" class="block text-sm font-medium text-primary mb-2">Department</label>
+                    <label for="department_id" class="block text-sm font-medium text-primary mb-2 ">Department</label>
                     <select id="department_id" class="w-full border border-white/70 rounded-md text-primary p-2 text-sm bg-gray-200" disabled>
                         @foreach($departments as $department)
                         <option class="text-primary" value="{{ $department->id }}" {{ $department->id == ($budget->department_id ?? $user->department_id) ? 'selected' : '' }}>{{ $department->name }}</option>
@@ -37,7 +37,7 @@
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-primary mb-2">Title</label>
-                    <input name="title"type="text" value="{{ old('title', $budget->title) }}" class="w-full border border-white/70 rounded-md p-2 text-sm bg-gray-200" />
+                    <input name="title" type="text" value="{{ old('title', $budget->title) }}" class="w-full border border-white/70 rounded-md p-2 text-sm bg-gray-200"  />
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-primary mb-2">Fiscal Year</label>
@@ -45,16 +45,16 @@
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-primary mb-2">Budget Category</label>
-                    <input name="category" type="text" value="{{ old('category', $budget->category) }}" class="w-full border border-white/70 rounded-md p-2 text-sm bg-gray-200"/>
+                    <input name="category" type="text" value="{{ old('category', $budget->category) }}" class="w-full border border-white/70 rounded-md p-2 text-sm bg-gray-200" />
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-primary mb-2">Due Date</label>
-                    <input name="submission_date" type="date" value="{{ old('submission_date', $budget->submission_date->format('Y-m-d')) }}" min="{{ \Carbon\Carbon::tomorrow()->format('Y-m-d') }}" class="w-full border border-white/70 rounded-md p-2 text-sm bg-gray-200"/>
+                    <input name="submission_date" type="date" value="{{ old('submission_date', $budget->submission_date->format('Y-m-d')) }}" min="{{ \Carbon\Carbon::tomorrow()->format('Y-m-d') }}" class="w-full border border-white/70 rounded-md p-2 text-sm bg-gray-200" />
                 </div>
             </div>
             <div class="mt-6">
                 <label for="justification" class="block text-sm font-medium text-primary mb-2">Justification</label>
-                <textarea name="justification" id="justification" rows="4" class="w-full border bg-gray-200 border-black/20 rounded-md p-2 text-sm ">{{ old('justification', $budget->justification) }}</textarea>
+                <textarea name="justification" id="justification" rows="4" class="w-full border bg-gray-200 border-black/20 rounded-md p-2 text-sm">{{ old('justification', $budget->justification) }}</textarea>
             </div>
         </div>
 
@@ -113,14 +113,13 @@
                     </div>
                 @endif
             </div>
-            <div class="mt-4 flex justify-between items-center">
+          <div class="mt-4 flex justify-between items-center">
                 <button type="button" id="add-item" class="text-white px-4 text-sm py-2 rounded-md bg-primary hover:bg-secondary">Add Line Item</button>
                 <div class="text-lg font-semibold">
                     Grand Total: <span id="grand-total" class="text-sm text-primary">0.00</span>
                 </div>
             </div>
         </div>
-
         <!-- Third Section: Supporting Documents -->
         <div class="bg-orange-200 p-6 rounded-lg shadow-sm text-primary">
             <h2 class="text-xl font-semibold text-primary mb-6">Supporting Documents</h2>
@@ -161,9 +160,11 @@
                         <span id="file-name" class="text-sm text-white truncate">No file selected</span>
                     @endif
                 </div>
-                <div>
-                    <button type="button" id="remove-file" class="px-3 py-2 rounded-md bg-primary hover:bg-red-300">❌</button>
-                </div>
+                <button
+                    type="button"
+                    id="remove-file"
+                    class="px-3 py-2 rounded-md bg-primary hover:bg-red-300">❌
+                </button>
             </div>
         </div>
         <div class="flex justify-end font-medium">
@@ -229,6 +230,7 @@
         itemCount++;
     });
 
+ 
     document.addEventListener('click', function(e) {
         if (e.target.classList.contains('remove-item')) {
             e.target.closest('.line-item').remove();
@@ -241,18 +243,21 @@
         const items = document.querySelectorAll('.line-item');
         items.forEach((item, index) => {
             const removeBtn = item.querySelector('.remove-item');
-            if (removeBtn) {
-                if (items.length > 1) {
-                    removeBtn.classList.remove('hidden');
-                } else {
-                    removeBtn.classList.add('hidden');
-                }
+            if (items.length > 1) {
+                removeBtn.classList.remove('hidden');
+            } else {
+                removeBtn.classList.add('hidden');
             }
         });
     }
 
-    // Attach listeners to initial items
-    document.querySelectorAll('#line-items .line-item').forEach(item => {
+    function attachEventListeners(item) {
+        item.querySelector('.quantity').addEventListener('input', () => calculateTotal(item));
+        item.querySelector('.unit-cost').addEventListener('input', () => calculateTotal(item));
+    }
+
+    // Attach listeners to initial item
+    document.querySelectorAll('.line-item').forEach(item => {
         attachEventListeners(item);
     });
 
