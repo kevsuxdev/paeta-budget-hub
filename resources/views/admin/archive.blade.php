@@ -102,7 +102,7 @@
                             type="text"
                             name="search"
                             value="{{ $search ?? '' }}"
-                            placeholder="Search by ID, title, or department..."
+                            placeholder="Search by ID, title, department, user..."
                             class="w-full text-sm md:w-80 pl-10 pr-4 py-2 bg-primary border border-gray-600 rounded-lg text-white placeholder-gray-400 "
                         >
                         <svg class="absolute left-3 top-2.5 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">

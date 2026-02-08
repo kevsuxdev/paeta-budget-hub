@@ -271,11 +271,11 @@
                 </div>
                 <div class="md:col-span-2">
                     <label for="email" class="block text-sm font-medium text-white mb-1">Email</label>
-                    <input type="email" name="email" id="email" class="w-full border text-white border-white/60 rounded-md p-2 text-sm" required>
+                    <input type="email" name="email" id="email" class="w-full border text-white border-white/60 rounded-md p-2 text-sm" placeholder="user@paete.gov.ph" pattern=".+@paete\.gov\.ph" title="Please use an email ending in @paete.gov.ph"required>
                 </div>
                 <div>
                     <label for="phone" class="block text-sm font-medium text-white mb-1">Phone</label>
-                    <input type="number" name="phone" id="phone" class="w-full border text-white border-white/60 rounded-md p-2 text-sm">
+                    <input type="text" name="phone" id="phone" class="w-full border text-white border-white/60 rounded-md p-2 text-sm" placeholder="(+63)" maxlength="12" oninput="formatPhoneNumber(this)" required>
                 </div>
                 <input type="hidden" name="password" value="password">
                 <input type="hidden" name="password_confirmation" value="password">

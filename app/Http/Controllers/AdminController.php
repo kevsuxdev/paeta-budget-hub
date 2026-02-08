@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 
+
 class AdminController extends Controller
 {
     public function changeUserPassword(Request $request)
@@ -577,12 +578,27 @@ class AdminController extends Controller
         $request->validate([
             'username' => 'required|string|max:255|unique:users',
             'full_name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'phone' => 'nullable|string|max:255',
+            'email' => [
+                'required', 
+                'string', 
+                'email', 
+                'max:255', 
+                'unique:users', 
+                'regex:/^[a-zA-Z0-9._%+-]+@paete\.gov\.ph$/i'
+            ],
+            'phone' => [
+                'nullable', 
+                'string', 
+                'regex:/^\+63\d{10}$/'
+            ],
             'role' => 'required|in:admin,finance,dept_head,staff',
             'department_id' => 'nullable|exists:departments,id',
             'status' => 'required|in:active,inactive',
+            ], [
+            'email.regex' => 'The email must be an authorized @paete.gov.ph address.',
+            'phone.regex' => 'Phone must start with +63 followed by 10 digits (e.g., +639123456789).',
         ]);
+
 
         User::create([
             'username' => $request->username,
@@ -598,16 +614,32 @@ class AdminController extends Controller
         return redirect()->back()->with('success', 'User created successfully.');
     }
 
-    public function updateUser(Request $request, User $user)
+public function updateUser(Request $request, User $user)
     {
         $request->validate([
             'username' => 'required|string|max:255|unique:users,username,' . $user->id,
             'full_name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
-            'phone' => 'nullable|string|max:255',
+            // Restricted to @paete.gov.ph only
+            'email' => [
+                'required', 
+                'string', 
+                'email', 
+                'max:255', 
+                'unique:users,email,' . $user->id, 
+                'regex:/^[a-zA-Z0-9._%+-]+@paete\.gov\.ph$/i'
+            ],
+            // Must start with +63 and followed by exactly 10 digits
+            'phone' => [
+                'nullable', 
+                'string', 
+                'regex:/^\+63\d{10}$/'
+            ],
             'role' => 'required|in:admin,finance,dept_head,staff',
             'department_id' => 'nullable|exists:departments,id',
             'status' => 'required|in:active,inactive',
+        ], [
+            'email.regex' => 'The email must be an authorized @paete.gov.ph address.',
+            'phone.regex' => 'Phone must start with +63 followed by 10 digits.',
         ]);
 
         $user->update([
@@ -636,81 +668,108 @@ class AdminController extends Controller
     }
 
     public function auditTrail(Request $request)
-    {
-        // Statistics
-        $totalApproved = Budget::where('status', 'approved')->count();
-        $totalActivities = BudgetLog::count();
-        $totalBudgetsSubmitted = Budget::count();
-        $activeUsers = User::where('status', 'active')->count();
+{
+    // Statistics (Keep your existing stats)
+    $totalApproved = Budget::where('status', 'approved')->count();
+    $totalActivities = BudgetLog::count();
+    $totalBudgetsSubmitted = Budget::count();
+    $activeUsers = User::where('status', 'active')->count();
 
-        // Get activity logs with search functionality
-        $search = $request->input('search');
+    $search = $request->input('search');
 
-        $logs = BudgetLog::with(['budget', 'user'])
-            ->when($search, function ($query, $search) {
-                return $query->whereHas('budget', function ($q) use ($search) {
-                    $q->where('title', 'like', '%' . $search . '%');
-                });
-            })
-            ->orderBy('created_at', 'desc')
-            ->paginate(20);
+    $logs = BudgetLog::with(['budget', 'user'])
+        ->when($search, function ($query, $search) {
+            return $query->where(function ($q) use ($search) {
+                // 1. Search Budget Title
+                $q->whereHas('budget', function ($bq) use ($search) {
+                    $bq->where('title', 'like', '%' . $search . '%');
+                })
+                // 2. Search User Name
+                ->orWhereHas('user', function ($uq) use ($search) {
+                    $uq->where('full_name', 'like', '%' . $search . '%');
+                })
+                // 3. Search Action
+                ->orWhere('action', 'like', '%' . $search . '%')
+                // 4. Search Status Changes
+                ->orWhere('old_status', 'like', '%' . $search . '%')
+                ->orWhere('new_status', 'like', '%' . $search . '%')
+                
+                // 5. Search Timestamp 
+                ->orWhereRaw("DATE_FORMAT(created_at, '%b %e, %Y %l:%i %p') LIKE ?", ["%$search%"])
+                ->orWhereRaw("DATE_FORMAT(created_at, '%Y-%m-%d') LIKE ?", ["%$search%"]);
+            });
+        })
+        ->orderBy('created_at', 'desc')
+        ->paginate(20);
 
-        return view('admin.audit-trail', compact(
-            'totalApproved',
-            'totalActivities',
-            'totalBudgetsSubmitted',
-            'activeUsers',
-            'logs',
-            'search'
-        ));
-    }
+    return view('admin.audit-trail', compact(
+        'totalApproved', 'totalActivities', 'totalBudgetsSubmitted', 'activeUsers', 'logs', 'search'
+    ));
+}
 
-    public function archive(Request $request)
-    {
-        // Statistics
-        $totalArchived = Budget::whereIn('status', ['approved', 'rejected'])->count();
-        $approvedBudgets = Budget::where('status', 'approved')->count();
+public function archive(Request $request)
+{
+    // 1. Statistics
+    $totalArchived = Budget::whereIn('status', ['approved', 'rejected'])->count();
+    $approvedBudgets = Budget::where('status', 'approved')->count();
 
-        // Calculate total value with formatting
-        $totalValue = Budget::whereIn('status', ['approved'])->sum('total_budget');
-        $formattedTotalValue = $this->formatCurrency($totalValue);
+    // Calculate total value with formatting
+    $totalValue = Budget::whereIn('status', ['approved'])->sum('total_budget');
+    $formattedTotalValue = $this->formatCurrency($totalValue);
 
-        $totalDepartments = Department::count();
+    $totalDepartments = Department::count();
 
-        // Get search and filter inputs
-        $search = $request->input('search');
-        $statusFilter = $request->input('status');
+    // 2. Get search and filter inputs
+    $search = $request->input('search');
+    $statusFilter = $request->input('status');
 
-        // Get archived budgets with search and filter functionality
-        $budgets = Budget::with(['user', 'department'])
-            ->whereIn('status', ['approved', 'rejected'])
-            ->when($search, function ($query, $search) {
-                return $query->where(function ($q) use ($search) {
-                    $q->where('id', 'like', '%' . $search . '%')
-                        ->orWhere('title', 'like', '%' . $search . '%')
-                        ->orWhereHas('department', function ($dept) use ($search) {
-                            $dept->where('name', 'like', '%' . $search . '%');
-                        });
-                });
-            })
-            ->when($statusFilter, function ($query, $statusFilter) {
-                return $query->where('status', $statusFilter);
-            })
-            ->orderBy('updated_at', 'desc')
-            ->paginate(20);
+    // 3. Get archived budgets with refined search functionality
+    $budgets = Budget::with(['user', 'department'])
+        ->whereIn('status', ['approved', 'rejected'])
+        ->when($search, function ($query, $search) {
+            return $query->where(function ($q) use ($search) {
+                // Search by Title
+                $q->where('title', 'like', '%' . $search . '%')
+                
+                // Search by Department Name
+                ->orWhereHas('department', function ($deptQuery) use ($search) {
+                    $deptQuery->where('name', 'like', '%' . $search . '%');
+                })
+                
+                // Search by User Full Name
+                ->orWhereHas('user', function ($userQuery) use ($search) {
+                    $userQuery->where('full_name', 'like', '%' . $search . '%');
+                })
+                
+                // Search by Fiscal Year (Exact Match to prevent partial number overlaps)
+                ->orWhere('fiscal_year', $search)
+                
+                // Search by Status (Exact Match)
+                ->orWhere('status', $search)
+                
+                // Search by Archived Date (formatted created_at or updated_at)
+                // This allows searching "Jan", "2026", or "Jan 30"
+                ->orWhereRaw("DATE_FORMAT(updated_at, '%b %e, %Y') LIKE ?", ["%$search%"])
+                ->orWhereRaw("DATE_FORMAT(updated_at, '%Y-%m-%d') LIKE ?", ["%$search%"]);
+            });
+        })
+        ->when($statusFilter, function ($query, $statusFilter) {
+            return $query->where('status', $statusFilter);
+        })
+        ->orderBy('updated_at', 'desc')
+        ->paginate(20);
 
-        return view('admin.archive', compact(
-            'totalArchived',
-            'approvedBudgets',
-            'formattedTotalValue',
-            'totalValue',
-            'totalDepartments',
-            'budgets',
-            'search',
-            'statusFilter'
-        ));
-    }
-
+    return view('admin.archive', compact(
+        'totalArchived',
+        'approvedBudgets',
+        'formattedTotalValue',
+        'totalValue',
+        'totalDepartments',
+        'budgets',
+        'search',
+        'statusFilter'
+    ));
+}
     private function formatCurrency($amount)
     {
         if ($amount >= 1000000) {

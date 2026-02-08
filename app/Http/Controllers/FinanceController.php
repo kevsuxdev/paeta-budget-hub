@@ -157,50 +157,68 @@ class FinanceController extends Controller
         return '₱' . number_format($amount, 2);
     }
     public function archive(Request $request)
-    {
-        // Statistics
-        $totalArchived = Budget::whereIn('status', ['approved', 'rejected'])->count();
-        $approvedBudgets = Budget::where('status', 'approved')->count();
+{
+    // 1. Statistics
+    $totalArchived = Budget::whereIn('status', ['approved', 'rejected'])->count();
+    $approvedBudgets = Budget::where('status', 'approved')->count();
 
-        // Calculate total value with formatting
-        $totalValue = Budget::whereIn('status', ['approved'])->sum('total_budget');
-        $formattedTotalValue = $this->formatCurrency($totalValue);
+    // Calculate total value with formatting
+    $totalValue = Budget::whereIn('status', ['approved'])->sum('total_budget');
+    $formattedTotalValue = $this->formatCurrency($totalValue);
 
-        $totalDepartments = Department::count();
+    $totalDepartments = Department::count();
 
-        // Get search and filter inputs
-        $search = $request->input('search');
-        $statusFilter = $request->input('status');
+    // 2. Get search and filter inputs
+    $search = $request->input('search');
+    $statusFilter = $request->input('status');
 
-        // Get archived budgets with search and filter functionality
-        $budgets = Budget::with(['user', 'department'])
-            ->whereIn('status', ['approved', 'rejected'])
-            ->when($search, function ($query, $search) {
-                return $query->where(function ($q) use ($search) {
-                    $q->where('id', 'like', '%' . $search . '%')
-                        ->orWhere('title', 'like', '%' . $search . '%')
-                        ->orWhereHas('department', function ($dept) use ($search) {
-                            $dept->where('name', 'like', '%' . $search . '%');
-                        });
-                });
-            })
-            ->when($statusFilter, function ($query, $statusFilter) {
-                return $query->where('status', $statusFilter);
-            })
-            ->orderBy('updated_at', 'desc')
-            ->paginate(20);
+    // 3. Get archived budgets with refined search functionality
+    $budgets = Budget::with(['user', 'department'])
+        ->whereIn('status', ['approved', 'rejected'])
+        ->when($search, function ($query, $search) {
+            return $query->where(function ($q) use ($search) {
+                // Search by Title
+                $q->where('title', 'like', '%' . $search . '%')
+                
+                // Search by Department Name
+                ->orWhereHas('department', function ($deptQuery) use ($search) {
+                    $deptQuery->where('name', 'like', '%' . $search . '%');
+                })
+                
+                // Search by User Full Name
+                ->orWhereHas('user', function ($userQuery) use ($search) {
+                    $userQuery->where('full_name', 'like', '%' . $search . '%');
+                })
+                
+                // Search by Fiscal Year (Exact Match to prevent partial number overlaps)
+                ->orWhere('fiscal_year', $search)
+                
+                // Search by Status (Exact Match)
+                ->orWhere('status', $search)
+                
+                // Search by Archived Date (formatted created_at or updated_at)
+                // This allows searching "Jan", "2026", or "Jan 30"
+                ->orWhereRaw("DATE_FORMAT(updated_at, '%b %e, %Y') LIKE ?", ["%$search%"])
+                ->orWhereRaw("DATE_FORMAT(updated_at, '%Y-%m-%d') LIKE ?", ["%$search%"]);
+            });
+        })
+        ->when($statusFilter, function ($query, $statusFilter) {
+            return $query->where('status', $statusFilter);
+        })
+        ->orderBy('updated_at', 'desc')
+        ->paginate(20);
 
-        return view('finance.archive', compact(
-            'totalArchived',
-            'approvedBudgets',
-            'formattedTotalValue',
-            'totalValue',
-            'totalDepartments',
-            'budgets',
-            'search',
-            'statusFilter'
-        ));
-    }
+    return view('finance.archive', compact(
+        'totalArchived',
+        'approvedBudgets',
+        'formattedTotalValue',
+        'totalValue',
+        'totalDepartments',
+        'budgets',
+        'search',
+        'statusFilter'
+    ));
+}
     public function downloadBudgetPdf(Budget $budget)
     {
 
@@ -229,34 +247,45 @@ class FinanceController extends Controller
         return $pdf->download($filename);
     }
     public function auditTrail(Request $request)
-    {
-        // Statistics
-        $totalApproved = Budget::where('status', 'approved')->count();
-        $totalActivities = BudgetLog::count();
-        $totalBudgetsSubmitted = Budget::count();
-        $activeUsers = User::where('status', 'active')->count();
+{
+    // Statistics (Keep your existing stats)
+    $totalApproved = Budget::where('status', 'approved')->count();
+    $totalActivities = BudgetLog::count();
+    $totalBudgetsSubmitted = Budget::count();
+    $activeUsers = User::where('status', 'active')->count();
 
-        // Get activity logs with search functionality
-        $search = $request->input('search');
+    $search = $request->input('search');
 
-        $logs = BudgetLog::with(['budget', 'user'])
-            ->when($search, function ($query, $search) {
-                return $query->whereHas('budget', function ($q) use ($search) {
-                    $q->where('title', 'like', '%' . $search . '%');
-                });
-            })
-            ->orderBy('created_at', 'desc')
-            ->paginate(20);
+    $logs = BudgetLog::with(['budget', 'user'])
+        ->when($search, function ($query, $search) {
+            return $query->where(function ($q) use ($search) {
+                // 1. Search Budget Title
+                $q->whereHas('budget', function ($bq) use ($search) {
+                    $bq->where('title', 'like', '%' . $search . '%');
+                })
+                // 2. Search User Name
+                ->orWhereHas('user', function ($uq) use ($search) {
+                    $uq->where('full_name', 'like', '%' . $search . '%');
+                })
+                // 3. Search Action
+                ->orWhere('action', 'like', '%' . $search . '%')
+                // 4. Search Status Changes
+                ->orWhere('old_status', 'like', '%' . $search . '%')
+                ->orWhere('new_status', 'like', '%' . $search . '%')
+                
+                // 5. Search Timestamp 
+                ->orWhereRaw("DATE_FORMAT(created_at, '%b %e, %Y %l:%i %p') LIKE ?", ["%$search%"])
+                ->orWhereRaw("DATE_FORMAT(created_at, '%Y-%m-%d') LIKE ?", ["%$search%"]);
+            });
+        })
+        ->orderBy('created_at', 'desc')
+        ->paginate(20);
 
-        return view('finance.audit-trail', compact(
-            'totalApproved',
-            'totalActivities',
-            'totalBudgetsSubmitted',
-            'activeUsers',
-            'logs',
-            'search'
-        ));
-    }
+    return view('finance.audit-trail', compact(
+        'totalApproved', 'totalActivities', 'totalBudgetsSubmitted', 'activeUsers', 'logs', 'search'
+    ));
+}
+
     public function updateBudgetStatus(Request $request, Budget $budget)
     {
         $request->validate([
