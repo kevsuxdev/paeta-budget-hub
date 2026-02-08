@@ -3,7 +3,16 @@
 <div class="p-6">
     <h1 class="text-2xl font-bold text-black">Document Tracking</h1>
     <p class="text-black font-medium mb-6">Track budget requests from your department with search and filter capabilities.</p>
-
+    <!-- Alert Messages -->
+    @if(session('success'))
+    <x-alert-message type="success" :message="session('success')" />
+    @endif
+    @if(session('info'))
+    <x-alert-message type="info" :message="session('info')" />
+    @endif
+    @if(session('error'))
+    <x-alert-message type="error" :message="session('error')" />
+    @endif
     <!-- Search and Filter -->
     <div class="bg-orange-brown p-4 rounded-lg mb-6">
         <form method="GET" action="{{ route('staff.document.tracking') }}" class="flex flex-col md:flex-row gap-4">

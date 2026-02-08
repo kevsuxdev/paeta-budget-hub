@@ -76,12 +76,12 @@
                         <input type="number" step="0.01" class="w-full bg-white border border-black/20 rounded-md p-2 text-sm total-cost" readonly>
                     </article>
                     <div class="flex items-end">
-                        <button type="button" class="remove-item bg-red-500 text-primary px-3 py-2 rounded-md hover:bg-red-600 hidden">Remove</button>
+                        <button type="button" class="remove-item bg-red-500 text-white px-3 py-2 rounded-md hover:bg-red-600 hidden">Remove</button>
                     </div>
                 </div>
             </div>
             <div class="mt-4 flex justify-between items-center">
-                <button type="button" id="add-item" class="bg-primary text-white px-4 text-sm py-2 rounded-md hover:bg-opacity-90">Add Line Item</button>
+                <button type="button" id="add-item"  class="text-white px-4 text-sm py-2 rounded-md bg-primary hover:bg-secondary">Add Line Item</button>
                 <div class="text-lg font-semibold">
                     Grand Total: <span id="grand-total" class="text-sm text-primary">0.00</span>
                 </div>
@@ -91,7 +91,6 @@
         <!-- Third Section: Supporting Documents -->
         <div class="bg-orange-200 p-6 rounded-lg shadow-sm text-primary">
             <h2 class="text-xl font-semibold text-primary mb-6">Supporting Documents</h2>
-
             <label
                 for="supporting_document"
                 id="dropzone"
@@ -120,13 +119,12 @@
             </label>
 
             <!-- File Preview -->
-            <div id="file-preview" class="hidden mt-4 flex items-center justify-between bg-white rounded-md px-4 py-2">
-                <span id="file-name" class="text-sm text-gray-700 truncate"></span>
+            <div id="file-preview" class="hidden mt-4 flex items-center justify-between bg-primary/80 rounded-md px-4 py-2">
+                <span id="file-name" class="text-sm text-white truncate"></span>
                 <button
                     type="button"
                     id="remove-file"
-                    class="text-red-600 text-sm font-medium hover:underline">
-                    Remove
+                    class="px-3 py-2 rounded-md bg-primary hover:bg-red-300">❌
                 </button>
             </div>
         </div>
@@ -179,7 +177,7 @@
                 <input type="number" step="0.01" class="w-full bg-white border border-white/60 rounded-md p-2 text-sm quantity text-primary total-cost" readonly>
             </article>
             <div class="flex items-end">
-                <button type="button" class="remove-item bg-red-500 text-primary px-3 py-2 rounded-md hover:bg-red-600">Remove</button>
+                <button type="button" class="remove-item bg-red-500 text-white px-3 py-2 rounded-md hover:bg-red-600">Remove</button>
             </div>
         `;
         lineItems.appendChild(newItem);

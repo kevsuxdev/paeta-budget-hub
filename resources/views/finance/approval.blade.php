@@ -109,8 +109,8 @@
                            <td class="px-6 py-4 whitespace-nowrap text-sm space-x-2">
                                 <button
                                     type="button"
-                                    class="btn-view-budget px-3 py-1 text-sm text-black-700 bg-blue-100 rounded hover:bg-blue-200 font-medium"
-                                    data-budget-id="{{ $budget->id }}
+                                    class="btn-view-budget px-3 py-1 text-sm text-black-700 bg-blue-100 rounded hover:bg-blue-200"
+                                    data-budget-id="{{ $budget->id }}"
                                     data-budget-title="{{ $budget->title }}"
                                     data-budget-status="{{ $budget->status }}"
                                     data-budget-date="{{ \Carbon\Carbon::parse($budget->submission_date)->format('M d, Y') }}"

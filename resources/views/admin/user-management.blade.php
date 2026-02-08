@@ -152,7 +152,7 @@
                                 </div>
                                 <div class="md:col-span-2">
                                     <label for="edit_email" class="block text-sm font-medium text-white mb-1">Email</label>
-                                    <input type="email" name="email" id="edit_email" class="w-full border text-white border-white/60 rounded-md p-2 text-sm" required>
+                                    <input type="email" id="edit_email" class="w-full border text-white border-white/60 rounded-md p-2 text-sm" required>
                                 </div>
                                 <div>
                                     <label for="edit_phone" class="block text-sm font-medium text-white mb-1">Phone</label>
