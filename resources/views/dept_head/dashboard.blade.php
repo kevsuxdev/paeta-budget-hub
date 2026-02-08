@@ -67,7 +67,7 @@
         <p class="text-black text-xl font-medium">Welcome, {{ $user->full_name }}!</p>
         <p class="text-sm font-medium text-white bg-accent p-2 rounded-xl w-fit px-4">{{ auth()->user()->department->name ?? 'N/A' }}</p>
     </article>
-
+ 
     <!-- Department Budget Statistics -->
     <div>
         <h2 class="text-xl font-semibold text-white mb-4">Department Budget Requests</h2>
@@ -86,7 +86,7 @@
                     </div>
                 </div>
             </div>
-
+ 
             <!-- Pending Requests -->
             <div class="bg-orange-brown rounded-lg p-6 shadow-lg">
                 <div class="flex items-center justify-between">
@@ -101,7 +101,7 @@
                     </div>
                 </div>
             </div>
-
+ 
             <!-- Approved Requests -->
             <div class="bg-orange-brown rounded-lg p-6 shadow-lg">
                 <div class="flex items-center justify-between">
@@ -116,7 +116,7 @@
                     </div>
                 </div>
             </div>
-
+ 
             <!-- Rejected/Archived -->
             <div class="bg-orange-brown rounded-lg p-6 shadow-lg">
                 <div class="flex items-center justify-between">
@@ -147,7 +147,7 @@
             </div>
         </div>
     </div>
-
+ 
     <!-- Quick Actions -->
     <div>
         <h2 class="text-xl font-semibold text-white mb-4">Quick Actions</h2>
@@ -164,7 +164,7 @@
                     <p class="text-sm text-gray-300">Review and track department budget requests</p>
                 </div>
             </a>
-
+ 
             <!-- Review Requests -->
             <a href="{{ route('dept_head.document.tracking') }}" class="bg-orange-brown hover:bg-primary transition-colors rounded-lg p-6 shadow-lg flex items-center space-x-4">
                 <div class="bg-blue-500/20 rounded-full p-4">
@@ -179,7 +179,7 @@
             </a>
         </div>
     </div>
-
+ 
     <!-- Recent Department Requests -->
     <div>
         <h2 class="text-xl font-semibold text-white mb-4">Recent Department Requests</h2>
@@ -248,7 +248,7 @@
             </div>
         </div>
     </div>
-
+ 
     <!-- Approved Budget Chart -->
     <div>
         <div class="flex justify-between items-center mb-4">
@@ -271,12 +271,12 @@
         </div>
     </div>
 </div>
-
+ 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     const ctx = document.getElementById('monthlyBudgetChart').getContext('2d');
     const chartData = JSON.parse('{!! json_encode($chartData) !!}');
-
+ 
     const monthlyBudgetChart = new Chart(ctx, {
         type: 'bar',
         data: {
@@ -360,5 +360,5 @@
         }
     });
 </script>
-
+ 
 @endsection
