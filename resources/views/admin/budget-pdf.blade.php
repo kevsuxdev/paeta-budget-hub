@@ -31,31 +31,29 @@
             position: relative;
             display: inline-block;
             width: 100%;
-            /* Keeps space for the signature to overlap without pushing text */
             height: 60px; 
         }
 
         .signature-img {
             position: absolute;
-            /* Negative bottom pulls the signature down onto the name/line */
-            bottom: -25px; 
+            bottom: -35px; 
             left: 50%;
-            margin-left: -110px; /* Half of the 220px width to center it */
+            margin-left: -110px; 
             z-index: 9999;
         }
 
         .name-line {
-            border-top: 1px solid #444;
-            padding-top: 4px;
-            /* Smaller font and not bold as requested */
+           
+            padding-top: 2px;
             font-size: 14px; 
             font-weight: normal; 
             text-transform: uppercase;
             display: block;
             width: 250px;
             margin: 0 auto;
-            position: relative;
+            position:relative;
             z-index: 1;
+            border-bottom: 1px solid #444;
         }
     </style>
 </head>
@@ -119,10 +117,9 @@
                 
                 <div class="signature-wrapper">
                     @if($esignature)
-                        <img src="{{ $esignature }}" class="signature-img" width="220">
+                        <img src="{{ $esignature }}" class="signature-img" width="280">
                     @endif
                 </div>
-
                 <span class="name-line">
                     {{ $budget->approved_by }}
                 </span>
