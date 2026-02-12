@@ -108,7 +108,7 @@ class FinanceController extends Controller
             'action' => 'released',
             'old_status' => $budget->status ?? null,
             'new_status' => $budget->status ?? null,
-            'notes' => sprintf('Released ₱%s to %s (department savings) (quarter: %s) by %s — department release updated from ₱%s to ₱%s', number_format($amount, 2), $department->name, $data['quarter'] ?? 'N/A', Auth::user()->full_name, number_format($oldRelease, 2), $department->budget_release),
+            'notes' => sprintf('Released ₱%s to %s (department savings) (quarter: %s) by %s department release updated from ₱%s to ₱%s', number_format($amount, 2), $department->name, $data['quarter'] ?? 'N/A', Auth::user()->full_name, number_format($oldRelease, 2), $department->budget_release),
         ]);
 
         return redirect()->route('finance.release')->with('success', 'Allocation recorded successfully.');

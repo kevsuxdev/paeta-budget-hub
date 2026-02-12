@@ -1,19 +1,19 @@
 @props(['userRole'])
 
 <div id="statusModal" class="modal-backdrop fixed inset-0 bg-transparent backdrop-blur-sm flex items-center justify-center hidden z-50" data-user-role="{{ $userRole }}">
-    <div class="bg-white p-6 border border-black/20 w-full max-w-md shadow-lg rounded-md">
-        <h3 class="text-xl font-semibold text-gray-900 mb-4">Update Budget Status</h3>
+    <div class="bg-orange-brown p-6 border border-white/60 w-96 shadow-lg rounded-md">
+        <h3 class="text-xl font-semibold text-white mb-4">Update Budget Status</h3>
 
         <form id="statusForm" method="POST">
             @csrf
             <div class="mb-4">
-                <label for="statusSelect" class="block text-sm font-medium text-gray-700 mb-2">
+                <label for="statusSelect" class="block text-sm font-medium text-white mb-2">
                     Select Status
                 </label>
                 <select
                     id="statusSelect"
                     name="status"
-                    class="w-full border border-black/20 rounded-md p-2 text-sm"
+                    class="w-full bg-input border border-black/20 rounded-md p-2 text-sm"
                 >
                     @if($userRole === 'dept_head')
                         <option value="reviewed">Reviewed</option>
@@ -32,32 +32,32 @@
 
             @if($userRole === 'dept_head' || $userRole === 'finance')
             <div class="mb-4" id="remarksField">
-                <label for="remarksTextarea" class="block text-sm font-medium text-gray-700 mb-2">
-                    Remarks <span class="text-gray-500 text-xs" id="remarksRequired">(Optional)</span>
+                <label for="remarksTextarea" class="block text-sm font-medium text-white mb-2">
+                    Remarks <span class="text-white text-xs" id="remarksRequired">(Optional)</span>
                 </label>
                 <textarea
                     id="remarksTextarea"
                     name="remarks"
                     rows="4"
                     maxlength="500"
-                    class="w-full border border-black/20 rounded-md p-2 text-sm resize-none"
+                    class="w-full border bg-input border-black/20 rounded-md p-2 text-sm resize-none"
                     placeholder="Add your comments or remarks here..."
                 ></textarea>
-                <p class="text-xs text-gray-500 mt-1">Maximum 500 characters</p>
+                <p class="text-xs text-white mt-1">Maximum 500 characters</p>
             </div>
             @endif
 
             <div class="flex justify-end gap-3">
                 <button
                     type="button"
-                    class="btn-close-modal px-4 py-2 bg-gray-300 text-gray-900 rounded-md hover:bg-gray-400 transition-colors"
+                    class="btn-close-modal px-4 py-2 bg-secondary rounded text-white hover:bg-primary/50 text-white text-sm"
                     data-modal-id="statusModal"
                 >
                     Cancel
                 </button>
                 <button
                     type="submit"
-                    class="px-4 py-2 bg-primary text-white rounded-md hover:bg-opacity-90 transition-colors"
+                    class="px-4 py-2 bg-primary text-white rounded hover:bg-primary/80 text-sm"
                 >
                     Update Status
                 </button>

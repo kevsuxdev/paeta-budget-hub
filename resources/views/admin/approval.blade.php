@@ -1,8 +1,8 @@
 @extends('layouts.auth-layout')
 @section('main-content')
 <div class="p-6">
-    <h1 class="text-3xl font-bold text-black">Final Approval</h1>
-    <p class="text-black font-medium mb-6">Review and give final approval to budgets that have passed finance review.</p>
+    <h1 class="text-3xl font-bold text-main">Final Approval</h1>
+    <p class="text-main font-medium mb-6">Review and give final approval to budgets that have passed finance review.</p>
 
     <!-- Alert Messages -->
     @if(session('success'))
@@ -20,26 +20,26 @@
         <h2 class="text-xl font-semibold text-white mb-4">Approval Overview</h2>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <!-- Pending Approval -->
-            <div class="flex items-center bg-orange-brown rounded-lg p-6">
+            <div class="flex items-center bg-orange-brown rounded-lg p-6 shadow-sm border border-primary overflow-hidden">
                 <div class="ml-3">
                     <p class="text-sm text-white">Pending Approval</p>
-                    <p class="text-2xl font-bold text-purple-500">{{ $pendingApproval }}</p>
+                    <p class="text-2xl font-bold text-white">{{ $pendingApproval }}</p>
                 </div>
             </div>
 
             <!-- Total Amount -->
-            <div class="flex items-center bg-orange-brown rounded-lg p-6">
+            <div class="flex items-center bg-orange-brown rounded-lg p-6 shadow-sm border border-primary overflow-hidden">
                 <div class="ml-3">
                     <p class="text-sm text-white">Total Amount</p>
-                    <p class="text-2xl font-bold text-green-500">₱{{ number_format($totalAmount, 2) }}</p>
+                    <p class="text-2xl font-bold text-white">₱{{ number_format($totalAmount, 2) }}</p>
                 </div>
             </div>
 
             <!-- Average Amount -->
-            <div class="flex items-center bg-orange-brown rounded-lg p-6">
+            <div class="flex items-center bg-orange-brown rounded-lg p-6 shadow-sm border border-primary overflow-hidden">
                 <div class="ml-3">
                     <p class="text-sm text-white">Average Amount</p>
-                    <p class="text-2xl font-bold text-blue-500">₱{{ number_format($averageAmount, 2) }}</p>
+                    <p class="text-2xl font-bold text-white">₱{{ number_format($averageAmount, 2) }}</p>
                 </div>
             </div>
         </div>
@@ -57,13 +57,13 @@
                 <option value="{{ $department->id }}" {{ request('department_id') == $department->id ? 'selected' : '' }}>{{ $department->name }}</option>
                 @endforeach
             </select>
-            <button type="submit" class="inline-flex items-center px-3 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">Filter</button>
-            <a href="{{ url()->current() }}" class="inline-flex items-center px-3 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">Clear</a>
+            <button type="submit" class="inline-flex items-center px-3 py-2 border border-white rounded-md text-sm font-medium text-white bg-primary hover:bg-secondary">Filter</button>
+            <a href="{{ url()->current() }}" class="inline-flex items-center px-3 py-2 border border-white rounded-md text-sm font-medium text-black bg-input hover:bg-secondary">Clear</a>
         </form>
     </div>
     @endif
 
-    <div class="bg-orange-brown rounded-lg shadow-sm overflow-hidden">
+    <div class="bg-orange-brown rounded-lg shadow-sm overflow-hidden border border-primary">
         <div class="px-6 py-4 flex justify-between items-center">
             <h3 class="text-lg font-semibold text-white">Budgets for Final Approval</h3>
             <p class="text-sm text-white">
@@ -76,19 +76,19 @@
             <table class="min-w-full divide-y divide-primary">
                 <thead class="bg-orange-brown">
                     <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">ID</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Title</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">User</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Department</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Total Budget</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Status</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Due Date</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Actions</th>
+                        <th class="px-6 py-3 bg-primary/50 text-left text-xs font-medium text-white uppercase tracking-wider">ID</th>
+                        <th class="px-6 py-3 bg-primary/50 text-left text-xs font-medium text-white uppercase tracking-wider">Title</th>
+                        <th class="px-6 py-3 bg-primary/50 text-left text-xs font-medium text-white uppercase tracking-wider">User</th>
+                        <th class="px-6 py-3 bg-primary/50 text-left text-xs font-medium text-white uppercase tracking-wider">Department</th>
+                        <th class="px-6 py-3 bg-primary/50 text-left text-xs font-medium text-white uppercase tracking-wider">Total Budget</th>
+                        <th class="px-6 py-3 bg-primary/50 text-left text-xs font-medium text-white uppercase tracking-wider">Status</th>
+                        <th class="px-6 py-3 bg-primary/50 text-left text-xs font-medium text-white uppercase tracking-wider">Due Date</th>
+                        <th class="px-6 py-3 bg-primary/50 text-left text-xs font-medium text-white uppercase tracking-wider">Actions</th>
                     </tr>
                 </thead>
                 <tbody class="bg-orange-brown divide-y divide-primary">
                     @forelse($budgets as $budget)
-                        <tr class="hover:bg-primary/50 transition-colors">
+                        <tr class="hover:bg-primary/20 transition-colors">
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-white">{{ $budget->id }}</td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="text-sm font-medium text-white">{{ $budget->title }}</div>
@@ -109,7 +109,7 @@
                             <td class="px-6 py-4 whitespace-nowrap text-sm space-x-2">
                                 <button
                                     type="button"
-                                    class="btn-view-budget px-3 py-1 text-sm text-black-700 bg-blue-100 rounded hover:bg-blue-200 font-medium"
+                                    class="btn-view-budget px-3 py-1 text-sm text-white bg-primary rounded hover:bg-secondary font-medium"
                                     data-budget-id="{{ $budget->id }}"
                                     data-budget-title="{{ $budget->title }}"
                                     data-budget-status="{{ $budget->status }}"
@@ -174,7 +174,7 @@
                         id="approver_name"
                         name="approver_name"
                         required
-                        class="w-full px-3 py-2 bg-primary border border-gray-600 text-white rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500"
+                        class="w-full px-3 py-2 bg-input border border-black text-black rounded-md shadow-sm focus:ring-white focus:border-white"
                         placeholder="Enter your full name"
                     >
                 </div>
@@ -191,7 +191,7 @@
                             name="e_signature"
                             required
                             accept="image/*"
-                            class="w-full px-3 py-2 bg-primary border border-gray-600 text-white rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500"
+                            class="w-full px-3 py-2 bg-input border border-gray-600 text-white rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500"
                         >
                         <p class="mt-1 text-sm text-gray-300">Upload your signature image (PNG, JPG, etc.)</p>
                     @else

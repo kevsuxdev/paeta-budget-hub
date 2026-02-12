@@ -1,8 +1,8 @@
 @extends('layouts.auth-layout')
 @section('main-content')
 <div class="p-6">
-    <h1 class="text-3xl font-bold text-black">Release Quarterly Budget</h1>
-    <p class="text-black font-medium mb-6">Allocate approved budget amounts to departments for the quarter.</p>
+    <h1 class="text-3xl font-bold text-main">Release Quarterly Budget</h1>
+    <p class="text-main font-medium mb-6">Allocate approved budget amounts to departments for the quarter.</p>
 
     @if(session('success'))
     <x-alert-message type="success" :message="session('success')" />
@@ -14,7 +14,7 @@
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <!-- Left: Form -->
         <div class="md:col-span-1">
-            <div class="bg-orange-brown rounded-lg p-6 h-full">
+            <div class="bg-orange-brown rounded-lg p-6 h-full border border-primary overflow-hidden shaddow-lg">
                 <form action="{{ route('finance.allocate') }}" method="POST">
                     @csrf
                     <div class="space-y-4">
@@ -24,7 +24,7 @@
                             <select id="departmentSelect"
                                 name="department_id"
                                 required
-                                class="w-full px-3 py-2 bg-primary border border-gray-600 text-white rounded-md"
+                                class="w-full px-3 py-2 bg-input border border-black text-black rounded-md"
                                 data-department-releases='{{ json_encode($departments->pluck("budget_release", "id")) }}'>
                                 <option value="">-- Choose department --</option>
                                 @foreach($departments as $d)
@@ -32,17 +32,17 @@
                                 @endforeach
                             </select>
 
-                            <p class="mt-2 text-sm text-gray-300">Current Released: <span id="currentRelease">₱0.00</span></p>
+                            <p class="mt-2 text-sm text-white">Current Released: <span id="currentRelease">₱0.00</span></p>
                         </div>
 
                         <div>
                             <label class="block text-sm font-medium text-white mb-2">Amount to Release (PHP) <span class="text-red-400">*</span></label>
-                            <input name="amount" type="number" step="0.01" min="0" required class="w-full px-3 py-2 bg-primary border border-gray-600 text-white rounded-md" placeholder="Enter amount" />
+                            <input name="amount" type="number" step="0.01" min="0" required class="w-full px-3 py-2 bg-input border border-black text-black rounded-md" placeholder="Enter amount" />
                         </div>
 
                         <div>
                             <label class="block text-sm font-medium text-white mb-2">Quarter (optional)</label>
-                            <select name="quarter" class="w-full px-3 py-2 bg-primary border border-gray-600 text-white rounded-md">
+                            <select name="quarter" class="w-full px-3 py-2 bg-input border border-black text-black rounded-md">
                                 <option value="">-- Choose Quarter --</option>
                                 <option value="Q1">Q1</option>
                                 <option value="Q2">Q2</option>
@@ -52,7 +52,7 @@
                         </div>
 
                         <div class="flex justify-end">
-                            <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-md">Release & Allocate</button>
+                            <button type="submit" class="px-4 py-2 bg-primary hover:bg-primary/80 text-white border border-black rounded-md">Release & Allocate</button>
                         </div>
                     </div>
                 </form>
@@ -61,17 +61,16 @@
 
         <!-- Right: Logs -->
         <div class="md:col-span-2">
-            <div class="bg-orange-brown rounded-lg p-6">
+            <div class="bg-orange-brown rounded-lg p-6 border border-primary overflow-hidden shaddow-lg">
                 <h2 class="text-lg font-semibold text-white mb-4">Recent Release Logs</h2>
                 @if(isset($releaseLogs) && $releaseLogs->count())
                 <div class="overflow-x-auto">
                     <table class="min-w-full divide-y divide-primary">
-                        <thead class="bg-orange-brown">
+                        <thead class="bg-primary">
                             <tr>
-                                <th class="px-4 py-2 text-left text-xs font-medium text-white uppercase">Date</th>
-                                <th class="px-4 py-2 text-left text-xs font-medium text-white uppercase">User</th>
-                                <th class="px-4 py-2 text-left text-xs font-medium text-white uppercase">Department</th>
-                                <th class="px-4 py-2 text-left text-xs font-medium text-white uppercase">Notes</th>
+                                <th class="px-4 bg-primary/50 py-2 text-left text-xs font-medium text-white uppercase">Date</th>
+                                <th class="px-4 bg-primary/50 py-2 text-left text-xs font-medium text-white uppercase">User</th>
+                                <th class="px-4 bg-primary/50 py-2 text-left text-xs font-medium text-white uppercase">Notes</th>
                             </tr>
                         </thead>
                         <tbody class="bg-orange-brown divide-y divide-primary">
@@ -79,8 +78,8 @@
                             <tr class="hover:bg-primary/50">
                                 <td class="px-4 py-2 text-sm text-white">{{ $log->created_at->format('M d, Y h:i A') }}</td>
                                 <td class="px-4 py-2 text-sm text-white">{{ $log->user->full_name ?? 'System' }}</td>
-                                <td class="px-4 py-2 text-sm text-white">{{ $log->user->department->name ?? ($log->budget->department->name ?? '—') }}</td>
                                 <td class="px-4 py-2 text-sm text-white">{{ $log->notes }}</td>
+                                
                             </tr>
                             @endforeach
                         </tbody>

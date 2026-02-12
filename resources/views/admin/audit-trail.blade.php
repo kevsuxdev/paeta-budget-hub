@@ -1,8 +1,8 @@
 @extends('layouts.auth-layout')
 @section('main-content')
 <div class="p-6">
-    <h1 class="text-3xl font-bold text-black">Audit Trail</h1>
-    <p class="text-black font-medium mb-6">Track all budget activities and system events in real-time.</p>
+    <h1 class="text-3xl font-bold text-main">Audit Trail</h1>
+    <p class="text-main font-medium mb-6">Track all budget activities and system events in real-time.</p>
 
     <!-- Alert Messages -->
     @if(session('success'))
@@ -20,14 +20,14 @@
         <h2 class="text-xl font-semibold text-white mb-4">System Overview</h2>
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
             <!-- Total Approved -->
-            <div class="bg-orange-brown rounded-lg p-6 shadow-lg">
+            <div class="bg-orange-brown rounded-lg p-6 border border-primary overflow-hidden shadow-lg">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-sm text-white mb-1">Total Approved</p>
-                        <p class="text-3xl font-bold text-green-500">{{ $totalApproved }}</p>
+                        <p class="text-3xl font-bold text-white">{{ $totalApproved }}</p>
                     </div>
-                    <div class="bg-green-500/20 rounded-full p-3">
-                        <svg class="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="bg-primary/50 rounded-full p-3">
+                        <svg class="w-8 h-8 text-orange-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
                     </div>
@@ -35,14 +35,14 @@
             </div>
 
             <!-- Total Activities -->
-            <div class="bg-orange-brown rounded-lg p-6 shadow-lg">
+            <div class="bg-orange-brown rounded-lg p-6 border border-primary overflow-hidden shadow-lg">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-sm text-white mb-1">Total Activities</p>
-                        <p class="text-3xl font-bold text-blue-500">{{ $totalActivities }}</p>
+                        <p class="text-3xl font-bold text-white">{{ $totalActivities }}</p>
                     </div>
-                    <div class="bg-blue-500/20 rounded-full p-3">
-                        <svg class="w-8 h-8 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="bg-primary/50 rounded-full p-3">
+                        <svg class="w-8 h-8 text-orange-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
                         </svg>
                     </div>
@@ -50,14 +50,14 @@
             </div>
 
             <!-- Total Budgets Submitted -->
-            <div class="bg-orange-brown rounded-lg p-6 shadow-lg">
+            <div class="bg-orange-brown rounded-lg p-6 border border-primary overflow-hidden shadow-lg">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-sm text-white mb-1">Budgets Submitted</p>
-                        <p class="text-3xl font-bold text-amber-500">{{ $totalBudgetsSubmitted }}</p>
+                        <p class="text-sm text-white mb-1">Budget Submitted</p>
+                        <p class="text-3xl font-bold text-white">{{ $totalBudgetsSubmitted }}</p>
                     </div>
-                    <div class="bg-amber-500/20 rounded-full p-3">
-                        <svg class="w-8 h-8 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="bg-primary/50 rounded-full p-3">
+                        <svg class="w-8 h-8 text-input" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                         </svg>
                     </div>
@@ -65,14 +65,14 @@
             </div>
 
             <!-- Active Users -->
-            <div class="bg-orange-brown rounded-lg p-6 shadow-lg">
+            <div class="bg-orange-brown rounded-lg p-6 border border-primary overflow-hidden shadow-lg">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-sm text-white mb-1">Active Users</p>
-                        <p class="text-3xl font-bold text-orange-500">{{ $activeUsers }}</p>
+                        <p class="text-3xl font-bold text-white">{{ $activeUsers }}</p>
                     </div>
-                    <div class="bg-orange-500/20 rounded-full p-3">
-                        <svg class="w-8 h-8 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="bg-primary/50 rounded-full p-3">
+                        <svg class="w-8 h-8 text-input" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
                         </svg>
                     </div>
@@ -82,7 +82,7 @@
     </div>
 
     <!-- Search and Activity Logs -->
-    <div class="bg-orange-brown rounded-lg shadow-lg overflow-hidden">
+    <div class="bg-orange-brown rounded-lg border border-primary overflow-hidden shadow-lg">
         <div class="px-6 py-4 border-b border-primary">
             <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                 <div>
@@ -98,14 +98,14 @@
                             name="search"
                             value="{{ $search ?? '' }}"
                             placeholder="Search by title, user, action, or date..."
-                            class="w-full text-sm md:w-80 pl-10 pr-4 py-2 bg-primary border border-gray-600 rounded-lg text-white placeholder-gray-400 ">
-                        <svg class="absolute left-3 top-2.5 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            class="w-full text-sm md:w-80 pl-10 pr-4 py-2 bg-input border border-gray-600 rounded-lg text-black placeholder-gray-400 ">
+                        <svg class="absolute left-3 top-2.5 h-5 w-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                         </svg>
                     </div>
                     <button
                         type="submit"
-                        class="px-4 py-2 text-sm bg-amber-600 text-white rounded-lg hover:bg-amber-700 focus:outline-none focus:ring-2 focus:ring-amber-500 transition-colors">
+                        class="px-4 py-2 text-sm bg-primary text-white rounded-lg hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-input transition-colors">
                         Search
                     </button>
                     @if($search)
@@ -122,7 +122,7 @@
         <!-- Activity Logs List -->
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-primary">
-                <thead class="bg-primary">
+                <thead class="bg-primary/50">
                     <tr>
                         <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Timestamp</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Budget</th>
@@ -134,7 +134,7 @@
                 </thead>
                 <tbody class="bg-orange-brown divide-y divide-primary">
                     @forelse($logs as $log)
-                    <tr class="hover:bg-primary/50 transition-colors">
+                    <tr class="hover:bg-primary/20 transition-colors">
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-white">
                             <div class="flex items-center">
                                 <svg class="w-4 h-4 text-gray-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -157,7 +157,7 @@
                         <td class="px-6 py-4 whitespace-nowrap text-sm">
                             @if($log->user)
                             <div class="flex items-center">
-                                <div class="h-8 w-8 rounded-full bg-amber-600 flex items-center justify-center text-white font-semibold mr-2">
+                                <div class="h-8 w-8 rounded-full bg-secondary flex items-center justify-center text-white font-semibold mr-2">
                                     {{ substr($log->user->full_name, 0, 1) }}
                                 </div>
                                 <div>

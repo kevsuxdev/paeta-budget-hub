@@ -2,8 +2,8 @@
 @section('main-content')
 <div class="p-6">
     <article class="space-y-2">
-        <h1 class="text-3xl font-bold text-black">Finance Review</h1>
-        <p class="text-black font-medium mb-6">Review and manage budget requests for financial approval.</p>
+        <h1 class="text-3xl font-bold text-main">Finance Review</h1>
+        <p class="text-main font-medium mb-6">Review and manage budget requests for financial approval.</p>
     </article>
     <!-- Alert Messages -->
     @if(session('success'))
@@ -21,26 +21,26 @@
         <h2 class="text-xl font-semibold text-white mb-4">Finance Overview</h2>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <!-- Pending Review -->
-            <div class="flex items-center bg-orange-brown p-6 rounded-lg">
+            <div class="flex items-center bg-orange-brown p-6 rounded-lg border border-primary overflow-hidden shadow-sm">
                 <div>
                     <p class="text-sm text-white">Pending Review</p>
-                    <p class="text-2xl font-bold text-yellow-500">{{ $pendingReview }}</p>
+                    <p class="text-2xl font-bold text-white">{{ $pendingReview }}</p>
                 </div>
             </div>
 
             <!-- Total Amount -->
-            <div class="flex items-center bg-orange-brown p-6 rounded-lg">
+            <div class="flex items-center bg-orange-brown p-6 rounded-lg border border-primary overflow-hidden shadow-sm">
                 <div>
                     <p class="text-sm text-white">Total Amount</p>
-                    <p class="text-2xl font-bold text-green-500">₱ {{ number_format($totalAmount, 2) }}</p>
+                    <p class="text-2xl font-bold text-white">₱ {{ number_format($totalAmount, 2) }}</p>
                 </div>
             </div>
 
             <!-- Average Amount -->
-            <div class="flex items-center bg-orange-brown p-6 rounded-lg">
+            <div class="flex items-center bg-orange-brown p-6 rounded-lg border border-primary overflow-hidden shadow-sm">
                 <div>
                     <p class="text-sm text-white">Average Amount</p>
-                    <p class="text-2xl font-bold text-blue-500">{{ number_format($averageAmount, 2) }}</p>
+                    <p class="text-2xl font-bold text-white">{{ number_format($averageAmount, 2) }}</p>
                 </div>
             </div>
         </div>
@@ -58,28 +58,28 @@
                 <option value="{{ $department->id }}" {{ request('department_id') == $department->id ? 'selected' : '' }}>{{ $department->name }}</option>
                 @endforeach
             </select>
-            <button type="submit" class="inline-flex items-center px-3 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">Filter</button>
-            <a href="{{ url()->current() }}" class="inline-flex items-center px-3 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">Clear</a>
+            <button type="submit" class="inline-flex items-center px-3 py-2 border border-white rounded-md text-sm font-medium text-white bg-primary hover:bg-secondary">Filter</button>
+            <a href="{{ url()->current() }}" class="inline-flex items-center px-3 py-2 border border-white rounded-md text-sm font-medium text-black bg-input hover:bg-secondary">Clear</a>
         </form>
     </div>
     @endif
 
-    <div class="bg-orange-brown rounded-lg shadow-sm overflow-hidden">
+    <div class="bg-orange-brown rounded-lg border border-primary overflow-hidden shadow-sm">
         <div class="px-6 py-4 border-b border-primary">
-            <h3 class="text-lg font-semibold text-white">Budget Requests</h3>
+            <h3 class="text-lg font-semibold text-white">All Budget Requests</h3>
         </div>
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-primary">
                 <thead class="bg-orange-brown">
                     <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">ID</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Title</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">User</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Department</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Total Budget</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Status</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Due Date</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Actions</th>
+                        <th class="px-6 py-3 bg-primary/50 text-left text-xs font-medium text-white uppercase tracking-wider">ID</th>
+                        <th class="px-6 py-3 bg-primary/50 text-left text-xs font-medium text-white uppercase tracking-wider">Title</th>
+                        <th class="px-6 py-3 bg-primary/50 text-left text-xs font-medium text-white uppercase tracking-wider">User</th>
+                        <th class="px-6 py-3 bg-primary/50 text-left text-xs font-medium text-white uppercase tracking-wider">Department</th>
+                        <th class="px-6 py-3 bg-primary/50 text-left text-xs font-medium text-white uppercase tracking-wider">Total Budget</th>
+                        <th class="px-6 py-3 bg-primary/50 text-left text-xs font-medium text-white uppercase tracking-wider">Status</th>
+                        <th class="px-6 py-3 bg-primary/50 text-left text-xs font-medium text-white uppercase tracking-wider">Due Date</th>
+                        <th class="px-6 py-3 bg-primary/50 text-left text-xs font-medium text-white uppercase tracking-wider">Actions</th>
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-primary">
@@ -100,7 +100,7 @@
                             <div class="flex items-center gap-2">
                                 <x-button
                                     type="button"
-                                    class="btn-view-budget"
+                                    class="btn-view-budget hover:bg-secondary"
                                     data-budget-id="{{ $budget->id }}"
                                     data-budget-title="{{ $budget->title }}"
                                     data-budget-status="{{ $budget->status }}"

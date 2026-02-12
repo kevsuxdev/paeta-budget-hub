@@ -3,8 +3,8 @@
 <div class="p-6">
     <!-- Header -->
     <div class="mb-8">
-        <h1 class="text-3xl font-bold text-black mb-1">Budget Request Submission</h1>
-        <p class="text-black font-medium">Submit a new budget request by filling out the details below. Include all necessary line items and supporting documentation.</p>
+        <h1 class="text-3xl font-bold text-main mb-1">Budget Request Submission</h1>
+        <p class="text-main font-medium">Submit a new budget request by filling out the details below. Include all necessary line items and supporting documentation.</p>
     </div>
 
     @if (session('success'))
@@ -34,63 +34,74 @@
         @csrf
 
         <!-- First Section: Budget Details -->
-        <div class="bg-orange-200 p-6 rounded-lg shadow-sm text-primary">
-            <h2 class="text-2xl font-semibold text-primary mb-4">Budget Details</h2>
+        <div class="bg-orange-brown p-6 rounded-lg border border-primary overflow-hidden shadow-sm text-white">
+            <h2 class="text-2xl font-semibold text-white mb-4">Budget Details</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                    <label for="department_id" class="block text-sm font-medium text-primary mb-2">Department</label>
-                    <select name="department_id" id="department_id" class="w-full border border-white/70 rounded-md text-primary p-2 text-sm bg-white" required>
+                    <label for="department_id" class="block text-sm font-medium text-white mb-2">Department</label>
+                    <select name="department_id" id="department_id" class="w-full border border-white/70 rounded-md text-primary p-2 text-sm bg-input" required>
                         <option class="text-primary" value="">Select Department</option>
                         @foreach($departments as $department)
                         <option class="text-primary" value="{{ $department->id }}">{{ $department->name }}</option>
                         @endforeach
                     </select>
                 </div>
-                <x-input-fields class="bg-white" name="title" label="Title" type="text" placeholder="ex. Shared Budget" />
-                <x-input-fields class="bg-white" name="fiscal_year" label="Fiscal Year" type="number" />
-                <x-input-fields class="bg-white" name="category" label="Budget Category" type="text" />
-                <x-input-fields class="bg-white" name="submission_date" label="Due Date" type="date" min="{{ \Carbon\Carbon::tomorrow()->format('Y-m-d') }}" />
+                <x-input-fields class="bg-input text-black" name="title" label="Title" type="text" placeholder="ex. Shared Budget" />
+                <div>
+    <label for="fiscal_year" class="block text-sm font-medium text-white mb-2">Fiscal Year</label>
+    <select name="fiscal_year" id="fiscal_year" class="w-full border border-white/70 rounded-md text-black p-2 text-sm bg-input" required>
+        @php
+            $currentYear = date('Y');
+        @endphp
+        {{-- This loops from the current year to 5 years in the future --}}
+        @for ($i = 0; $i <= 5; $i++)
+            <option value="{{ $currentYear + $i }}">{{ $currentYear + $i }}</option>
+        @endfor
+    </select>
+</div>
+                <x-input-fields class="bg-input text-black" name="category" label="Budget Category" type="text" />
+                <x-input-fields class="bg-input text-black cursor-pointer" name="submission_date" label="Due Date" type="date" min="{{ \Carbon\Carbon::tomorrow()->format('Y-m-d') }}" />
             </div>
             <div class="mt-6">
-                <label for="justification" class="block text-sm font-medium text-primary mb-2">Justification</label>
-                <textarea name="justification" id="justification" rows="4" class="w-full border bg-white border-black/20 rounded-md p-2 text-sm"></textarea>
+                <label for="justification" class="block text-sm font-medium text-white mb-2">Justification</label>
+               <textarea name="justification" id="justification" rows="4" class="w-full border bg-input border-black/20 rounded-md p-2 text-sm text-black"></textarea>
             </div>
         </div>
 
         <!-- Second Section: Budget Line Items -->
-        <div class="bg-orange-200 w-full p-6 rounded-lg shadow-sm text-primary">
-            <h2 class="text-xl font-semibold text-primary mb-6">Budget Line Items</h2>
+        <div class="bg-orange-brown w-full p-6 rounded-lg border border-primary overflow-hidden shadow-sm text-white">
+            <h2 class="text-xl font-semibold text-white mb-6">Budget Line Items</h2>
             <div id="line-items" class="space-y-4 w-full">
                 <div class="line-item grid grid-cols-1 md:grid-cols-5 gap-4 items-end w-full">
-                    <x-input-fields name="line_items[0][description]" label="Description" type="text" class="bg-white" />
+                    <x-input-fields name="line_items[0][description]" label="Description" type="text" class="bg-input text-black" />
                     <article class="w-full">
                         <label class="text-sm font-medium">Quantity</label>
-                        <input type="number" name="line_items[0][quantity]" min="1" class="w-full bg-white border border-black/20 rounded-md p-2 text-sm quantity" required>
+                        <input type="number" name="line_items[0][quantity]" min="1" class="w-full bg-input border border-black/20 rounded-md p-2 text-sm text-black quantity" required>
                     </article>
                     <article class="w-full">
                         <label class="text-sm font-medium">Unit Cost</label>
-                        <input type="number" step="0.01" name="line_items[0][unit_cost]" min="0" class="w-full bg-white border border-black/20 rounded-md p-2 text-sm unit-cost" required>
+                        <input type="number" step="0.01" name="line_items[0][unit_cost]" min="0" class="w-full bg-input border border-black/20 rounded-md p-2 text-sm text-black unit-cost" required>
                     </article>
                     <article class="w-full">
                         <label class="text-sm font-medium">Total Cost</label>
-                        <input type="number" step="0.01" class="w-full bg-white border border-black/20 rounded-md p-2 text-sm total-cost" readonly>
+                        <input type="number" step="0.01" class="w-full bg-input border border-black/20 rounded-md p-2 text-sm text-black total-cost" readonly>
                     </article>
                     <div class="flex items-end">
-                        <button type="button" class="remove-item bg-red-500 text-white px-3 py-2 rounded-md hover:bg-red-600 hidden">Remove</button>
+                        <button type="button" class="remove-item bg-primary text-white px-2 py-2 rounded-md hover:bg-red-600 hidden">❌</button>
                     </div>
                 </div>
             </div>
             <div class="mt-4 flex justify-between items-center">
                 <button type="button" id="add-item"  class="text-white px-4 text-sm py-2 rounded-md bg-primary hover:bg-secondary">Add Line Item</button>
                 <div class="text-lg font-semibold">
-                    Grand Total: <span id="grand-total" class="text-sm text-primary">0.00</span>
+                    Grand Total: <span id="grand-total" class="text-sm text-white">0.00</span>
                 </div>
             </div>
         </div>
 
         <!-- Third Section: Supporting Documents -->
-        <div class="bg-orange-200 p-6 rounded-lg shadow-sm text-primary">
-            <h2 class="text-xl font-semibold text-primary mb-6">Supporting Documents</h2>
+        <div class="bg-orange-brown p-6 rounded-lg border border-primary overflow-hidden shadow-sm ">
+            <h2 class="text-xl font-semibold text-white mb-6">Supporting Documents</h2>
             <label
                 for="supporting_document"
                 id="dropzone"
@@ -124,12 +135,12 @@
                 <button
                     type="button"
                     id="remove-file"
-                    class="px-3 py-2 rounded-md bg-primary hover:bg-red-300">❌
+                    class="px-2 py-2 rounded-md bg-primary hover:bg-red-300">❌
                 </button>
             </div>
         </div>
 
-        <div class="flex justify-end">
+        <div class="flex justify-end font-medium">
             <x-button>Submit Budget</x-button>
         </div>
     </form>
@@ -161,22 +172,22 @@
         newItem.innerHTML = `
             <article>
                 <label class="text-sm font-medium">Description</label>
-                <input type="text" name="line_items[${itemCount}][description]" class="w-full bg-white border border-white/60 rounded-md p-2 text-sm description text-primary" required>
+                <input type="text" name="line_items[${itemCount}][description]" class="w-full bg-input border border-white/60 rounded-md p-2 text-sm description text-primary" required>
             </article>
             <article>
                 <label class="text-sm font-medium">Quantity</label>
-                <input type="number" name="line_items[${itemCount}][quantity]" min="1" class="w-full bg-white border border-white/60 rounded-md p-2 text-sm quantity text-primary quantity" required>
+                <input type="number" name="line_items[${itemCount}][quantity]" min="1" class="w-full bg-input border border-white/60 rounded-md p-2 text-sm quantity text-primary quantity" required>
             </article>
             <article>
                 <label class="text-sm font-medium">Unit Cost</label>
-                <input type="number" step="0.01" name="line_items[${itemCount}][unit_cost]" min="0" class="w-full bg-white border border-white/60 rounded-md p-2 text-sm quantity text-primary unit-cost" required>
+                <input type="number" step="0.01" name="line_items[${itemCount}][unit_cost]" min="0" class="w-full bg-input border border-white/60 rounded-md p-2 text-sm quantity text-primary unit-cost" required>
             </article>
             <article>
                 <label class="text-sm font-medium">Total Cost</label>
-                <input type="number" step="0.01" class="w-full bg-white border border-white/60 rounded-md p-2 text-sm quantity text-primary total-cost" readonly>
+                <input type="number" step="0.01" class="w-full bg-input border border-white/60 rounded-md p-2 text-sm quantity text-primary total-cost" readonly>
             </article>
             <div class="flex items-end">
-                <button type="button" class="remove-item bg-red-500 text-white px-3 py-2 rounded-md hover:bg-red-600">Remove</button>
+                <button type="button" class="remove-item bg-primary text-white px-2 py-2 rounded-md hover:bg-red-600">❌</button>
             </div>
         `;
         lineItems.appendChild(newItem);
@@ -184,6 +195,12 @@
         updateRemoveButtons();
         attachEventListeners(newItem);
     });
+
+document.addEventListener('click', function (e) {
+    if (e.target.type === 'date' && typeof e.target.showPicker === 'function') {
+        e.target.showPicker();
+    }
+});
 
     document.addEventListener('click', function(e) {
         if (e.target.classList.contains('remove-item')) {
@@ -248,7 +265,7 @@
         if (fileInput.files.length > 0) {
             fileName.textContent = fileInput.files[0].name;
             filePreview.classList.remove('hidden');
-            uploadText.innerHTML = '<span class="font-medium">File selected</span>';
+            uploadText.innerHTML = '<span class="font-medium">File uploaded</span>';
         }
     });
 

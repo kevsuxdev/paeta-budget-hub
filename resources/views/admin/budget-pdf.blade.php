@@ -5,7 +5,7 @@
     <title>Budget Information PDF</title>
     <style>
         body { font-family: 'DejaVu Sans', sans-serif; font-size: 13px; color: #222; }
-        .header { text-align: center; margin-bottom: 20px; display: flex; align-items: center; }
+        .header-table { margin-bottom: 20px; width: 100%; }
         .section { margin-bottom: 18px; }
         .section-title { font-weight: bold; font-size: 16px; margin-bottom: 8px; color: #333; }
         .info-table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
@@ -14,14 +14,53 @@
         .line-items-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
         .line-items-table th, .line-items-table td { border: 1px solid #bbb; padding: 6px 10px; }
         .line-items-table th { background: #f3f3f3; }
-        .footer { margin-top: 30px; text-align: right; font-size: 12px; color: #888; }
-        .header-table {
-            margin-bottom: 20px;
+        
+        /* SIGNATURE BOX STYLING */
+        .footer-table {
+            width: 100%;
+            margin-top: 40px;
+        }
+
+        .sig-container {
+            width: 300px;
+            text-align: center;
+            position: relative;
+        }
+
+        .signature-wrapper {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+            /* Keeps space for the signature to overlap without pushing text */
+            height: 60px; 
+        }
+
+        .signature-img {
+            position: absolute;
+            /* Negative bottom pulls the signature down onto the name/line */
+            bottom: -25px; 
+            left: 50%;
+            margin-left: -110px; /* Half of the 220px width to center it */
+            z-index: 9999;
+        }
+
+        .name-line {
+            border-top: 1px solid #444;
+            padding-top: 4px;
+            /* Smaller font and not bold as requested */
+            font-size: 14px; 
+            font-weight: normal; 
+            text-transform: uppercase;
+            display: block;
+            width: 250px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
         }
     </style>
 </head>
 <body>
-    <table class="header-table" width="40%">
+    <table class="header-table">
         <tr>
             <td style="width: 80px; text-align: left;">
                 <img src="{{ public_path('assets/logo.png') }}" style="max-height:80px;">
@@ -31,6 +70,7 @@
             </td>
         </tr>
     </table>
+
     <div class="section">
         <div class="section-title">Budget Request</div>
         <table class="info-table">
@@ -42,10 +82,12 @@
             <tr><th>Budget Category</th><td>{{ $budget->category }}</td></tr>
         </table>
     </div>
+
     <div class="section">
         <div class="section-title">Justification</div>
         <div>{{ $budget->justification ?? 'N/A' }}</div>
     </div>
+
     <div class="section">
         <div class="section-title">Budget Line Items</div>
         <table class="line-items-table">
@@ -69,10 +111,23 @@
             </tbody>
         </table>
     </div>
-    <div class="footer">
-        <p>Approved and signed by:</p>
-        <p>Name: <strong>{{ $budget->approved_by }}</strong></p>
-        <img src="{{ $esignature }}" alt="e-signature" width="100" height="100">
-    </div>
+
+    <table class="footer-table">
+        <tr>
+            <td width="60%"></td> <td class="sig-container">
+                <p style="margin-bottom: 5px; color: #555; font-size: 12px;">Approved and signed by:</p>
+                
+                <div class="signature-wrapper">
+                    @if($esignature)
+                        <img src="{{ $esignature }}" class="signature-img" width="220">
+                    @endif
+                </div>
+
+                <span class="name-line">
+                    {{ $budget->approved_by }}
+                </span>
+            </td>
+        </tr>
+    </table>
 </body>
 </html>

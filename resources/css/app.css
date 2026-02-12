@@ -13,14 +13,32 @@
     --color-accent: #a97a57;
     --color-foreground: #1e1e1e;
     --color-background: #f5f5f5;
-}
 
+    --color-wood-light: #E9C496;
+    --color-wood-main: #D4A373;
+    --color-wood-dark: #B98A55;
+    --color-main: #321901;
+    --color-input: #ffeed8;
+    --color-remove: #571f1f;
+}
 @layer base {
     * {
         @apply outline-none font-poppins;
     }
     body {
-        @apply font-poppins text-foreground bg-[#a97a57] bg-cover bg-center bg-no-repeat;
-        background-image: url('../../public/assets/bg.jpg') ;
+        @apply font-poppins text-foreground;
+        
+        background: linear-gradient(
+            to right, 
+            #D4A373 0%, 
+            #E9C496 50%, 
+            #D4A373 100%
+          
+            
+
+             
+        );
+        background-attachment: fixed;
+        min-height: 100vh;
     }
 }

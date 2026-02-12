@@ -574,32 +574,17 @@ class AdminController extends Controller
     }
 
     public function storeUser(Request $request)
-    {
-        $request->validate([
-            'username' => 'required|string|max:255|unique:users',
-            'full_name' => 'required|string|max:255',
-            'email' => [
-                'required', 
-                'string', 
-                'email', 
-                'max:255', 
-                'unique:users', 
-                'regex:/^[a-zA-Z0-9._%+-]+@paete\.gov\.ph$/i'
-            ],
-            'phone' => [
-                'nullable', 
-                'string', 
-                'regex:/^\+63\d{10}$/'
-            ],
-            'role' => 'required|in:admin,finance,dept_head,staff',
-            'department_id' => 'nullable|exists:departments,id',
-            'status' => 'required|in:active,inactive',
-            ], [
-            'email.regex' => 'The email must be an authorized @paete.gov.ph address.',
-            'phone.regex' => 'Phone must start with +63 followed by 10 digits (e.g., +639123456789).',
-        ]);
+{
+    // 1. Temporarily change validation to be simple to see if regex is the killer
+    $request->validate([
+        'username' => 'required|string|unique:users',
+        'full_name' => 'required|string',
+        'email' => 'required|email|unique:users',
+        'role' => 'required',
+        'status' => 'required',
+    ]);
 
-
+    try {
         User::create([
             'username' => $request->username,
             'full_name' => $request->full_name,
@@ -612,7 +597,12 @@ class AdminController extends Controller
         ]);
 
         return redirect()->back()->with('success', 'User created successfully.');
+        
+    } catch (\Exception $e) {
+        // 2. THIS WILL SHOW YOU THE ACTUAL SQL ERROR ON SCREEN
+        dd($e->getMessage()); 
     }
+}
 
 public function updateUser(Request $request, User $user)
     {

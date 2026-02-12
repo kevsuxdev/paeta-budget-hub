@@ -13,8 +13,8 @@
     @endif
     <!-- Header -->
     <div class="mb-8">
-        <h1 class="text-3xl font-bold text-primary mb-2">Edit Budget Request</h1>
-        <p class="text-gray-600 font-medium">Update the budget request details below. You can add or remove line items and replace supporting documents.</p>
+        <h1 class="text-3xl font-bold text-main mb-2">Edit Budget Request</h1>
+        <p class="text-main font-medium">Update the budget request details below. You can add or remove line items and replace supporting documents.</p>
     </div>
 
     <form action="{{ route('staff.budget.update', $budget->id) }}" method="POST" enctype="multipart/form-data" class="space-y-8">
@@ -22,13 +22,13 @@
         @method('PUT')
 
         <!-- First Section: Budget Details -->
-        <div class="bg-orange-200 p-6 rounded-lg shadow-sm text-primary">
-            <h2 class="text-2xl font-semibold text-primary mb-4">Budget Details</h2>
+        <div class="bg-orange-brown p-6 rounded-lg border border-primary overflow-hidden shadow-sm text-white">
+            <h2 class="text-2xl font-semibold text-gray-200 mb-4">Budget Details</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                     @php $user = request()->user(); @endphp
-                    <label for="department_id" class="block text-sm font-medium text-primary mb-2 ">Department</label>
-                    <select id="department_id" class="w-full border border-white/70 rounded-md text-primary p-2 text-sm bg-gray-200" disabled>
+                    <label for="department_id" class="block text-sm font-medium text-gray-200 mb-2 ">Department</label>
+                    <select id="department_id" class="w-full border border-white/70 rounded-md text-black p-2 text-sm bg-gray-300" disabled>
                         @foreach($departments as $department)
                         <option class="text-primary" value="{{ $department->id }}" {{ $department->id == ($budget->department_id ?? $user->department_id) ? 'selected' : '' }}>{{ $department->name }}</option>
                         @endforeach
@@ -36,31 +36,39 @@
                     <input type="hidden" name="department_id" value="{{ old('department_id', $budget->department_id ?? $user->department_id) }}">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-primary mb-2">Title</label>
-                    <input name="title" type="text" value="{{ old('title', $budget->title) }}" class="w-full border border-white/70 rounded-md p-2 text-sm bg-gray-200"  />
+                    <label class="block text-sm font-medium text-gray-200 mb-2">Title</label>
+                    <input name="title" type="text" value="{{ old('title', $budget->title) }}" class="w-full border border-white/70 rounded-md p-2 text-black text-sm bg-gray-300"  />
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-primary mb-2">Fiscal Year</label>
-                    <input name="fiscal_year" type="number" value="{{ old('fiscal_year', $budget->fiscal_year) }}" class="w-full border border-white/70 rounded-md p-2 text-sm bg-gray-200" />
+                    <label class="block text-sm font-medium text-gray-200 mb-2">Fiscal Year</label>
+                    <select name="fiscal_year" id="fiscal_year" value="{{ old('fiscal_year', $budget->fiscal_year) }}" class="w-full border border-white/70 rounded-md p-2 text-black text-sm bg-gray-300">
+               @php
+               $currentYear = date('Y');
+               @endphp
+               {{-- This loops from the current year to 5 years in the future --}}
+               @for ($i = 0; $i <= 5; $i++)
+               <option value="{{ $currentYear + $i }}">{{ $currentYear + $i }}</option>
+               @endfor
+            </select>
+            </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-200 mb-2">Budget Category</label>
+                    <input name="category" type="text" value="{{ old('category', $budget->category) }}" class="w-full border border-white/70 rounded-md p-2 text-black text-sm bg-gray-300" />
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-primary mb-2">Budget Category</label>
-                    <input name="category" type="text" value="{{ old('category', $budget->category) }}" class="w-full border border-white/70 rounded-md p-2 text-sm bg-gray-200" />
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-primary mb-2">Due Date</label>
-                    <input name="submission_date" type="date" value="{{ old('submission_date', $budget->submission_date->format('Y-m-d')) }}" min="{{ \Carbon\Carbon::tomorrow()->format('Y-m-d') }}" class="w-full border border-white/70 rounded-md p-2 text-sm bg-gray-200" />
+                    <label class="block text-sm font-medium text-gray-200 mb-2">Due Date</label>
+                    <input name="submission_date" type="date" value="{{ old('submission_date', $budget->submission_date->format('Y-m-d')) }}" min="{{ \Carbon\Carbon::tomorrow()->format('Y-m-d') }}" class="w-full border border-white/70 rounded-md p-2 text-black text-sm bg-gray-300 cursor-pointer" />
                 </div>
             </div>
             <div class="mt-6">
-                <label for="justification" class="block text-sm font-medium text-primary mb-2">Justification</label>
-                <textarea name="justification" id="justification" rows="4" class="w-full border bg-gray-200 border-black/20 rounded-md p-2 text-sm">{{ old('justification', $budget->justification) }}</textarea>
+                <label for="justification" class="block text-sm font-medium text-gray-200 mb-2">Justification</label>
+                <textarea name="justification" id="justification" rows="4" class="w-full border bg-gray-300 border-black/20 rounded-md p-2 text-black text-sm">{{ old('justification', $budget->justification) }}</textarea>
             </div>
         </div>
 
         <!-- Second Section: Budget Line Items -->
-        <div class="bg-orange-200 w-full p-6 rounded-lg shadow-sm text-primary">
-            <h2 class="text-xl font-semibold text-primary mb-6">Budget Line Items</h2>
+        <div class="bg-orange-brown w-full p-6 rounded-lg border border-primary overflow-hidden shadow-sm text-gray-200">
+            <h2 class="text-xl font-semibold text-gray-200 mb-6">Budget Line Items</h2>
             <div id="line-items" class="space-y-4 w-full">
                 @php
                     $oldItems = old('line_items', $budget->lineItems->toArray());
@@ -69,46 +77,46 @@
                     @foreach($oldItems as $i => $it)
                         <div class="line-item grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
                             <article>
-                                <label class="text-sm font-medium">Description</label>
-                                <input type="text" name="line_items[{{ $i }}][description]" value="{{ $it['description'] ?? '' }}" class="w-full bg-gray-200 border border-black/20 rounded-md p-2 text-sm " required>
+                                <label class="text-sm text-gray-200 font-medium">Description</label>
+                                <input type="text" name="line_items[{{ $i }}][description]" value="{{ $it['description'] ?? '' }}" class="w-full bg-gray-300 text-black border border-black/20 rounded-md p-2 text-sm" required>
                             </article>
                             <article>
-                                <label class="text-sm font-medium">Quantity</label>
-                                <input type="number" name="line_items[{{ $i }}][quantity]" min="1" value="{{ $it['quantity'] ?? 1 }}" class="w-full bg-gray-200 border border-black/20 rounded-md p-2 text-sm quantity" required>
+                                <label class="text-sm text-gray-200 font-medium">Quantity</label>
+                                <input type="number" name="line_items[{{ $i }}][quantity]" min="1" value="{{ $it['quantity'] ?? 1 }}" class="w-full bg-gray-300 text-black border border-black/20 rounded-md p-2 text-sm quantity" required>
                             </article>
                             <article>
-                                <label class="text-sm font-medium">Unit Cost</label>
-                                <input type="number" step="0.01" name="line_items[{{ $i }}][unit_cost]" min="0" value="{{ $it['unit_cost'] ?? 0 }}" class="w-full bg-gray-200 border border-black/20 rounded-md p-2 text-sm unit-cost" required>
+                                <label class="text-sm text-gray-200 font-medium">Unit Cost</label>
+                                <input type="number" step="0.01" name="line_items[{{ $i }}][unit_cost]" min="0" value="{{ $it['unit_cost'] ?? 0 }}" class="w-full bg-gray-300 text-black border border-black/20 rounded-md p-2 text-sm unit-cost" required>
                             </article>
                             <article>
-                                <label class="text-sm font-medium">Total Cost</label>
-                                <input type="number" step="0.01" class="w-full bg-gray-200 border border-black/20 rounded-md p-2 text-sm total-cost" readonly value="{{ number_format((($it['quantity'] ?? 0) * ($it['unit_cost'] ?? 0)), 2, '.', '') }}">
+                                <label class="text-sm text-gray-200 font-medium">Total Cost</label>
+                                <input type="number" step="0.01" class="w-full bg-gray-300 text-black border border-black/20 rounded-md p-2 text-sm total-cost" readonly value="{{ number_format((($it['quantity'] ?? 0) * ($it['unit_cost'] ?? 0)), 2, '.', '') }}">
                             </article>
                             <div class="flex items-end">
-                                <button type="button" class="remove-item bg-red-500 text-primary px-3 py-2 rounded-md hover:bg-red-600">Remove</button>
+                                <button type="button" class="remove-item bg-primary text-white px-2 py-2 rounded-md hover:bg-red-600 hidden">❌</button>
                             </div>
                         </div>
                     @endforeach
                 @else
                     <div class="line-item grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
                         <article>
-                            <label class="text-sm font-medium">Description</label>
-                            <input type="text" name="line_items[0][description]" class="w-full bg-white border border-black/20 rounded-md p-2 text-sm" required>
+                            <label class="text-sm text-gray-200 font-medium">Description</label>
+                            <input type="text" name="line_items[0][description]" class="w-full bg-gray-300 text-black border border-black/20 rounded-md p-2 text-sm" required>
                         </article>
                         <article>
-                            <label class="text-sm font-medium">Quantity</label>
-                            <input type="number" name="line_items[0][quantity]" min="1" class="w-full bg-white border border-black/20 rounded-md p-2 text-sm quantity" required>
+                            <label class="text-sm text-gray-200 font-medium">Quantity</label>
+                            <input type="number" name="line_items[0][quantity]" min="1" class="w-full bg-gray-300 text-black border border-black/20 rounded-md p-2 text-sm quantity" required>
                         </article>
                         <article>
-                            <label class="text-sm font-medium">Unit Cost</label>
-                            <input type="number" step="0.01" name="line_items[0][unit_cost]" min="0" class="w-full bg-white border border-black/20 rounded-md p-2 text-sm unit-cost" required>
+                            <label class="text-sm text-gray-200 font-medium">Unit Cost</label>
+                            <input type="number" step="0.01" name="line_items[0][unit_cost]" min="0" class="w-full bg-gray-300 text-black border border-black/20 rounded-md p-2 text-sm unit-cost" required>
                         </article>
                         <article>
-                            <label class="text-sm font-medium">Total Cost</label>
-                            <input type="number" step="0.01" class="w-full bg-white border border-black/20 rounded-md p-2 text-sm total-cost" readonly>
+                            <label class="text-sm text-gray-200 font-medium">Total Cost</label>
+                            <input type="number" step="0.01" class="w-full bg-gray-300 text-black border border-black/20 rounded-md p-2 text-sm total-cost" readonly>
                         </article>
                         <div class="flex items-end">
-                            <button type="button" class="remove-item bg-red-500 text-primary px-3 py-2 rounded-md hover:bg-red-600 hidden">Remove</button>
+                            <button type="button" class="remove-item bg-primary text-white px-2 py-2 rounded-md hover:bg-red-600 hidden">❌</button>
                         </div>
                     </div>
                 @endif
@@ -116,13 +124,13 @@
           <div class="mt-4 flex justify-between items-center">
                 <button type="button" id="add-item" class="text-white px-4 text-sm py-2 rounded-md bg-primary hover:bg-secondary">Add Line Item</button>
                 <div class="text-lg font-semibold">
-                    Grand Total: <span id="grand-total" class="text-sm text-primary">0.00</span>
+                    Grand Total: <span id="grand-total" class="text-sm text-gray-200">0.00</span>
                 </div>
             </div>
         </div>
         <!-- Third Section: Supporting Documents -->
-        <div class="bg-orange-200 p-6 rounded-lg shadow-sm text-primary">
-            <h2 class="text-xl font-semibold text-primary mb-6">Supporting Documents</h2>
+        <div class="bg-orange-brown p-6 rounded-lg border border-primary overflow-hidden shadow-sm ">
+            <h2 class="text-xl font-semibold text-gray-200 mb-6">Supporting Documents</h2>
 
             <label
                 for="supporting_document"
@@ -135,11 +143,11 @@
                         d="M7 16V12M7 12V8M7 12h4m6 4v-1a3 3 0 00-3-3H6a3 3 0 00-3 3v1" />
                 </svg>
 
-                <p class="text-sm text-white" id="upload-text">
+                <p class="text-sm text-gray-200" id="upload-text">
                     <span class="font-medium">Click to upload</span> or drag and drop
                 </p>
 
-                <p class="text-xs text-white mt-1">
+                <p class="text-xs text-gray-200 mt-1">
                     PDF, DOC, DOCX, JPG, JPEG, PNG
                 </p>
 
@@ -157,7 +165,7 @@
                     @if($budget->supporting_document)
                         <a href="{{ asset('storage/' . $budget->supporting_document) }}" target="_blank" id="file-name" class="text-sm text-white truncate">Current document</a>
                     @else
-                        <span id="file-name" class="text-sm text-white truncate">No file selected</span>
+                        <span id="file-name" class="text-sm text-gray-200 truncate">No file uploaded</span>
                     @endif
                 </div>
                 <button
@@ -206,22 +214,22 @@
         newItem.innerHTML = `
             <article>
                 <label class="text-sm font-medium">Description</label>
-                <input type="text" name="line_items[${itemCount}][description]" class="w-full bg-gray-200 border border-white/60 rounded-md p-2 text-sm" required>
+                <input type="text" name="line_items[${itemCount}][description]" class="w-full bg-gray-300 text-black border border-black/20 rounded-md p-2 text-sm" required>
             </article>
             <article>
                 <label class="text-sm font-medium">Quantity</label>
-                <input type="number" name="line_items[${itemCount}][quantity]" min="1" class="w-full bg-gray-200 border border-white/60 rounded-md p-2 text-sm quantity" required>
+                <input type="number" name="line_items[${itemCount}][quantity]" min="1" class="w-full bg-gray-300 text-black border border-black/20 rounded-md p-2 text-sm quantity" required>
             </article>
             <article>
                 <label class="text-sm font-medium">Unit Cost</label>
-                <input type="number" step="0.01" name="line_items[${itemCount}][unit_cost]" min="0" class="w-full bg-gray-200 border border-white/60 rounded-md p-2 text-sm unit-cost" required>
+                <input type="number" step="0.01" name="line_items[${itemCount}][unit_cost]" min="0" class="w-full bg-gray-300 text-black border border-black/20 rounded-md p-2 text-sm unit-cost" required>
             </article>
             <article>
                 <label class="text-sm font-medium">Total Cost</label>
-                <input type="number" step="0.01" class="w-full bg-gray-200 border border-white/60 rounded-md p-2 text-sm total-cost" readonly>
+                <input type="number" step="0.01" class="w-full bg-gray-300 text-black border border-black/20 rounded-md p-2 text-sm total-cost" readonly>
             </article>
             <div class="flex items-end">
-                <button type="button" class="remove-item bg-red-500 text-primary px-3 py-2 rounded-md hover:bg-red-600">Remove</button>
+                <button type="button" class="remove-item bg-primary text-white px-2 py-2 rounded-md hover:bg-red-600 hidden">❌</button>
             </div>
         `;
         lineItems.appendChild(newItem);
@@ -230,6 +238,11 @@
         itemCount++;
     });
 
+    document.addEventListener('click', function (e) {
+        if (e.target.type === 'date' && typeof e.target.showPicker === 'function') {
+        e.target.showPicker();
+    }
+    });
  
     document.addEventListener('click', function(e) {
         if (e.target.classList.contains('remove-item')) {

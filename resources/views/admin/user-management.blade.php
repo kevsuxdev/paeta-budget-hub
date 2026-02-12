@@ -2,47 +2,47 @@
 @section('main-content')
 <div class="p-6">
     <article class="space-y-2">
-        <h1 class="text-3xl font-bold text-black">User Management</h1>
-        <p class="text-black font-medium">Manage users and view system statistics.</p>
+        <h1 class="text-3xl font-bold text-main">User Management</h1>
+        <p class="text-main font-medium">Manage users and view system statistics.</p>
     </article>
 
     <!-- Department Management Buttons -->
     <div class="flex items-center justify-end">
         <div class="space-x-2 my-5 self-end">
-            <button type="button" onclick="openDepartmentModal()" class="bg-primary text-sm text-white px-4 py-2 rounded-md hover:bg-opacity-90">
+            <button type="button" onclick="openDepartmentModal()" class="bg-primary font-medium text-sm text-white px-4 py-2 rounded-md hover:bg-secondary border border-white shadow-sm">
                 Add New Department
             </button>
-            <button type="button" onclick="openUserModal()" class="bg-green-600 text-sm text-white px-4 py-2 rounded-md hover:bg-green-700">
-                Add New User
+            <button type="button" onclick="openUserModal()" class="bg-input font-medium text-sm text-black px-4 py-2 rounded-md hover:bg-secondary border border-white shadow-sm">
+                + Add New User
             </button>
         </div>
     </div>
 
     <!-- Overview Statistics -->
-    <div class="shadow-sm mb-6">
+    <div class="mb-6">
         <h2 class="text-2xl font-semibold text-white mb-4">User Overview</h2>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <!-- Total Users -->
-            <div class="flex items-center bg-orange-brown p-6 rounded-lg ">
+            <div class="flex items-center bg-orange-brown p-6 rounded-lg border border-primary overflow-hidden shadow-sm">
                 <div class="ml-3">
                     <p class="text-sm text-white">Total Users</p>
-                    <p class="text-2xl font-bold text-blue-500">{{ $totalUsers }}</p>
+                    <p class="text-2xl font-bold text-white">{{ $totalUsers }}</p>
                 </div>
             </div>
 
             <!-- Total Active Users -->
-            <div class="flex items-center bg-orange-brown p-6 rounded-lg ">
+            <div class="flex items-center bg-orange-brown p-6 rounded-lg border border-primary overflow-hidden shadow-sm">
                 <div class="ml-3">
                     <p class="text-sm text-white">Active Users</p>
-                    <p class="text-2xl font-bold text-green-500">{{ $totalActiveUsers }}</p>
+                    <p class="text-2xl font-bold text-white">{{ $totalActiveUsers }}</p>
                 </div>
             </div>
 
             <!-- Total Departments -->
-            <div class="flex items-center bg-orange-brown p-6 rounded-lg ">
+            <div class="flex items-center bg-orange-brown p-6 rounded-lg border border-primary overflow-hidden shadow-sm ">
                 <div class="ml-3">
                     <p class="text-sm text-white">Total Departments</p>
-                    <p class="text-2xl font-bold text-purple-500">{{ $totalDepartments }}</p>
+                    <p class="text-2xl font-bold text-white">{{ $totalDepartments }}</p>
                 </div>
             </div>
         </div>
@@ -52,7 +52,7 @@
     <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 mt-6">
         <!-- Users List -->
         <div class="lg:col-span-3">
-            <div class="bg-orange-brown rounded-lg shadow-sm">
+            <div class="bg-orange-brown rounded-lg border border-primary overflow-hidden shadow-sm">
                 <div class="px-6 py-4">
                     <h3 class="text-lg font-semibold text-white">List of Users</h3>
                 </div>
@@ -60,12 +60,12 @@
                     <table class="min-w-full divide-y divide-primary">
                         <thead class="bg-orange-brown">
                             <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Name</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Email</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Role</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Department</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Status</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Actions</th>
+                                <th class="px-6 py-3 bg-primary/50 text-left text-xs font-medium text-white uppercase tracking-wider">Name</th>
+                                <th class="px-6 py-3 bg-primary/50 text-left text-xs font-medium text-white uppercase tracking-wider">Email</th>
+                                <th class="px-6 py-3 bg-primary/50 text-left text-xs font-medium text-white uppercase tracking-wider">Role</th>
+                                <th class="px-6 py-3 bg-primary/50 text-left text-xs font-medium text-white uppercase tracking-wider">Department</th>
+                                <th class="px-6 py-3 bg-primary/50 text-left text-xs font-medium text-white uppercase tracking-wider">Status</th>
+                                <th class="px-6 py-3 bg-primary/50 text-left text-xs font-medium text-white uppercase tracking-wider">Actions</th>
                             </tr>
                         </thead>
                         <tbody class="bg-orange-brown divide-y divide-primary">
@@ -85,7 +85,7 @@
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <button
                                         type="button"
-                                        class="ml-2 px-2 py-2 bg-primary cursor-pointer text-white rounded hover:bg-primary/80 text-xs"
+                                        class="ml-2 px-2 py-2 bg-primary cursor-pointer border border-black text-white rounded hover:bg-primary/80 font-medium text-xs"
                                         data-user-id="{{ $user->id }}"
                                         data-user-name="{{ $user->full_name }}"
                                         onclick="openChangePasswordModalFromButton(this)">
@@ -94,7 +94,7 @@
 
                                     <button
                                         type="button"
-                                        class="ml-2 px-2 py-2 bg-blue-600 cursor-pointer text-white rounded hover:bg-blue-700 text-xs update-dept-btn"
+                                        class="ml-2 px-2 py-2 bg-secondary cursor-pointer border border-black text-white rounded hover:bg-secondary/80 font-medium text-xs update-dept-btn"
                                         data-user-id="{{ $user->id }}"
                                         data-user-name="{{ $user->full_name }}"
                                         data-department-id="{{ $user->department->id ?? '' }}"
@@ -103,7 +103,7 @@
                                     </button>
                                     <button
                                         type="button"
-                                        class="ml-2 px-2 py-2 bg-yellow-600 cursor-pointer text-white rounded hover:bg-yellow-700 text-xs edit-user-btn"
+                                        class="ml-2 px-2 py-2 bg-input cursor-pointer border border-black text-black rounded hover:bg-input/80 font-medium text-xs edit-user-btn"
                                         data-user-id="{{ $user->id }}"
                                         data-username="{{ $user->username }}"
                                         data-user-name="{{ $user->full_name }}"
@@ -130,7 +130,7 @@
 
         <!-- Departments List -->
         <div>
-            <div class="bg-orange-brown rounded-lg shadow-sm">
+            <div class="bg-orange-brown rounded-lg border border-primary overflow-hidden shadow-sm">
                 <div class="px-6 py-4 border-b border-primary">
                     <h3 class="text-lg font-semibold text-white">Departments</h3>
                 </div>
@@ -186,7 +186,7 @@
                                 </div>
                             </div>
                             <div class="flex justify-end space-x-3 pt-4">
-                                <button type="button" onclick="closeEditUserModal()" class="px-4 py-2 bg-red-600 rounded-md hover:bg-red-700 text-white cursor-pointer text-sm">Cancel</button>
+                                <button type="button" onclick="closeEditUserModal()" class="px-4 py-2 bg-secondary rounded-md hover:bg-primary/50 text-white cursor-pointer text-sm">Cancel</button>
                                 <button type="submit" class="px-4 py-2 bg-primary text-white rounded hover:bg-primary/80 text-sm">Save Changes</button>
                             </div>
                         </form>
@@ -200,7 +200,7 @@
                             <tr>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-white flex items-center justify-between">
                                     <span>{{ $department->name }}</span>
-                                    <button type="button" class="ml-2 px-2 py-1 bg-red-600 text-white rounded hover:bg-red-700 delete-dept-btn" data-department-id="{{ $department->id }}" data-department-name="{{ $department->name }}">Delete</button>
+                                    <button type="button" class="ml-2 px-2 py-1 bg-red-700 text-white rounded hover:bg-red-800 delete-dept-btn" data-department-id="{{ $department->id }}" data-department-name="{{ $department->name }}">Delete</button>
                                 </td>
                             </tr>
                             @empty
@@ -218,17 +218,17 @@
 
 <!-- Change Password Modal -->
 <div id="changePasswordModal" class="fixed inset-0 bg-black/40 flex items-center justify-center z-50 hidden">
-    <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-sm">
-        <h3 class="text-lg font-semibold mb-2 text-gray-800">Change Password for <span id="changePasswordUserName"></span></h3>
+    <div class="bg-orange-brown p-5 border border-white/60 w-96 shadow-lg rounded-md">
+        <h3 class="text-lg font-semibold mb-2 text-white">Change Password for <span id="changePasswordUserName"></span></h3>
         <form id="changePasswordForm" method="POST" action="{{ route('admin.users.changePassword') }}">
             @csrf
             <input type="hidden" name="user_id" id="changePasswordUserId">
             <div class="mb-4">
-                <label for="new_password" class="block text-sm font-medium text-gray-700 mb-1">New Password</label>
-                <input type="password" name="new_password" id="new_password" class="w-full border border-gray-300 rounded-md p-2" required minlength="6">
+                <label for="new_password" class="block text-sm font-medium text-white mb-1">New Password</label>
+                <input type="password" name="new_password" id="new_password" class="w-full border border-white bg-input rounded-md p-2" required minlength="6">
             </div>
             <div class="flex justify-end gap-2">
-                <button type="button" onclick="closeChangePasswordModal()" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 text-sm">Cancel</button>
+                <button type="button" onclick="closeChangePasswordModal()" class="px-4 py-2 bg-secondary rounded-md hover:bg-primary/50 text-white cursor-pointer text-sm">Cancel</button>
                 <button type="submit" class="px-4 py-2 bg-primary text-white rounded hover:bg-primary/80 text-sm">Change Password</button>
             </div>
         </form>
@@ -243,10 +243,10 @@
             @csrf
             <div class="mb-4">
                 <label for="name" class="block text-sm font-medium text-white mb-2">Department Name</label>
-                <input type="text" name="name" id="name" class="w-full border border-white/60 rounded-md p-2 text-sm text-white" required>
+                <input type="text" name="name" id="name" class="w-full bg-input border border-white rounded-md p-2 text-sm text-black" required>
             </div>
             <div class="flex justify-end space-x-2">
-                <button type="button" onclick="closeDepartmentModal()" class="px-4 py-2 bg-red-600 rounded-md hover:bg-red-700 text-sm text-white cursor-pointer">Cancel</button>
+                <button type="button" onclick="closeDepartmentModal()" class="px-4 py-2 bg-secondary rounded-md hover:bg-primary/50 text-sm text-white cursor-pointer">Cancel</button>
                 <x-button>Add Department</x-button>
             </div>
         </form>
@@ -263,25 +263,25 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                     <label for="username" class="block text-sm font-medium text-white mb-1">Username</label>
-                    <input type="text" name="username" id="username" class="w-full border text-white border-white/60 rounded-md p-2 text-sm" required>
+                    <input type="text" name="username" id="username" class="w-full bg-input border text-black border-white rounded-md p-2 text-sm" required>
                 </div>
                 <div>
                     <label for="full_name" class="block text-sm font-medium text-white mb-1">Full Name</label>
-                    <input type="text" name="full_name" id="full_name" class="w-full border text-white border-white/60 rounded-md p-2 text-sm" required>
+                    <input type="text" name="full_name" id="full_name" class="w-full bg-input border text-black border-white rounded-md p-2 text-sm"  required>
                 </div>
                 <div class="md:col-span-2">
                     <label for="email" class="block text-sm font-medium text-white mb-1">Email</label>
-                    <input type="email" name="email" id="email" class="w-full border text-white border-white/60 rounded-md p-2 text-sm" placeholder="user@paete.gov.ph" pattern=".+@paete\.gov\.ph" title="Please use an email ending in @paete.gov.ph"required>
+                    <input type="email" name="email" id="email" class="w-full bg-input border text-black border-white rounded-md p-2 text-sm"  placeholder="user@paete.gov.ph" pattern=".+@paete\.gov\.ph" title="Please use an email ending in @paete.gov.ph"required>
                 </div>
                 <div>
                     <label for="phone" class="block text-sm font-medium text-white mb-1">Phone</label>
-                    <input type="text" name="phone" id="phone" class="w-full border text-white border-white/60 rounded-md p-2 text-sm" placeholder="(+63)" maxlength="12" oninput="formatPhoneNumber(this)" required>
+                    <input type="text" name="phone" id="phone" class="w-full bg-input border text-black border-white rounded-md p-2 text-sm"  placeholder="(+63)" maxlength="12" oninput="formatPhoneNumber(this)" required>
                 </div>
                 <input type="hidden" name="password" value="password">
                 <input type="hidden" name="password_confirmation" value="password">
                 <div>
                     <label for="role" class="block text-sm font-medium text-white mb-1">Role</label>
-                    <select name="role" id="role" class="w-full border text-white border-white/60 rounded-md p-2 text-sm" required>
+                    <select name="role" id="role" class="w-full bg-input border text-black border-white rounded-md p-2 text-sm" required>
                         <option class="text-primary" value="">Select Role</option>
                         <option class="text-primary" value="admin">Admin</option>
                         <option class="text-primary" value="finance">Finance</option>
@@ -291,7 +291,7 @@
                 </div>
                 <div id="department-field">
                     <label for="department_id" class="block text-sm font-medium text-white mb-1">Department <span class="text-red-500">*</span></label>
-                    <select name="department_id" id="department_id" class="w-full border text-white border-white/60 rounded-md p-2 text-sm">
+                    <select name="department_id" id="department_id" class="w-full bg-input border text-black border-whiterounded-md p-2 text-sm" >
                         <option class="text-primary" value="">Select Department</option>
                         @foreach($departments as $department)
                         <option class="text-primary" value="{{ $department->id }}">{{ $department->name }}</option>
@@ -300,14 +300,14 @@
                 </div>
                 <div>
                     <label for="status" class="block text-sm font-medium text-white mb-1">Status</label>
-                    <select name="status" id="status" class="w-full border text-white border-white/60 rounded-md p-2 text-sm" required>
+                    <select name="status" id="status" class="w-full bg-input border text-black border-white rounded-md p-2 text-sm"  required>
                         <option value="active">Active</option>
                         <option value="inactive">Inactive</option>
                     </select>
                 </div>
             </div>
             <div class="flex justify-end space-x-3 pt-4">
-                <button type="button" onclick="closeUserModal()" class="px-4 py-2 bg-red-600 rounded-md hover:bg-red-700 text-white cursor-pointer text-sm">Cancel</button>
+                <button type="button" onclick="closeUserModal()" class="px-4 py-2 bg-secondary rounded-md hover:bg-primary/50 text-white cursor-pointer text-sm">Cancel</button>
                 <x-button>Create User</x-button>
             </div>
         </form>
@@ -316,14 +316,14 @@
 
 <!-- Update Department Modal -->
 <div id="updateDepartmentModal" class="fixed inset-0 bg-black/40 flex items-center justify-center z-50 hidden">
-    <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-sm">
-        <h3 class="text-lg font-semibold mb-2 text-gray-800">Update Department for <span id="updateDeptUserName"></span></h3>
+    <div class="bg-orange-brown p-5 border border-white/60 w-96 shadow-lg rounded-md">
+        <h3 class="text-lg font-semibold mb-2 text-white">Update Department for <span id="updateDeptUserName"></span></h3>
         <form id="updateDepartmentForm" method="POST">
             @csrf
             @method('PUT')
             <div class="mb-4">
-                <label for="update_department_id" class="block text-sm font-medium text-gray-700 mb-1">Department</label>
-                <select name="department_id" id="update_department_id" class="w-full border border-gray-300 rounded-md p-2" required>
+                <label for="update_department_id" class="block text-sm font-medium text-white mb-1">Department</label>
+                <select name="department_id" id="update_department_id" class="w-full border border-white bg-input rounded-md p-2" required>
                     <option value="">Select Department</option>
                     @foreach($departments as $department)
                     <option value="{{ $department->id }}">{{ $department->name }}</option>
@@ -331,7 +331,7 @@
                 </select>
             </div>
             <div class="flex justify-end gap-2">
-                <button type="button" onclick="closeUpdateDepartmentModal()" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 text-sm">Cancel</button>
+                <button type="button" onclick="closeUpdateDepartmentModal()" class="px-4 py-2 bg-secondary rounded hover:bg-primary/50 text-white text-sm">Cancel</button>
                 <button type="submit" class="px-4 py-2 bg-primary text-white rounded hover:bg-primary/80 text-sm">Update</button>
             </div>
         </form>
@@ -340,15 +340,15 @@
 
 <!-- Delete Department Modal -->
 <div id="deleteDepartmentModal" class="fixed inset-0 bg-black/40 flex items-center justify-center z-50 hidden">
-    <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-sm">
-        <h3 class="text-lg font-semibold mb-2 text-gray-800">Delete Department</h3>
+    <div class="bg-orange-brown p-6 border border-white/60 w-full max-w-lg shadow-lg rounded-md max-h-[90vh] overflow-y-auto">
+        <h3 class="text-lg font-semibold mb-2 text-white">Delete Department</h3>
         <form id="deleteDepartmentForm" method="POST">
             @csrf
             @method('DELETE')
-            <p class="mb-4 text-gray-700">Are you sure you want to delete the department <strong id="deleteDeptName"></strong>? This action cannot be undone.</p>
+            <p class="mb-4 text-white">Are you sure you want to delete the department <strong id="deleteDeptName"></strong>? This action cannot be undone.</p>
             <div class="flex justify-end gap-2">
-                <button type="button" onclick="closeDeleteDepartmentModal()" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 text-sm">Cancel</button>
-                <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 text-sm">Delete</button>
+                <button type="button" onclick="closeDeleteDepartmentModal()" class="px-4 py-2 bg-secondary rounded text-white hover:bg-primary/50 text-white text-sm">Cancel</button>
+                <button type="submit" class="px-4 py-2 bg-primary text-white rounded hover:bg-red-700 text-sm">Delete</button>
             </div>
         </form>
     </div>
