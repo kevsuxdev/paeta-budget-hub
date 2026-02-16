@@ -575,7 +575,7 @@ class AdminController extends Controller
 
     public function storeUser(Request $request)
 {
-    // 1. Temporarily change validation to be simple to see if regex is the killer
+
     $request->validate([
         'username' => 'required|string|unique:users',
         'full_name' => 'required|string',
@@ -605,46 +605,36 @@ class AdminController extends Controller
 }
 
 public function updateUser(Request $request, User $user)
-    {
-        $request->validate([
-            'username' => 'required|string|max:255|unique:users,username,' . $user->id,
-            'full_name' => 'required|string|max:255',
-            // Restricted to @paete.gov.ph only
-            'email' => [
-                'required', 
-                'string', 
-                'email', 
-                'max:255', 
-                'unique:users,email,' . $user->id, 
-                'regex:/^[a-zA-Z0-9._%+-]+@paete\.gov\.ph$/i'
-            ],
-            // Must start with +63 and followed by exactly 10 digits
-            'phone' => [
-                'nullable', 
-                'string', 
-                'regex:/^\+63\d{10}$/'
-            ],
-            'role' => 'required|in:admin,finance,dept_head,staff',
-            'department_id' => 'nullable|exists:departments,id',
-            'status' => 'required|in:active,inactive',
-        ], [
-            'email.regex' => 'The email must be an authorized @paete.gov.ph address.',
-            'phone.regex' => 'Phone must start with +63 followed by 10 digits.',
-        ]);
+{
+    $validated = $request->validate([
+        'username' => 'sometimes|required|string|max:255|unique:users,username,' . $user->id,
+        'full_name' => 'sometimes|required|string|max:255',
+        'email' => [
+            'sometimes', 'required', 'string', 'email', 'max:255', 
+            'unique:users,email,' . $user->id, 
+            'regex:/^[a-zA-Z0-9._%+-]+@paete\.gov\.ph$/i'
+        ],
+        'phone' => [
+            'nullable', 'sometimes', 'string'
+        ],
+        'role' => 'sometimes|required|in:admin,finance,dept_head,staff',
+        'department_id' => 'nullable|exists:departments,id',
+        'status' => 'sometimes|required|in:active,inactive',
+    ], [
+        'email.regex' => 'The email must be an authorized @paete.gov.ph address.',
+    ]);
 
-        $user->update([
-            'username' => $request->username,
-            'full_name' => $request->full_name,
-            'email' => $request->email,
-            'phone' => $request->phone,
-            'role' => $request->role,
-            'department_id' => $request->department_id,
-            'status' => $request->status,
-        ]);
-
-        return redirect()->back()->with('success', 'User updated successfully.');
+    $user->fill($validated);
+    
+   
+    if ($user->id === auth()->id() && $request->status === 'inactive') {
+        return redirect()->back()->with('error', 'You cannot set your own account to inactive.');
     }
 
+    $user->save();
+
+    return redirect()->back()->with('success', 'User updated successfully.');
+}
     public function deleteUser(User $user)
     {
         // Prevent deleting self

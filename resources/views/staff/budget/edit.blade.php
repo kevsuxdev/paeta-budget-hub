@@ -289,7 +289,7 @@
                 document.getElementById('file-name').textContent = input.files[0].name;
             } else {
                 uploadText.innerHTML = `<span class="font-medium text-primary">Click to upload</span> or drag and drop`;
-                document.getElementById('file-name').textContent = '{{ $budget->supporting_document ? "Current document" : "No file selected" }}';
+                document.getElementById('file-name').textContent = '{{ $budget->supporting_document ? "Current document" : "No file uploaded" }}';
             }
         });
     }
@@ -319,13 +319,13 @@
             if (fileInput.files.length > 0) {
                 fileName.textContent = fileInput.files[0].name;
                 filePreview.classList.remove('hidden');
-                uploadText.innerHTML = '<span class="font-medium">File selected</span>';
+                uploadText.innerHTML = '<span class="font-medium">File uploaded</span>';
             }
         });
 
         removeBtn.addEventListener('click', () => {
             fileInput.value = '';
-            fileName.textContent = '{{ $budget->supporting_document ? "Current document" : "No file selected" }}';
+            fileName.textContent = '{{ $budget->supporting_document ? "Current document" : "No file uploaded" }}';
             uploadText.innerHTML = '<span class="font-medium">Click to upload</span> or drag and drop';
         });
     }

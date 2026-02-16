@@ -7,8 +7,8 @@
         </div>
         <img src="{{ asset('assets/logo.png') }}" alt="Paete Logo" class="w-12 h-12 object-contain"/>
     </article>
-    <x-input-fields label="Email Address" name="email" type="email" value="{{ old('email') }}" placeholder="ex. johndoe@paete.gov.ph"/>
-    <x-input-fields label="Password" name="password" type="password" value="{{ old('password') }}" placeholder="***************" />
+    <x-input-fields class="bg-white text-black" label="Email Address" name="email" type="email" value="{{ old('email') }}" placeholder="ex. user@paete.gov.ph"/>
+    <x-input-fields class="bg-white text-black" label="Password" name="password" type="password" value="{{ old('password') }}" placeholder="***************" />
     <x-errors/>
     <x-button>Sign In</x-button>
 </form>

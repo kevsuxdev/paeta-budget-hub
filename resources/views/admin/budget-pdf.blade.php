@@ -4,56 +4,64 @@
     <meta charset="utf-8">
     <title>Budget Information PDF</title>
     <style>
-        body { font-family: 'DejaVu Sans', sans-serif; font-size: 13px; color: #222; }
+        body { font-family: 'DejaVu Sans', sans-serif; font-size: 13px; color: #222; margin: 0; padding: 20px; }
         .header-table { margin-bottom: 20px; width: 100%; }
         .section { margin-bottom: 18px; }
         .section-title { font-weight: bold; font-size: 16px; margin-bottom: 8px; color: #333; }
         .info-table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
         .info-table th, .info-table td { border: 1px solid #bbb; padding: 6px 10px; }
         .info-table th { background: #f3f3f3; text-align: left; }
+        
         .line-items-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
         .line-items-table th, .line-items-table td { border: 1px solid #bbb; padding: 6px 10px; }
         .line-items-table th { background: #f3f3f3; }
-        
-        /* SIGNATURE BOX STYLING */
+
+        /* THE SIGNATURE BOX */
         .footer-table {
             width: 100%;
-            margin-top: 40px;
+            margin-top: 60px;
         }
 
         .sig-container {
-            width: 300px;
+            width: 320px;
             text-align: center;
-            position: relative;
+        }
+
+        .approval-text {
+            margin-bottom: 10px; 
+            color: #555;
+            font-size: 12px;
         }
 
         .signature-wrapper {
             position: relative;
             display: inline-block;
-            width: 100%;
-            height: 60px; 
+            width: 280px; 
+            height: 100px; 
+            border-bottom: 1px solid #000;
+            text-align: center;
+        }
+
+        .printed-name {
+            position: absolute;
+            bottom: 2px; 
+            left: 0;
+            right: 0;
+            font-size: 13px;
+            font-weight: normal; 
+            text-transform: uppercase;
+            z-index: 1; 
         }
 
         .signature-img {
             position: absolute;
-            bottom: -35px; 
+            bottom: -15px;
             left: 50%;
-            margin-left: -110px; 
-            z-index: 9999;
-        }
-
-        .name-line {
-           
-            padding-top: 2px;
-            font-size: 14px; 
-            font-weight: normal; 
-            text-transform: uppercase;
-            display: block;
-            width: 250px;
-            margin: 0 auto;
-            position:relative;
-            z-index: 1;
-            border-bottom: 1px solid #444;
+            margin-left: -100px; /* Centering a 200px wide image */
+            width: 200px; 
+            height: 100px; 
+            object-fit: contain; 
+            z-index: 999; 
         }
     </style>
 </head>
@@ -83,7 +91,9 @@
 
     <div class="section">
         <div class="section-title">Justification</div>
-        <div>{{ $budget->justification ?? 'N/A' }}</div>
+        <div style="padding: 5px; border: 1px solid #eee; min-height: 40px;">
+            {{ $budget->justification ?? 'N/A' }}
+        </div>
     </div>
 
     <div class="section">
@@ -112,17 +122,19 @@
 
     <table class="footer-table">
         <tr>
-            <td width="60%"></td> <td class="sig-container">
-                <p style="margin-bottom: 5px; color: #555; font-size: 12px;">Approved and signed by:</p>
+            <td width="55%"></td>
+            <td class="sig-container">
+                <div class="approval-text">Approved and signed by:</div>
                 
                 <div class="signature-wrapper">
+                    <span class="printed-name">
+                        {{ $budget->approved_by }}
+                    </span>
+
                     @if($esignature)
-                        <img src="{{ $esignature }}" class="signature-img" width="280">
+                        <img src="{{ $esignature }}" class="signature-img">
                     @endif
                 </div>
-                <span class="name-line">
-                    {{ $budget->approved_by }}
-                </span>
             </td>
         </tr>
     </table>

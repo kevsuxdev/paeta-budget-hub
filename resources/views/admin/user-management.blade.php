@@ -135,64 +135,64 @@
                     <h3 class="text-lg font-semibold text-white">Departments</h3>
                 </div>
                 <!-- Edit User Modal -->
-                <div id="editUserModal" class="fixed inset-0 bg-transparent backdrop-blur-sm flex items-center justify-center hidden">
-                    <div class="bg-orange-brown p-6 border border-white/60 w-full max-w-lg shadow-lg rounded-md max-h-[90vh] overflow-y-auto">
-                        <h3 class="text-xl font-semibold text-white mb-2">Edit User</h3>
-                        <form id="editUserForm" method="POST" class="space-y-4">
-                            @csrf
-                            @method('PUT')
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div>
-                                    <label for="edit_username" class="block text-sm font-medium text-white mb-1">Username</label>
-                                    <input type="text" name="username" id="edit_username" class="w-full border text-white border-white/60 rounded-md p-2 text-sm" required>
-                                </div>
-                                <div>
-                                    <label for="edit_full_name" class="block text-sm font-medium text-white mb-1">Full Name</label>
-                                    <input type="text" name="full_name" id="edit_full_name" class="w-full border text-white border-white/60 rounded-md p-2 text-sm" required>
-                                </div>
-                                <div class="md:col-span-2">
-                                    <label for="edit_email" class="block text-sm font-medium text-white mb-1">Email</label>
-                                    <input type="email" id="edit_email" class="w-full border text-white border-white/60 rounded-md p-2 text-sm" required>
-                                </div>
-                                <div>
-                                    <label for="edit_phone" class="block text-sm font-medium text-white mb-1">Phone</label>
-                                    <input type="number" name="phone" id="edit_phone" class="w-full border text-white border-white/60 rounded-md p-2 text-sm">
-                                </div>
-                                <div>
-                                    <label for="edit_role" class="block text-sm font-medium text-white mb-1">Role</label>
-                                    <select name="role" id="edit_role" class="w-full border text-white border-white/60 rounded-md p-2 text-sm" required>
-                                        <option class="text-primary" value="">Select Role</option>
-                                        <option class="text-primary" value="admin">Admin</option>
-                                        <option class="text-primary" value="finance">Finance</option>
-                                        <option class="text-primary" value="staff">Staff</option>
-                                        <option class="text-primary" value="dept_head">Department Head</option>
-                                    </select>
-                                </div>
-                                <div id="edit_department_field">
-                                    <label for="edit_department_id" class="block text-sm font-medium text-white mb-1">Department</label>
-                                    <select name="department_id" id="edit_department_id" class="w-full border text-white border-white/60 rounded-md p-2 text-sm">
-                                        <option class="text-primary" value="">Select Department</option>
-                                        @foreach($departments as $department)
-                                        <option class="text-primary" value="{{ $department->id }}">{{ $department->name }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div>
-                                    <label for="edit_status" class="block text-sm font-medium text-white mb-1">Status</label>
-                                    <select name="status" id="edit_status" class="w-full border text-white border-white/60 rounded-md p-2 text-sm" required>
-                                        <option class="text-primary" value="active">Active</option>
-                                        <option class="text-primary" value="inactive">Inactive</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="flex justify-end space-x-3 pt-4">
-                                <button type="button" onclick="closeEditUserModal()" class="px-4 py-2 bg-secondary rounded-md hover:bg-primary/50 text-white cursor-pointer text-sm">Cancel</button>
-                                <button type="submit" class="px-4 py-2 bg-primary text-white rounded hover:bg-primary/80 text-sm">Save Changes</button>
-                            </div>
-                        </form>
-                    </div>
+               <div id="editUserModal" class="fixed inset-0 bg-transparent backdrop-blur-sm flex items-center justify-center hidden z-50">
+    <div class="bg-orange-brown p-6 border border-white/60 w-full max-w-lg shadow-lg rounded-md max-h-[90vh] overflow-y-auto">
+        <h3 class="text-xl font-semibold text-white mb-2">Edit User</h3>
+        <p class="text-sm text-white mb-4">Modify the user's account details and permissions.</p>
+        
+        <form id="editUserForm" method="POST" class="space-y-4">
+            @csrf
+            @method('PUT')
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label for="edit_username" class="block text-sm font-medium text-white mb-1">Username</label>
+                    <input type="text" name="username" id="edit_username" class="w-full bg-gray-300 border text-black border-white rounded-md p-2 text-sm" required>
                 </div>
-
+                <div>
+                    <label for="edit_full_name" class="block text-sm font-medium text-white mb-1">Full Name</label>
+                    <input type="text" name="full_name" id="edit_full_name" class="w-full bg-gray-300 border text-black border-white rounded-md p-2 text-sm" required>
+                </div>
+                <div class="md:col-span-2">
+                    <label for="edit_email" class="block text-sm font-medium text-white mb-1">Email</label>
+                    <input type="email" name="email" id="edit_email" class="w-full bg-gray-300 border text-black border-white rounded-md p-2 text-sm" placeholder="user@paete.gov.ph" pattern=".+@paete\.gov\.ph" required>
+                </div>
+                <div>
+                    <label for="edit_phone" class="block text-sm font-medium text-white mb-1">Phone</label>
+                    <input type="text" name="phone" id="edit_phone" class="w-full bg-gray-300 border text-black border-white rounded-md p-2 text-sm" placeholder="(+63)" maxlength="12">
+                </div>
+                <div>
+                    <label for="edit_role" class="block text-sm font-medium text-white mb-1">Role</label>
+                    <select name="role" id="edit_role" class="w-full bg-gray-300 border text-black border-white rounded-md p-2 text-sm" required>
+                        <option value="admin">Admin</option>
+                        <option value="finance">Finance</option>
+                        <option value="staff">Staff</option>
+                        <option value="dept_head">Department Head</option>
+                    </select>
+                </div>
+                <div id="edit_department_field">
+                    <label for="edit_department_id" class="block text-sm font-medium text-white mb-1">Department</label>
+                    <select name="department_id" id="edit_department_id" class="w-full bg-gray-300 border text-black border-white rounded-md p-2 text-sm">
+                        <option value="">Select Department</option>
+                        @foreach($departments as $department)
+                            <option value="{{ $department->id }}">{{ $department->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div>
+                    <label for="edit_status" class="block text-sm font-medium text-white mb-1">Status</label>
+                    <select name="status" id="edit_status" class="w-full bg-gray-300 border text-black border-white rounded-md p-2 text-sm" required>
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                    </select>
+                </div>
+            </div>
+            <div class="flex justify-end space-x-3 pt-4">
+                <button type="button" onclick="closeEditUserModal()" class="px-4 py-2 bg-secondary rounded-md hover:bg-primary/50 text-white cursor-pointer text-sm">Cancel</button>
+                <button type="submit" class="px-4 py-2 bg-primary text-white rounded hover:bg-primary/80 text-sm font-medium">Save Changes</button>
+            </div>
+        </form>
+    </div>
+</div>
                 <div class="overflow-x-auto">
                     <table class="min-w-full divide-y divide-primary">
                         <tbody class="bg-orange-brown divide-y divide-primary">
@@ -200,7 +200,7 @@
                             <tr>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-white flex items-center justify-between">
                                     <span>{{ $department->name }}</span>
-                                    <button type="button" class="ml-2 px-2 py-1 bg-red-700 text-white rounded hover:bg-red-800 delete-dept-btn" data-department-id="{{ $department->id }}" data-department-name="{{ $department->name }}">Delete</button>
+                                    <button type="button" onclick="openDeleteDepartmentModalFromButton(this)" class="ml-2 px-2 py-1 bg-red-700 text-white rounded hover:bg-red-800 delete-dept-btn" data-department-id="{{ $department->id }}" data-department-name="{{ $department->name }}">Delete</button>
                                 </td>
                             </tr>
                             @empty
@@ -290,7 +290,7 @@
                     </select>
                 </div>
                 <div id="department-field">
-                    <label for="department_id" class="block text-sm font-medium text-white mb-1">Department <span class="text-red-500">*</span></label>
+                    <label for="department_id" class="block fixed inset-0 bg-black/40 flex items-center justify-center z-50 hidden">Department <span class="text-red-500">*</span></label>
                     <select name="department_id" id="department_id" class="w-full bg-input border text-black border-whiterounded-md p-2 text-sm" >
                         <option class="text-primary" value="">Select Department</option>
                         @foreach($departments as $department)
@@ -331,13 +331,12 @@
                 </select>
             </div>
             <div class="flex justify-end gap-2">
-                <button type="button" onclick="closeUpdateDepartmentModal()" class="px-4 py-2 bg-secondary rounded hover:bg-primary/50 text-white text-sm">Cancel</button>
+                <button type="button" onclick="closeUpdateDepartmentModal()" class="px-4 py-2 bg-secondary rounded-md hover:bg-primary/50 text-white cursor-pointer text-sm">Cancel</button>
                 <button type="submit" class="px-4 py-2 bg-primary text-white rounded hover:bg-primary/80 text-sm">Update</button>
             </div>
         </form>
     </div>
 </div>
-
 <!-- Delete Department Modal -->
 <div id="deleteDepartmentModal" class="fixed inset-0 bg-black/40 flex items-center justify-center z-50 hidden">
     <div class="bg-orange-brown p-6 border border-white/60 w-full max-w-lg shadow-lg rounded-md max-h-[90vh] overflow-y-auto">
@@ -448,32 +447,33 @@
         };
 
         window.openEditUserModal = function(userId, data) {
-            const modal = document.getElementById('editUserModal');
-            const form = document.getElementById('editUserForm');
-            if (!modal || !form) return;
-            // Populate fields
-            form.action = `${window.updateDepartmentFormBase}/${userId}`;
-            document.getElementById('edit_username').value = data.username || '';
-            document.getElementById('edit_full_name').value = data.userName || '';
-            document.getElementById('edit_email').value = data.email || '';
-            document.getElementById('edit_phone').value = data.phone || '';
-            document.getElementById('edit_role').value = data.role || '';
-            document.getElementById('edit_department_id').value = data.deptId || '';
-            document.getElementById('edit_status').value = data.status || 'active';
-            // Show/hide department field based on role
-            const deptField = document.getElementById('edit_department_field');
-            const deptSelect = document.getElementById('edit_department_id');
-            if (data.role === 'staff' || data.role === 'dept_head') {
-                deptField.style.display = 'block';
-                deptSelect.required = true;
-            } else {
-                deptField.style.display = 'none';
-                deptSelect.required = false;
-            }
+    const modal = document.getElementById('editUserModal');
+    const form = document.getElementById('editUserForm');
+    
+    if (!modal || !form) return;
 
-            modal.classList.remove('hidden');
-        };
+    // FIX: This matches your Route::put('/admin/users/{user}')
+    form.action = "/admin/users/" + userId; 
 
+    // Populate the rest of the fields
+    document.getElementById('edit_username').value = data.username || '';
+    document.getElementById('edit_full_name').value = data.userName || '';
+    document.getElementById('edit_email').value = data.email || '';
+    document.getElementById('edit_phone').value = data.phone || '';
+    document.getElementById('edit_role').value = data.role || '';
+    document.getElementById('edit_status').value = data.status || 'active';
+    document.getElementById('edit_department_id').value = data.deptId || '';
+
+    // Handle department field visibility
+    const deptField = document.getElementById('edit_department_field');
+    if (data.role === 'staff' || data.role === 'dept_head') {
+        deptField.classList.remove('hidden');
+    } else {
+        deptField.classList.add('hidden');
+    }
+
+    modal.classList.remove('hidden');
+};
         window.closeEditUserModal = function() {
             const modal = document.getElementById('editUserModal');
             const form = document.getElementById('editUserForm');
@@ -527,12 +527,22 @@
 
         // Close modals on outside click
         window.addEventListener('click', function(event) {
-            ['departmentModal', 'userModal', 'updateDepartmentModal', 'changePasswordModal', 'deleteDepartmentModal'].forEach(id => {
-                const modal = document.getElementById(id);
-                if (modal && event.target === modal) modal.classList.add('hidden');
-            });
-        });
-
+    const modals = [
+        'departmentModal', 
+        'userModal', 
+        'updateDepartmentModal', 
+        'editUserModal', 
+        'changePasswordModal', 
+        'deleteDepartmentModal'
+    ];
+    
+    modals.forEach(modalId => {
+        const modal = document.getElementById(modalId);
+        if (event.target === modal) {
+            modal.classList.add('hidden');
+        }
+    });
+});
         // Delegated click handler for delete buttons
         document.addEventListener('click', function(e) {
             const btn = e.target.closest && e.target.closest('.delete-dept-btn');

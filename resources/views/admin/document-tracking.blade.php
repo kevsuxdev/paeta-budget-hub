@@ -79,7 +79,7 @@
                                 <form action="{{ route('admin.budget.destroy', $budget->id) }}" method="POST" class="inline-block">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="ml-2 inline-block bg-red-700  text-white px-3 py-2 rounded-md hover:bg-red-800 text-sm" onclick="return confirm('Are you sure you want to delete this budget?');">Delete</button>
+                                <button type="submit" class="ml-2 inline-block bg-red-700 text-white px-3 py-2 rounded-md hover:bg-red-800 text-sm" onclick="return confirm('Are you sure you want to delete this budget?');">Delete</button>
                                 </form>
                                 @endif
                                 <x-button

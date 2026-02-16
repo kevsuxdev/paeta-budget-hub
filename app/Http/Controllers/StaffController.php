@@ -146,9 +146,6 @@ class StaffController extends Controller
         }
     }
 
-    /**
-     * Show the form for editing the specified budget.
-     */
     public function editBudget(Budget $budget)
     {
         if ($budget->user_id !== Auth::id()) {
