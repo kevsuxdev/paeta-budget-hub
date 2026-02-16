@@ -158,7 +158,7 @@
                 </div>
                 <div>
                     <label for="edit_phone" class="block text-sm font-medium text-white mb-1">Phone</label>
-                    <input type="text" name="phone" id="edit_phone" class="w-full bg-gray-300 border text-black border-white rounded-md p-2 text-sm" placeholder="(+63)" maxlength="12">
+                    <input type="text" name="phone" id="edit_phone" class="w-full bg-gray-300 border text-black border-white rounded-md p-2 text-sm" placeholder="(+63) or 09" maxlength="13">
                 </div>
                 <div>
                     <label for="edit_role" class="block text-sm font-medium text-white mb-1">Role</label>
@@ -275,7 +275,7 @@
                 </div>
                 <div>
                     <label for="phone" class="block text-sm font-medium text-white mb-1">Phone</label>
-                    <input type="text" name="phone" id="phone" class="w-full bg-input border text-black border-white rounded-md p-2 text-sm"  placeholder="(+63)" maxlength="12" oninput="formatPhoneNumber(this)" required>
+                    <input type="text" name="phone" id="phone" class="w-full bg-input border text-black border-white rounded-md p-2 text-sm"  placeholder="(+63) or 09" maxlength="13" oninput="formatPhoneNumber(this)" required>
                 </div>
                 <input type="hidden" name="password" value="password">
                 <input type="hidden" name="password_confirmation" value="password">
@@ -290,8 +290,8 @@
                     </select>
                 </div>
                 <div id="department-field">
-                    <label for="department_id" class="block fixed inset-0 bg-black/40 flex items-center justify-center z-50 hidden">Department <span class="text-red-500">*</span></label>
-                    <select name="department_id" id="department_id" class="w-full bg-input border text-black border-whiterounded-md p-2 text-sm" >
+                    <label for="department_id" class="block text-sm font-medium text-white mb-1">Department</label>
+                    <select name="department_id" id="department_id" class="w-full bg-input border text-black border-white rounded-md p-2 text-sm" >
                         <option class="text-primary" value="">Select Department</option>
                         @foreach($departments as $department)
                         <option class="text-primary" value="{{ $department->id }}">{{ $department->name }}</option>
@@ -323,7 +323,7 @@
             @method('PUT')
             <div class="mb-4">
                 <label for="update_department_id" class="block text-sm font-medium text-white mb-1">Department</label>
-                <select name="department_id" id="update_department_id" class="w-full border border-white bg-input rounded-md p-2" required>
+                <select name="department_id" id="update_department_id" class="w-full bg-input border text-black border-white rounded-md p-2 text-sm" required>
                     <option value="">Select Department</option>
                     @foreach($departments as $department)
                     <option value="{{ $department->id }}">{{ $department->name }}</option>
