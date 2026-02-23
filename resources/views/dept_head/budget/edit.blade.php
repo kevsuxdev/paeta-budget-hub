@@ -13,8 +13,13 @@
     @endif
     <!-- Header -->
     <div class="mb-8">
+<<<<<<< HEAD
         <h1 class="text-3xl font-bold text-main mb-2">Edit Budget Request</h1>
         <p class="text-main font-medium">Update the budget request details below. You can add or remove line items and replace supporting documents.</p>
+=======
+        <h1 class="text-3xl font-bold text-white mb-2">Edit Budget Request</h1>
+        <p class="text-gray-300">Update the budget request details and supporting documents.</p>
+>>>>>>> 16b38017ab82ab6272707fd8bdc012e590540504
     </div>
 
     <form action="{{ route('dept_head.budget.update', $budget->id) }}" method="POST" enctype="multipart/form-data" class="space-y-8">
