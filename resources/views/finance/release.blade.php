@@ -70,7 +70,7 @@
                             <tr>
                                 <th class="px-4 py-2 text-left text-xs font-medium text-white uppercase">Date</th>
                                 <th class="px-4 py-2 text-left text-xs font-medium text-white uppercase">User</th>
-                                <th class="px-4 py-2 text-left text-xs font-medium text-white uppercase">Department</th>
+                                <th class="px-4 py-2 text-left text-xs font-medium text-white uppercase"></th>
                                 <th class="px-4 py-2 text-left text-xs font-medium text-white uppercase">Notes</th>
                             </tr>
                         </thead>

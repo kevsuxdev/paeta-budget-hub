@@ -1,13 +1,13 @@
 <?php
-
+ 
 namespace App\Http\Controllers;
-
+ 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
+ 
 class AuthController extends Controller
 {
-
+ 
     public function resetPassword(Request $request)
     {
         $request->validate([
@@ -20,7 +20,7 @@ class AuthController extends Controller
         $user->password = bcrypt($request->new_password);
         $user->already_reset_password = true;
         $user->save();
-
+ 
         return back()->with('success', 'Password reset successfully!');
     }
     public function authenticate(Request $request)
@@ -29,25 +29,25 @@ class AuthController extends Controller
             'email' => 'required|email',
             'password' => 'required',
         ]);
-
+ 
         $credentials = $request->only('email', 'password');
-
+ 
         if (!Auth::attempt($credentials)) {
             return back()->withErrors([
                 'email' => 'The provided credentials do not match our records.',
             ])->onlyInput('email');
         }
-
+ 
         if (Auth::user()->status === 'inactive') {
             Auth::logout();
-
+ 
             return back()->withErrors([
                 'email' => 'Your account is inactive. Please contact the administrator.',
             ])->onlyInput('email');
         }
-
+ 
         $request->session()->regenerate();
-
+ 
         return match (Auth::user()->role) {
             'admin' => redirect()->intended('admin/dashboard'),
             'finance' => redirect()->intended('finance/dashboard'),
@@ -56,14 +56,14 @@ class AuthController extends Controller
             default => redirect()->intended('/'),
         };
     }
-
+ 
     public function logout(Request $request)
     {
         Auth::logout();
-
+ 
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-
+ 
         return redirect('/');
     }
-}
+}    

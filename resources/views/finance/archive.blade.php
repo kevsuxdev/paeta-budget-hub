@@ -176,8 +176,8 @@
                                 </div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-white">
-                                <div>{{ $budget->user->full_name }}</div>
-                                <div class="text-xs text-gray-400">{{ ucfirst($budget->user->role) }}</div>
+                                <div>{{ $budget->user?->full_name ?? 'N/A' }}</div>
+                                <div class="text-xs text-gray-400">{{ ucfirst($budget->user?->role ?? 'Unknown') }}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-white">
                                 ₱{{ number_format($budget->total_budget, 2) }}
@@ -199,7 +199,7 @@
                                     data-budget-title="{{ $budget->title }}"
                                     data-budget-status="{{ $budget->status }}"
                                     data-budget-date="{{ $budget->submission_date->format('M d, Y') }}"
-                                    data-budget-user="{{ $budget->user->full_name }}"
+                                    data-budget-user="{{ $budget->user?->full_name ?? 'N/A' }}"
                                 >
                                     View Details
                                 </button>
@@ -211,6 +211,7 @@
                                 >
                                     Download PDF
                                 </a>
+
                                 @if($budget->supporting_document)
                                     <span class="text-gray-500">|</span>
                                     <a
