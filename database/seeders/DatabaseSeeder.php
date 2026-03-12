@@ -34,12 +34,9 @@ class DatabaseSeeder extends Seeder
                 'role' => 'finance',
             ],
             [
-<<<<<<< HEAD
                 'full_name' => 'Department Head',
-=======
-                'full_name' => 'Department Head kevs',
->>>>>>> 16b38017ab82ab6272707fd8bdc012e590540504
                 'email' => 'head@paete.gov.ph',
+                'role' => 'head',
             ]
         ];
 

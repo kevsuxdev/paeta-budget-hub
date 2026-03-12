@@ -109,11 +109,10 @@
                            <td class="px-6 py-4 whitespace-nowrap text-sm space-x-2">
                                 <button
                                     type="button"
-<<<<<<< HEAD
+
                                     class="btn-view-budget px-3 py-1 text-sm text-white border border-black bg-primary rounded hover:bg-primary/50 font-medium"
-=======
                                     class="btn-view-budget px-3 py-1 text-sm text-black-700 bg-blue-100 rounded hover:bg-blue-200"
->>>>>>> 16b38017ab82ab6272707fd8bdc012e590540504
+
                                     data-budget-id="{{ $budget->id }}"
                                     data-budget-title="{{ $budget->title }}"
                                     data-budget-status="{{ $budget->status }}"
