@@ -10,12 +10,8 @@ class DatabaseSeeder extends Seeder
 {
     use WithoutModelEvents;
 
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
-        // User::factory(10)->create();
 
         $users = [
             [
@@ -36,7 +32,7 @@ class DatabaseSeeder extends Seeder
             [
                 'full_name' => 'Department Head',
                 'email' => 'head@paete.gov.ph',
-                'role' => 'head',
+                'role' => 'dept_head',
             ]
         ];
 

@@ -111,6 +111,7 @@
                                     type="button"
 
                                     class="btn-view-budget px-3 py-1 text-sm text-white border border-black bg-primary rounded hover:bg-primary/50 font-medium"
+
                                     class="btn-view-budget px-3 py-1 text-sm text-black-700 bg-blue-100 rounded hover:bg-blue-200"
 
                                     data-budget-id="{{ $budget->id }}"
@@ -286,6 +287,34 @@
 
             $('#approvalModal').removeClass('hidden');
         });
+
+        // --- E-SIGNATURE PREVIEW LOGIC ---
+        const eSignatureInput = document.getElementById('e_signature');
+        const previewModal = $('#previewModal');
+        const signaturePreview = document.getElementById('signaturePreview');
+
+        if (eSignatureInput) {
+            eSignatureInput.addEventListener('change', function() {
+                if (this.files && this.files[0]) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        signaturePreview.src = e.target.result;
+                        previewModal.removeClass('hidden'); // Show the confirmation modal
+                    }
+                    reader.readAsDataURL(this.files[0]);
+                }
+            });
+        }
+
+        // Handle "Yes" and "No" in the preview modal
+        $('#confirmSignature').on('click', function() {
+            previewModal.addClass('hidden');
+        });
+
+        $('#cancelSignature').on('click', function() {
+            $('#e_signature').val(''); // Reset the file input
+            previewModal.addClass('hidden');
+        });
     });
 
     function closeApprovalModal() {
@@ -300,4 +329,25 @@
         }
     });
 </script>
+<div id="previewModal" class="fixed inset-0 backdrop-blur-md overflow-y-auto h-full w-full hidden z-[60] flex items-center justify-center">
+    <div class="relative mx-auto p-5 border w-96 shadow-lg rounded-md bg-orange-brown border-primary">
+        <div class="mt-3 text-center">
+            <h3 class="text-lg leading-6 font-medium text-white">Confirm E-Signature</h3>
+            <div class="mt-4 px-7 py-3">
+                <p class="text-sm text-white mb-4">Are you sure you want to use this signature image?</p>
+                <div class="border-2 border-dashed border-primary p-2 bg-white rounded-lg flex items-center justify-center">
+                    <img id="signaturePreview" src="#" alt="Signature Preview" class="max-h-40 object-contain">
+                </div>
+            </div>
+            <div class="flex justify-center gap-4 mt-4">
+                <button type="button" id="confirmSignature" class="px-4 py-2 bg-primary text-white text-sm font-medium rounded-md border border-white hover:bg-opacity-80">
+                    Yes, use this
+                </button>
+                <button type="button" id="cancelSignature" class="px-4 py-2 bg-red-800 text-white text-sm font-medium rounded-md border border-black hover:bg-red-900">
+                    No, choose another
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
