@@ -340,7 +340,7 @@
                 </div>
             </div>
             <div class="flex justify-center gap-4 mt-4">
-                <button type="button" id="confirmSignature" class="px-4 py-2 bg-primary text-white text-sm font-medium rounded-md border border-white hover:bg-opacity-80">
+                <button type="button" id="confirmSignature" class="px-4 py-2 bg-primary text-white text-sm font-medium rounded-md border border-white hover:bg-secondary/80">
                     Yes, use this
                 </button>
                 <button type="button" id="cancelSignature" class="px-4 py-2 bg-red-800 text-white text-sm font-medium rounded-md border border-black hover:bg-red-900">
